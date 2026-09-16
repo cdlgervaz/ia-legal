@@ -170,10 +170,12 @@ async function executarBusca(evento) {
   resultados.innerHTML = `<div class="loading"><span class="spinner"></span>Buscando...</div>`;
   modo.textContent = "";
   try {
-    const body = { query, limit: 12 };
+    const ativo = document.querySelector("#chips-categoria .chip.active");
+    const categoria = ativo && ativo.dataset.cat ? ativo.dataset.cat : null;
+    const body = { query, limit: 12, categoria };
     const data = await api("/api/search", { method: "POST", body: JSON.stringify(body) });
     guardar(data.resultados);
-    modo.textContent = `${data.total} resultado(s) - busca ${data.modo}.`;
+    modo.textContent = `${data.total} resultado(s) - busca ${data.modo}${categoria ? " · " + categoria : ""}.`;
     if (!data.resultados.length) {
       resultados.innerHTML = `<div class="alert info">Nenhum resultado. Importe os documentos na aba Documentos, sincronize a base nas Configurações ou reformule a consulta.</div>`;
       return;
@@ -225,7 +227,8 @@ async function enviarPergunta(evento) {
   janela.scrollTop = janela.scrollHeight;
   $("#chat-send").disabled = true;
   try {
-    const body = { query: pergunta };
+    const seletor = $("#c-categoria");
+    const body = { query: pergunta, categoria: seletor ? seletor.value || null : null };
     const data = await api("/api/chat", { method: "POST", body: JSON.stringify(body) });
     guardar(data.fontes);
     aguardando.outerHTML = bolhaAssistente(data.resposta, data.fontes);
@@ -742,6 +745,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const campo = $("#chat-input");
       campo.value = botao.dataset.exemplo;
       enviarPergunta();
+    });
+  });
+  document.querySelectorAll("#chips-categoria .chip").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      document.querySelectorAll("#chips-categoria .chip").forEach((b) => b.classList.remove("active"));
+      botao.classList.add("active");
     });
   });
   const campoChat = $("#chat-input");

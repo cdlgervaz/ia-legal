@@ -32,6 +32,12 @@
     <section id="tab-buscar" class="tab-panel">
       <div class="card">
         <h2 style="margin-top:0">Buscar no acervo</h2>
+        <div class="chips-filtro" id="chips-categoria">
+          <button type="button" class="chip active" data-cat="">Tudo</button>
+          <button type="button" class="chip" data-cat="Lei">Lei</button>
+          <button type="button" class="chip" data-cat="Parecer">Parecer</button>
+          <button type="button" class="chip" data-cat="Documento norteador">Documento norteador</button>
+        </div>
         <form id="search-form" class="search-bar">
           <input id="search-input" type="text" placeholder="Ex.: BNCC Computação, formação continuada, IA na educação, LGPD, FUNDEB..." autocomplete="off" />
           <button class="btn" type="submit">Buscar</button>
@@ -57,6 +63,16 @@
       <div class="card chat-card">
         <div id="chat-window" class="chat-window">
           <div class="msg assistant">Olá! Sou o assistente do acervo de Políticas Educacionais. Pergunte em linguagem natural e eu respondo com base nas leis, pareceres e documentos oficiais indexados — citando as fontes.</div>
+        </div>
+        <div class="chat-filtro-ctx">
+          <label>Responder apenas sobre
+            <select id="c-categoria">
+              <option value="">Todo o acervo</option>
+              <option value="Lei">Leis</option>
+              <option value="Parecer">Pareceres</option>
+              <option value="Documento norteador">Documentos norteadores</option>
+            </select>
+          </label>
         </div>
         <form id="chat-form" class="chat-input">
           <textarea id="chat-input" placeholder="Escreva sua pergunta..." rows="1"></textarea>

@@ -245,3 +245,10 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px
 .chat-card { max-width: 880px; margin: 0 auto; }
 #tab-perguntar .chat-window { min-height: 260px; max-height: 56vh; }
 
+.chips-filtro { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 14px; }
+.chips-filtro .chip { padding: 7px 14px; }
+.chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.chat-filtro-ctx { display: flex; justify-content: flex-end; margin-top: 10px; }
+.chat-filtro-ctx label { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.chat-filtro-ctx select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
+
