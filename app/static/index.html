@@ -23,6 +23,12 @@
     </div>
   </header>
 
+  <div class="aviso-topo" id="aviso-uso">
+    <span>Ferramenta em <strong>fase de testes</strong> · uso <strong>não comercial</strong> · ao utilizar, <strong>cite a fonte</strong>.</span>
+    <button class="btn ghost aviso-link" id="abrir-sobre" type="button">Sobre e licença de uso</button>
+    <button class="aviso-fechar" id="fechar-aviso" type="button" aria-label="Fechar aviso">x</button>
+  </div>
+
   <nav class="tabs">
     <button data-tab="perguntar" class="active">Conversar</button>
     <button data-tab="buscar">Buscar no acervo</button>
@@ -263,7 +269,52 @@
     </div>
   </div>
 
-  <footer>Fontes: Planalto, MEC/CNE, Câmara dos Deputados e Senado Federal. Ferramenta de apoio ao estudo; confira sempre o texto oficial.</footer>
+  <div id="sobre" class="modal hidden">
+    <div class="modal-content onboarding">
+      <button class="modal-close" id="sobre-close" type="button">x</button>
+      <div class="guia-cabecalho">
+        <div class="guia-logo">IA</div>
+        <h2>Sobre e licença de uso</h2>
+        <p>Autoria, uso de inteligência artificial e direitos de uso.</p>
+      </div>
+
+      <h3>Autoria</h3>
+      <p><strong>IAgora, profe? — Acervo inteligente de Políticas Educacionais</strong>. Responsável: [NOME DA PESSOA OU EQUIPE RESPONSÁVEL] — [INSTITUIÇÃO]. Contato: [E-MAIL].</p>
+
+      <h3>Inteligência artificial e modelos utilizados</h3>
+      <p>As respostas são produzidas por modelos de linguagem de código aberto, com base nos documentos indexados:</p>
+      <ul class="guia-passos">
+        <li><strong>Qwen 2.5</strong> (execução local, padrão) — licença Apache 2.0.</li>
+        <li><strong>Gemma</strong> (nuvem) — Gemma Terms of Use.</li>
+        <li><strong>NVIDIA Nemotron</strong> e <strong>Z-AI GLM</strong> — licenças abertas dos modelos.</li>
+        <li><strong>Embeddings</strong> <em>all-MiniLM-L6-v2</em> (ChromaDB) — Apache 2.0; execução local via <strong>Ollama</strong> (MIT).</li>
+      </ul>
+
+      <h3>Aviso de uso</h3>
+      <p>Ferramenta <strong>em fase de testes</strong>, de finalidade educacional e de pesquisa. <strong>Não pode ser usada para fins comerciais.</strong> O conteúdo é apoio ao estudo: não substitui o texto oficial nem constitui aconselhamento jurídico.</p>
+
+      <h3>Citação</h3>
+      <p>Ao utilizar, <strong>cite a fonte</strong>:<br />
+        [SOBRENOME, Nome / EQUIPE]. <em>IAgora, profe? — Acervo inteligente de Políticas Educacionais</em>. [Ano]. Disponível em: [URL]. Acesso em: [data].</p>
+
+      <h3>Licença</h3>
+      <p>Conteúdo sob <strong>Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 (CC BY-NC-SA 4.0)</strong>: você pode copiar, distribuir e adaptar, desde que cite a fonte, não use comercialmente e compartilhe as adaptações sob a mesma licença. Textos de leis e atos oficiais não são protegidos (Lei nº 9.610/1998, art. 8º, IV). O software e as dependências mantêm suas próprias licenças.</p>
+
+      <p class="guia-rodape">Detalhes completos nos arquivos <code>CREDITOS.md</code> e <code>TERMOS_DE_USO.md</code> do repositório.</p>
+      <div class="guia-acoes">
+        <button class="btn" id="sobre-fechar" type="button">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Fontes: Planalto, MEC/CNE, Câmara dos Deputados, Senado Federal e Diário Oficial da União. Ferramenta de apoio ao estudo; confira sempre o texto oficial.</p>
+    <p>
+      [NOME DA PESSOA OU EQUIPE RESPONSÁVEL] · Versão em testes, uso não comercial ·
+      Licença <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.pt-br" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> ·
+      <button class="btn ghost" id="abrir-sobre-2" type="button">Sobre e licença</button>
+    </p>
+  </footer>
 
   <script src="/static/app.js?v=4"></script>
 </body>

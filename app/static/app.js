@@ -772,6 +772,16 @@ function finalizarTour() {
   document.querySelectorAll(".tour-destaque").forEach((e) => e.classList.remove("tour-destaque"));
 }
 
+function abrirSobre() {
+  const el = $("#sobre");
+  if (el) el.classList.remove("hidden");
+}
+
+function fecharSobre() {
+  const el = $("#sobre");
+  if (el) el.classList.add("hidden");
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
     botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
@@ -841,6 +851,32 @@ function ligarEventos() {
   if (tourAnterior) tourAnterior.addEventListener("click", () => mostrarPassoTour(tourIndice - 1));
   const tourSair = $("#tour-sair");
   if (tourSair) tourSair.addEventListener("click", () => finalizarTour());
+  ["#abrir-sobre", "#abrir-sobre-2"].forEach((sel) => {
+    const botao = $(sel);
+    if (botao) botao.addEventListener("click", () => abrirSobre());
+  });
+  const sobreClose = $("#sobre-close");
+  if (sobreClose) sobreClose.addEventListener("click", () => fecharSobre());
+  const sobreFechar = $("#sobre-fechar");
+  if (sobreFechar) sobreFechar.addEventListener("click", () => fecharSobre());
+  const sobre = $("#sobre");
+  if (sobre) {
+    sobre.addEventListener("click", (evento) => {
+      if (evento.target.id === "sobre") fecharSobre();
+    });
+  }
+  const fecharAviso = $("#fechar-aviso");
+  if (fecharAviso) {
+    fecharAviso.addEventListener("click", () => {
+      const aviso = $("#aviso-uso");
+      if (aviso) aviso.classList.add("hidden");
+      try {
+        localStorage.setItem("iagora_aviso_v1", "1");
+      } catch (erro) {
+        /* armazenamento indisponível */
+      }
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -868,6 +904,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     jaViuGuia = false;
   }
   if (!jaViuGuia) setTimeout(abrirOnboarding, 500);
+  try {
+    if (localStorage.getItem("iagora_aviso_v1") === "1") {
+      const aviso = $("#aviso-uso");
+      if (aviso) aviso.classList.add("hidden");
+    }
+  } catch (erro) {
+    /* armazenamento indisponível */
+  }
   await carregarTemas();
   await carregarDocumentosFiltro();
   await carregarDocumentos();

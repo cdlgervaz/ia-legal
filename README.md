@@ -306,6 +306,25 @@ busca híbrida/RAG -> interface`.
 - **Temas da Câmara**: constantes em `app/sources/camara.py`.
 - **Trechos**: `CHUNK_SIZE` e `CHUNK_OVERLAP` no `.env` (padrão 1400/250 caracteres).
 
+## Licença e uso
+
+- **Situação:** versão em desenvolvimento (**fase de testes**).
+- **Uso permitido:** estudo, ensino e pesquisa. **Uso comercial proibido** sem autorização.
+- **Citação obrigatória** ao utilizar o acervo ou as respostas (ver `CREDITOS.md`).
+- **Licença do conteúdo:** Creative Commons **CC BY-NC-SA 4.0** (Atribuição — NãoComercial —
+  CompartilhaIgual). Texto integral em [`LICENSE`](LICENSE).
+- **Software e dependências:** mantêm suas próprias licenças. Os modelos de IA usados são de
+  código aberto (Qwen 2.5, Gemma, NVIDIA Nemotron, Z-AI GLM) e os embeddings são locais
+  (`all-MiniLM-L6-v2`).
+- **Documentos oficiais:** textos de leis e atos oficiais não são protegidos por direitos
+  autorais (Lei nº 9.610/1998, art. 8º, IV); a compilação e a interface são.
+- **Privacidade:** não há cadastro; não insira dados pessoais nas perguntas. Detalhes em
+  [`TERMOS_DE_USO.md`](TERMOS_DE_USO.md).
+
+> Observação: o Creative Commons **não é recomendado para o código-fonte**. Para o software,
+> escolha uma licença de software (ex.: MIT, GPL ou Apache 2.0); a CC BY-NC-SA 4.0 vale para o
+> **conteúdo** (textos, descrições, materiais).
+
 ## Limitações e boas práticas
 
 - As respostas da IA são apoio ao estudo, não substituem a leitura do texto oficial.
