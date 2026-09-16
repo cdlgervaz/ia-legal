@@ -23,7 +23,3 @@ services:
         value: "800"
       - key: LLM_API_KEY
         sync: false
-      - key: APP_USER
-        value: professor
-      - key: APP_PASSWORD
-        sync: false
