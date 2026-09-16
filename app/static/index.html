@@ -242,7 +242,23 @@
 
       <p class="guia-rodape">As respostas servem de apoio ao estudo e à pesquisa. Confira sempre o texto oficial indicado nas fontes.</p>
       <div class="guia-acoes">
+        <label class="guia-check">
+          <input type="checkbox" id="guia-mostrar-novamente" /> Mostrar novamente na próxima visita
+        </label>
+        <button class="btn secondary" id="onboarding-tour" type="button">Fazer tour guiado</button>
         <button class="btn" id="onboarding-comecar" type="button">Começar a usar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tour" class="tour hidden">
+    <div class="tour-card">
+      <span class="tour-passo" id="tour-passo">1/5</span>
+      <p id="tour-texto"></p>
+      <div class="tour-acoes">
+        <button class="btn ghost" id="tour-sair" type="button">Sair</button>
+        <button class="btn secondary" id="tour-anterior" type="button">Anterior</button>
+        <button class="btn" id="tour-proximo" type="button">Próximo</button>
       </div>
     </div>
   </div>

@@ -709,13 +709,67 @@ function fecharOnboarding(marcar) {
   const el = $("#onboarding");
   if (!el) return;
   el.classList.add("hidden");
-  if (marcar !== false) {
-    try {
+  if (marcar === false) return;
+  const mostrarNovamente = $("#guia-mostrar-novamente");
+  try {
+    if (mostrarNovamente && mostrarNovamente.checked) {
+      localStorage.removeItem("iagora_guia_v1");
+    } else {
       localStorage.setItem("iagora_guia_v1", "1");
+    }
+  } catch (erro) {
+    /* armazenamento indisponível */
+  }
+}
+
+const TOUR = [
+  { sel: ".topbar", texto: "Aqui ficam o nome do acervo e o botão 'Como usar', para reabrir este guia quando quiser." },
+  { sel: "nav.tabs", texto: "Use as abas para conversar com a IA, buscar no acervo, ver os documentos e acompanhar projetos de lei." },
+  { sel: "#chat-input", aba: "perguntar", texto: "Escreva sua pergunta aqui, em linguagem natural. Ex.: 'O que propõe a BNCC Computação?'" },
+  { sel: "#c-categoria", aba: "perguntar", texto: "Opcional: restrinja a resposta a leis, pareceres ou documentos norteadores." },
+  { sel: "#chips-categoria", aba: "buscar", texto: "Na busca, use estes chips para filtrar pelo tipo de documento." },
+];
+let tourIndice = 0;
+
+function destacarTour(sel) {
+  document.querySelectorAll(".tour-destaque").forEach((e) => e.classList.remove("tour-destaque"));
+  const alvo = document.querySelector(sel);
+  if (alvo) {
+    alvo.classList.add("tour-destaque");
+    try {
+      alvo.scrollIntoView({ behavior: "smooth", block: "center" });
     } catch (erro) {
-      /* armazenamento indisponível */
+      /* navegador sem scroll suave */
     }
   }
+}
+
+function mostrarPassoTour(indice) {
+  if (indice < 0 || indice >= TOUR.length) {
+    finalizarTour();
+    return;
+  }
+  tourIndice = indice;
+  const passo = TOUR[indice];
+  if (passo.aba) mostrarAba(passo.aba);
+  $("#tour-passo").textContent = `${indice + 1}/${TOUR.length}`;
+  $("#tour-texto").textContent = passo.texto;
+  $("#tour-anterior").disabled = indice === 0;
+  $("#tour-proximo").textContent = indice === TOUR.length - 1 ? "Concluir" : "Próximo";
+  setTimeout(() => destacarTour(passo.sel), 120);
+}
+
+function iniciarTour() {
+  fecharOnboarding();
+  const el = $("#tour");
+  if (el) el.classList.remove("hidden");
+  mostrarPassoTour(0);
+}
+
+function finalizarTour() {
+  const el = $("#tour");
+  if (el) el.classList.add("hidden");
+  document.querySelectorAll(".tour-destaque").forEach((e) => e.classList.remove("tour-destaque"));
 }
 
 function ligarTabs() {
@@ -774,6 +828,19 @@ function ligarEventos() {
       });
     });
   }
+  const abrirTour = $("#onboarding-tour");
+  if (abrirTour) abrirTour.addEventListener("click", () => iniciarTour());
+  const tourProximo = $("#tour-proximo");
+  if (tourProximo) {
+    tourProximo.addEventListener("click", () => {
+      if (tourIndice >= TOUR.length - 1) finalizarTour();
+      else mostrarPassoTour(tourIndice + 1);
+    });
+  }
+  const tourAnterior = $("#tour-anterior");
+  if (tourAnterior) tourAnterior.addEventListener("click", () => mostrarPassoTour(tourIndice - 1));
+  const tourSair = $("#tour-sair");
+  if (tourSair) tourSair.addEventListener("click", () => finalizarTour());
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
