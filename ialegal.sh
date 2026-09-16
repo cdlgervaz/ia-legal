@@ -112,8 +112,8 @@ case "${1:-}" in
     echo "[ok] Parado."
     ;;
   restart)
-    systemctl --user restart "$SERVER_UNIT" "$TUNNEL_UNIT"
-    echo "[ok] Reiniciado."; mostrar_link
+    systemctl --user restart "$SERVER_UNIT"
+    echo "[ok] Servidor reiniciado (link do tunel mantido)."; mostrar_link
     ;;
   status)
     systemctl --user --no-pager status "$SERVER_UNIT" "$TUNNEL_UNIT" 2>&1 | grep -E "Loaded|Active|Main PID|Description" || true
