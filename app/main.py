@@ -68,7 +68,7 @@ async def autenticar(request: Request, call_next):
     return Response(
         content="Autenticação necessária.",
         status_code=401,
-        headers={"WWW-Authenticate": 'Basic realm="IA Legal"'},
+        headers={"WWW-Authenticate": 'Basic realm="IAgora, profe?"'},
     )
 
 

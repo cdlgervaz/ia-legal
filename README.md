@@ -1,4 +1,4 @@
-# IA Legal - Acervo inteligente de Políticas Educacionais
+# IAgora, profe? — Acervo inteligente de Políticas Educacionais
 
 Ferramenta de busca e estudo de **leis, bases curriculares, pareceres e documentos
 orientadores da educação brasileira**, pensada para professores e estudantes de licenciatura

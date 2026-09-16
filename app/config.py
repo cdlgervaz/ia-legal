@@ -14,7 +14,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "IA Legal - Políticas Educacionais"
+    app_name: str = "IAgora, profe?"
     data_dir: Path = BASE_DIR / "data"
     host: str = "127.0.0.1"
     port: int = 8000
