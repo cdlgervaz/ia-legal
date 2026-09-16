@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IA Legal - Legislação de Tecnologia</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">IAL</div>
+      <div>
+        <h1>IA Legal</h1>
+        <p>Busca e acompanhamento de legislação brasileira de tecnologia para aulas, artigos e pesquisas</p>
+      </div>
+    </div>
+    <div class="status-badge" id="status-badge">
+      <span class="dot off" id="status-dot"></span><span id="status-text">Carregando...</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="buscar" class="active">Buscar legislação</button>
+    <button data-tab="perguntar">Perguntar à IA</button>
+    <button data-tab="acompanhar">Acompanhar andamento</button>
+    <button data-tab="config">Configurações</button>
+  </nav>
+
+  <main>
+    <section id="tab-buscar" class="tab-panel active">
+      <div class="card">
+        <form id="search-form" class="search-bar">
+          <input id="search-input" type="text" placeholder="Ex.: inteligência artificial, proteção de dados, cibersegurança, educação digital..." autocomplete="off" />
+          <button class="btn" type="submit">Buscar</button>
+        </form>
+        <div class="filters">
+          <label>Casa
+            <select id="f-casa">
+              <option value="">Todas</option>
+              <option value="Câmara">Câmara</option>
+              <option value="Senado">Senado</option>
+            </select>
+          </label>
+          <label>Tipo
+            <select id="f-tipo">
+              <option value="">Todos</option>
+              <option value="PL">PL</option>
+              <option value="PEC">PEC</option>
+              <option value="PLP">PLP</option>
+              <option value="MPV">MPV</option>
+            </select>
+          </label>
+          <label>Ano de
+            <input id="f-ano-de" type="number" min="1988" max="2100" placeholder="2019" />
+          </label>
+          <label>Ano até
+            <input id="f-ano-ate" type="number" min="1988" max="2100" placeholder="2026" />
+          </label>
+          <label>Resultados
+            <select id="f-limit">
+              <option>5</option>
+              <option selected>8</option>
+              <option>15</option>
+              <option>30</option>
+            </select>
+          </label>
+        </div>
+        <p class="hint" id="search-modo"></p>
+      </div>
+      <div id="search-results" class="results"></div>
+    </section>
+
+    <section id="tab-perguntar" class="tab-panel">
+      <div class="card">
+        <div id="chat-window" class="chat-window">
+          <div class="msg assistant">Olá. Faça uma pergunta sobre a legislação brasileira de tecnologia. Exemplos:
+- "O que o Marco Legal da IA propõe?"
+- "Como está a tramitação dos projetos sobre proteção de dados?"
+- "Quais projetos tratam de educação digital?"
+- "Resuma as propostas sobre cibersegurança."</div>
+        </div>
+        <form id="chat-form" class="chat-input">
+          <textarea id="chat-input" placeholder="Escreva sua pergunta..." rows="1"></textarea>
+          <button class="btn" type="submit" id="chat-send">Perguntar</button>
+        </form>
+        <p class="hint" id="chat-hint"></p>
+      </div>
+    </section>
+
+    <section id="tab-acompanhar" class="tab-panel">
+      <div class="card">
+        <h2 style="margin-top:0">Acompanhamento da tramitação</h2>
+        <p class="hint">Lista as proposições indexadas, mais recentes primeiro, com a situação atual.</p>
+        <div class="filters">
+          <label>Casa
+            <select id="a-casa">
+              <option value="">Todas</option>
+              <option value="Câmara">Câmara</option>
+              <option value="Senado">Senado</option>
+            </select>
+          </label>
+          <label>Ano
+            <input id="a-ano" type="number" min="1988" max="2100" placeholder="2024" />
+          </label>
+          <label>Filtrar ementa
+            <input id="a-busca" type="text" placeholder="ex.: dados" />
+          </label>
+          <label>&nbsp;
+            <button class="btn secondary" id="a-atualizar" type="button">Atualizar lista</button>
+          </label>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Proposição</th><th>Casa</th><th>Ementa</th><th>Situação atual</th><th>Órgão</th><th></th></tr>
+          </thead>
+          <tbody id="a-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tab-config" class="tab-panel">
+      <div class="card">
+        <h2 style="margin-top:0">Sincronizar base legislativa</h2>
+        <p class="hint">Busca proposições de tecnologia nas APIs oficiais da Câmara e do Senado, filtra por tema e indexa para busca semântica.</p>
+        <div class="field-grid">
+          <label>Anos (separados por vírgula)
+            <input id="s-anos" type="text" placeholder="2024, 2023, 2022" />
+          </label>
+          <label>Tipos (separados por vírgula)
+            <input id="s-tipos" type="text" value="PL, PEC, PLP, MPV" />
+          </label>
+          <label>Máx. por ano
+            <input id="s-max" type="number" value="60" min="1" max="2000" />
+          </label>
+        </div>
+        <div class="checkbox-row">
+          <label><input type="checkbox" id="s-camara" checked /> Câmara dos Deputados</label>
+          <label><input type="checkbox" id="s-senado" checked /> Senado Federal</label>
+          <label><input type="checkbox" id="s-tram" checked /> Buscar tramitações</label>
+          <label><input type="checkbox" id="s-com" checked /> Incluir tema Comunicações</label>
+        </div>
+        <button class="btn" id="s-iniciar" type="button">Iniciar sincronização</button>
+        <button class="btn secondary" id="s-status" type="button">Ver status</button>
+        <div id="s-progress"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2 style="margin-top:0">Estado do sistema</h2>
+        <div id="config-info" class="hint">Carregando...</div>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close" type="button">x</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <footer>Dados das APIs de Dados Abertos da Câmara dos Deputados e do Senado Federal. Ferramenta de apoio à pesquisa; confira sempre o texto oficial.</footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

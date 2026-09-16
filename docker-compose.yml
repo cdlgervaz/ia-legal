@@ -1,0 +1,13 @@
+services:
+  ialegal:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ialegal-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  ialegal-data:
