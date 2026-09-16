@@ -1,8 +1,8 @@
 # Créditos e autoria
 
 **Projeto:** IAgora, profe? — Acervo inteligente de Políticas Educacionais
-**Responsável:** [NOME DA PESSOA OU EQUIPE RESPONSÁVEL] — [INSTITUIÇÃO, SE HOUVER]
-**Contato:** [E-MAIL DE CONTATO]
+**Autoria:** Camila Gervaz
+**Contato:** cgervaz@proton.me
 **Versão:** em desenvolvimento (fase de testes)
 
 Ferramenta de apoio ao estudo e à pesquisa em Políticas Educacionais: reúne leis, pareceres do
@@ -43,7 +43,7 @@ protegidos.
 
 Se você usar este acervo em trabalho acadêmico, aula, artigo ou material didático, cite a fonte:
 
-> [SOBRENOME, Nome / EQUIPE]. **IAgora, profe? — Acervo inteligente de Políticas Educacionais**.
+> GERVAZ, Camila. **IAgora, profe? — Acervo inteligente de Políticas Educacionais**.
 > [Ano]. Disponível em: [URL]. Acesso em: [data].
 
 Ao citar um documento específico, cite também a **norma original** indicada na resposta (por
@@ -52,10 +52,15 @@ nº 15/2026"), pois a fonte primária é sempre a oficial.
 
 ## Licença
 
-Este trabalho está licenciado sob **Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0
-Internacional (CC BY-NC-SA 4.0)**, salvo o software e as dependências, que mantêm suas próprias
-licenças. Você pode copiar, distribuir e adaptar o conteúdo, desde que **cite a fonte**, **não use
-para fins comerciais** e **compartilhe as adaptações sob a mesma licença**.
+Copyright (c) Camila Gervaz. **Todos os direitos reservados**, salvo o software e as dependências,
+que mantêm suas próprias licenças.
+
+Este trabalho está licenciado sob **Creative Commons Atribuição-NãoComercial-SemDerivadas 4.0
+Internacional (CC BY-NC-ND 4.0)**. Você pode **copiar e distribuir** o conteúdo **sem alterações**
+e **apenas para fins não comerciais**, desde que **cite a autoria**. **Não é permitido modificar,
+adaptar ou criar obras derivadas** — pelo menos por ora.
 
 Texto integral da licença: arquivo [`LICENSE`](LICENSE) ou
-https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.pt
+https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.pt
+
+Privacidade e tratamento de dados: ver [`POLITICA_DE_PRIVACIDADE.md`](POLITICA_DE_PRIVACIDADE.md).

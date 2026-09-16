@@ -1,6 +1,7 @@
 # Termos de Uso
 
 **Projeto:** IAgora, profe? — Acervo inteligente de Políticas Educacionais
+**Autoria:** Camila Gervaz — cgervaz@proton.me
 **Situação:** versão em desenvolvimento (**fase de testes**)
 
 Ao usar esta ferramenta, você concorda com os termos abaixo.
@@ -20,7 +21,7 @@ autorização prévia e expressa da pessoa ou equipe responsável.
 
 Ao utilizar o acervo, as respostas ou os documentos obtidos, **cite a fonte**:
 
-> [SOBRENOME, Nome / EQUIPE]. **IAgora, profe? — Acervo inteligente de Políticas Educacionais**.
+> GERVAZ, Camila. **IAgora, profe? — Acervo inteligente de Políticas Educacionais**.
 > [Ano]. Disponível em: [URL]. Acesso em: [data].
 
 Ao citar conteúdo de um documento específico, cite também a **norma original** indicada na
@@ -40,13 +41,16 @@ texto oficial e **não constituem aconselhamento jurídico**. Confira sempre a f
   **provedor de modelo de linguagem** (serviço externo compatível ou execução local). Evite
   compartilhar informações confidenciais.
 - Registros técnicos de acesso podem ser mantidos para fins de segurança e melhoria.
+- Detalhes completos em [`POLITICA_DE_PRIVACIDADE.md`](POLITICA_DE_PRIVACIDADE.md).
 
 ## 6. Propriedade intelectual
 
 Os **textos de leis e atos oficiais** não são protegidos por direitos autorais (Lei nº 9.610/1998,
 art. 8º, IV). Já a **compilação, a organização dos dados, o software e a interface** são
-protegidos e licenciados sob **CC BY-NC-SA 4.0** (ver `LICENSE` e `CREDITOS.md`). Os componentes
-de terceiros mantêm suas próprias licenças.
+protegidos. Todo o conteúdo autoral é disponibilizado sob **CC BY-NC-ND 4.0**: permitida a cópia e
+a distribuição **sem alterações**, **sem fins comerciais** e **com citação da autoria**. **Não é
+permitido modificar, adaptar ou criar obras derivadas** — pelo menos por ora. Os componentes de
+terceiros mantêm suas próprias licenças. Ver `LICENSE` e `CREDITOS.md`.
 
 ## 7. Garantias e responsabilidade
 
@@ -61,4 +65,4 @@ neste repositório.
 
 ## 9. Contato
 
-Dúvidas, correções, pedidos de uso comercial ou de parceria: [E-MAIL DE CONTATO].
+Dúvidas, correções, pedidos de uso comercial ou de parceria: cgervaz@proton.me.

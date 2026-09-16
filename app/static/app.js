@@ -782,6 +782,16 @@ function fecharSobre() {
   if (el) el.classList.add("hidden");
 }
 
+function abrirPrivacidade() {
+  const el = $("#privacidade");
+  if (el) el.classList.remove("hidden");
+}
+
+function fecharPrivacidade() {
+  const el = $("#privacidade");
+  if (el) el.classList.add("hidden");
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
     botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
@@ -863,6 +873,20 @@ function ligarEventos() {
   if (sobre) {
     sobre.addEventListener("click", (evento) => {
       if (evento.target.id === "sobre") fecharSobre();
+    });
+  }
+  ["#abrir-privacidade", "#sobre-privacidade"].forEach((sel) => {
+    const botao = $(sel);
+    if (botao) botao.addEventListener("click", () => abrirPrivacidade());
+  });
+  const privClose = $("#privacidade-close");
+  if (privClose) privClose.addEventListener("click", () => fecharPrivacidade());
+  const privFechar = $("#privacidade-fechar");
+  if (privFechar) privFechar.addEventListener("click", () => fecharPrivacidade());
+  const priv = $("#privacidade");
+  if (priv) {
+    priv.addEventListener("click", (evento) => {
+      if (evento.target.id === "privacidade") fecharPrivacidade();
     });
   }
   const fecharAviso = $("#fechar-aviso");

@@ -279,7 +279,7 @@
       </div>
 
       <h3>Autoria</h3>
-      <p><strong>IAgora, profe? — Acervo inteligente de Políticas Educacionais</strong>. Responsável: [NOME DA PESSOA OU EQUIPE RESPONSÁVEL] — [INSTITUIÇÃO]. Contato: [E-MAIL].</p>
+      <p><strong>IAgora, profe? — Acervo inteligente de Políticas Educacionais</strong>. Autoria: <strong>Camila Gervaz</strong>. Contato: cgervaz@proton.me.</p>
 
       <h3>Inteligência artificial e modelos utilizados</h3>
       <p>As respostas são produzidas por modelos de linguagem de código aberto, com base nos documentos indexados:</p>
@@ -295,14 +295,39 @@
 
       <h3>Citação</h3>
       <p>Ao utilizar, <strong>cite a fonte</strong>:<br />
-        [SOBRENOME, Nome / EQUIPE]. <em>IAgora, profe? — Acervo inteligente de Políticas Educacionais</em>. [Ano]. Disponível em: [URL]. Acesso em: [data].</p>
+        GERVAZ, Camila. <em>IAgora, profe? — Acervo inteligente de Políticas Educacionais</em>. [Ano]. Disponível em: [URL]. Acesso em: [data].</p>
 
       <h3>Licença</h3>
-      <p>Conteúdo sob <strong>Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 (CC BY-NC-SA 4.0)</strong>: você pode copiar, distribuir e adaptar, desde que cite a fonte, não use comercialmente e compartilhe as adaptações sob a mesma licença. Textos de leis e atos oficiais não são protegidos (Lei nº 9.610/1998, art. 8º, IV). O software e as dependências mantêm suas próprias licenças.</p>
+      <p>© Camila Gervaz. <strong>Todos os direitos reservados</strong>, exceto o conteúdo autoral, licenciado sob <strong>Creative Commons Atribuição-NãoComercial-SemDerivadas 4.0 (CC BY-NC-ND 4.0)</strong>: é permitido <strong>copiar e distribuir sem alterações</strong>, <strong>apenas para fins não comerciais</strong> e <strong>com citação da autoria</strong>. <strong>Não é permitido modificar, adaptar ou criar obras derivadas</strong> — pelo menos por ora. Textos de leis e atos oficiais não são protegidos (Lei nº 9.610/1998, art. 8º, IV). O software e as dependências mantêm suas próprias licenças.</p>
 
-      <p class="guia-rodape">Detalhes completos nos arquivos <code>CREDITOS.md</code> e <code>TERMOS_DE_USO.md</code> do repositório.</p>
+      <p class="guia-rodape">Detalhes completos nos arquivos <code>CREDITOS.md</code>, <code>TERMOS_DE_USO.md</code> e <code>POLITICA_DE_PRIVACIDADE.md</code> do repositório.</p>
       <div class="guia-acoes">
+        <button class="btn secondary" id="sobre-privacidade" type="button">Política de Privacidade</button>
         <button class="btn" id="sobre-fechar" type="button">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="privacidade" class="modal hidden">
+    <div class="modal-content onboarding">
+      <button class="modal-close" id="privacidade-close" type="button">x</button>
+      <div class="guia-cabecalho">
+        <div class="guia-logo">IA</div>
+        <h2>Política de Privacidade</h2>
+        <p>Como tratamos (e como não tratamos) os seus dados, conforme a LGPD.</p>
+      </div>
+      <ul class="guia-passos">
+        <li><strong>Sem cadastro.</strong> Não criamos contas e não pedimos nome, e-mail ou CPF.</li>
+        <li><strong>Sem dados pessoais.</strong> Não insira dados pessoais, sensíveis ou de terceiros nas perguntas. Não usamos os textos para publicidade.</li>
+        <li><strong>Para que o texto é usado.</strong> A sua pergunta é usada apenas para buscar documentos e gerar a resposta.</li>
+        <li><strong>Compartilhamento com a IA.</strong> Se a ferramenta usar um serviço externo de IA, a pergunta e trechos de documentos podem ser enviados a esse provedor. No modelo local (Ollama), nada sai do computador.</li>
+        <li><strong>Registros técnicos.</strong> O servidor/hospedagem pode manter endereço IP, data/hora e navegador para segurança e diagnóstico.</li>
+        <li><strong>Armazenamento local.</strong> Usamos apenas o armazenamento do navegador para lembrar preferências simples. Sem cookies de rastreamento.</li>
+        <li><strong>Seus direitos (LGPD).</strong> Você pode pedir confirmação, acesso, correção ou eliminação de dados pelo contato abaixo.</li>
+      </ul>
+      <p class="guia-rodape">Texto completo em <code>POLITICA_DE_PRIVACIDADE.md</code>. Contato: cgervaz@proton.me.</p>
+      <div class="guia-acoes">
+        <button class="btn" id="privacidade-fechar" type="button">Entendi</button>
       </div>
     </div>
   </div>
@@ -310,9 +335,10 @@
   <footer>
     <p>Fontes: Planalto, MEC/CNE, Câmara dos Deputados, Senado Federal e Diário Oficial da União. Ferramenta de apoio ao estudo; confira sempre o texto oficial.</p>
     <p>
-      [NOME DA PESSOA OU EQUIPE RESPONSÁVEL] · Versão em testes, uso não comercial ·
-      Licença <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.pt-br" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> ·
-      <button class="btn ghost" id="abrir-sobre-2" type="button">Sobre e licença</button>
+      © Camila Gervaz · Versão em testes, uso não comercial · Licença
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.pt-br" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a> ·
+      <button class="btn ghost" id="abrir-sobre-2" type="button">Sobre e licença</button> ·
+      <button class="btn ghost" id="abrir-privacidade" type="button">Política de Privacidade</button>
     </p>
   </footer>
 
