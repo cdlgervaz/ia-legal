@@ -33,6 +33,36 @@ class ProposicaoDetalhe(Proposicao):
     atualizado_em: Optional[str] = None
 
 
+class DocumentoCatalogo(BaseModel):
+    id: str
+    titulo: str
+    tipo: str
+    ano: Optional[int] = None
+    orgao: str = ""
+    descricao: str = ""
+    url: str = ""
+    formato: str = "pdf"
+    temas: List[str] = Field(default_factory=list)
+    importavel: bool = True
+    observacao: Optional[str] = None
+
+
+class DocumentoInfo(DocumentoCatalogo):
+    importado: bool = False
+    chunks: int = 0
+    paginas: int = 0
+    importado_em: Optional[str] = None
+    arquivo: Optional[str] = None
+
+
+class TrechoDocumento(BaseModel):
+    documento_id: str
+    titulo: str = ""
+    pagina: Optional[int] = None
+    trecho: str
+    posicao: int = 0
+
+
 class SearchRequest(BaseModel):
     query: str
     limit: int = 8
@@ -40,12 +70,18 @@ class SearchRequest(BaseModel):
     tipo: Optional[str] = None
     ano_de: Optional[int] = None
     ano_ate: Optional[int] = None
+    tema: Optional[str] = None
+    documento_id: Optional[str] = None
 
 
 class SearchHit(BaseModel):
     proposicao: Proposicao
     score: float
     trecho: Optional[str] = None
+    origem: str = "proposicao"
+    documento_id: Optional[str] = None
+    titulo: Optional[str] = None
+    pagina: Optional[int] = None
 
 
 class SearchResponse(BaseModel):
@@ -62,6 +98,8 @@ class ChatRequest(BaseModel):
     tipo: Optional[str] = None
     ano_de: Optional[int] = None
     ano_ate: Optional[int] = None
+    tema: Optional[str] = None
+    documento_id: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
@@ -71,19 +109,33 @@ class ChatResponse(BaseModel):
     fontes: List[SearchHit] = Field(default_factory=list)
 
 
+class ImportRequest(BaseModel):
+    ids: List[str] = Field(default_factory=list)
+    forcar: bool = False
+    baixar: bool = True
+
+
 class SyncRequest(BaseModel):
     camara: bool = True
     senado: bool = True
+    cne: bool = True
+    diario_oficial: bool = True
     anos: List[int] = Field(default_factory=list)
     tipos: List[str] = Field(default_factory=lambda: ["PL", "PEC", "PLP", "MPV"])
     max_itens_por_ano: int = 60
     buscar_tramitacoes: bool = True
     incluir_comunicacoes: bool = True
+    cne_max: int = 200
+    cne_extrair_texto: bool = True
+    dou_paginas: int = 3
+    dou_consultas: List[str] = Field(default_factory=list)
 
 
 class SyncResponse(BaseModel):
     camara: int = 0
     senado: int = 0
+    cne: int = 0
+    diario_oficial: int = 0
     indexados: int = 0
     duracao_segundos: float = 0.0
     mensagens: List[str] = Field(default_factory=list)

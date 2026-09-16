@@ -14,8 +14,16 @@ services:
       - key: LLM_PROVIDER
         value: openai
       - key: LLM_BASE_URL
-        value: https://api.groq.com/openai/v1
+        value: https://openrouter.ai/api/v1
       - key: LLM_MODEL
-        value: llama-3.3-70b-versatile
+        value: nvidia/nemotron-3-super-120b-a12b:free
+      - key: LLM_MODEL_FALLBACKS
+        value: z-ai/glm-5.2:free,google/gemma-4-31b-it:free,nvidia/nemotron-3.5-lightning:free
+      - key: LLM_MAX_TOKENS
+        value: "800"
       - key: LLM_API_KEY
+        sync: false
+      - key: APP_USER
+        value: professor
+      - key: APP_PASSWORD
         sync: false

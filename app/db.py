@@ -47,11 +47,43 @@ CREATE TABLE IF NOT EXISTS sync_log (
     inseridos INTEGER,
     detalhe TEXT
 );
+
+CREATE TABLE IF NOT EXISTS documentos (
+    id TEXT PRIMARY KEY,
+    titulo TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    ano INTEGER,
+    orgao TEXT,
+    url TEXT,
+    temas TEXT,
+    arquivo TEXT,
+    chunks INTEGER DEFAULT 0,
+    paginas INTEGER DEFAULT 0,
+    importado_em TEXT
+);
+
+CREATE TABLE IF NOT EXISTS chunks (
+    id TEXT PRIMARY KEY,
+    documento_id TEXT NOT NULL,
+    ordem INTEGER NOT NULL,
+    pagina INTEGER,
+    texto TEXT NOT NULL,
+    normalizado TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_chunks_doc ON chunks(documento_id);
 """
 
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+STOPWORDS = {
+    "que", "com", "para", "dos", "das", "uma", "por", "sobre", "como", "mais",
+    "aos", "ser", "sao", "pela", "pelo", "entre", "seu", "sua", "seus", "suas",
+    "nao", "tem", "foi", "era", "esta", "este", "isso", "aquilo", "todos", "todas",
+    "qual", "quais", "pode", "deve", "onde", "quando", "porque", "entao",
+}
 
 
 class Database:
@@ -276,12 +308,16 @@ class Database:
             ultimo = conn.execute(
                 "SELECT MAX(atualizado_em) AS u FROM proposicoes"
             ).fetchone()["u"]
+            documentos = conn.execute("SELECT COUNT(*) AS c FROM documentos").fetchone()["c"]
+            chunks = conn.execute("SELECT COUNT(*) AS c FROM chunks").fetchone()["c"]
         return {
             "total": total,
             "por_casa": por_casa,
             "por_tipo": por_tipo,
             "por_ano": por_ano,
             "atualizado_em": ultimo,
+            "documentos": documentos,
+            "documentos_chunks": chunks,
         }
 
     def log_sync(self, fonte: str, inseridos: int, detalhe: str = "") -> None:
@@ -290,6 +326,180 @@ class Database:
                 "INSERT INTO sync_log (executado_em, fonte, inseridos, detalhe) VALUES (?, ?, ?, ?)",
                 (_now(), fonte, inseridos, detalhe),
             )
+
+    def upsert_documento(self, doc: dict) -> None:
+        with self.connect() as conn:
+            conn.execute(
+                """
+                INSERT INTO documentos
+                    (id, titulo, tipo, ano, orgao, url, temas, arquivo, chunks, paginas, importado_em)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(id) DO UPDATE SET
+                    titulo=excluded.titulo,
+                    tipo=excluded.tipo,
+                    ano=excluded.ano,
+                    orgao=excluded.orgao,
+                    url=excluded.url,
+                    temas=excluded.temas,
+                    arquivo=excluded.arquivo,
+                    chunks=excluded.chunks,
+                    paginas=excluded.paginas,
+                    importado_em=excluded.importado_em
+                """,
+                (
+                    doc["id"],
+                    doc.get("titulo", ""),
+                    doc.get("tipo", ""),
+                    doc.get("ano"),
+                    doc.get("orgao"),
+                    doc.get("url"),
+                    json.dumps(doc.get("temas") or [], ensure_ascii=False),
+                    doc.get("arquivo"),
+                    int(doc.get("chunks") or 0),
+                    int(doc.get("paginas") or 0),
+                    doc.get("importado_em") or _now(),
+                ),
+            )
+
+    def get_documento(self, documento_id: str) -> Optional[dict]:
+        with self.connect() as conn:
+            row = conn.execute(
+                "SELECT * FROM documentos WHERE id = ?", (documento_id,)
+            ).fetchone()
+        return self._row_to_documento(row) if row else None
+
+    def list_documentos(self) -> List[dict]:
+        with self.connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM documentos ORDER BY ano DESC, titulo"
+            ).fetchall()
+        return [self._row_to_documento(r) for r in rows]
+
+    def _row_to_documento(self, row: sqlite3.Row) -> dict:
+        return {
+            "id": row["id"],
+            "titulo": row["titulo"],
+            "tipo": row["tipo"],
+            "ano": row["ano"],
+            "orgao": row["orgao"],
+            "url": row["url"],
+            "temas": json.loads(row["temas"]) if row["temas"] else [],
+            "arquivo": row["arquivo"],
+            "chunks": row["chunks"],
+            "paginas": row["paginas"],
+            "importado_em": row["importado_em"],
+        }
+
+    def delete_chunks(self, documento_id: str) -> None:
+        with self.connect() as conn:
+            conn.execute("DELETE FROM chunks WHERE documento_id = ?", (documento_id,))
+
+    def insert_chunks(self, documento_id: str, itens: List[dict]) -> int:
+        if not itens:
+            return 0
+        with self.connect() as conn:
+            conn.executemany(
+                """
+                INSERT OR REPLACE INTO chunks
+                    (id, documento_id, ordem, pagina, texto, normalizado)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        f"{documento_id}#{item['ordem']:05d}",
+                        documento_id,
+                        item["ordem"],
+                        item.get("pagina"),
+                        item["texto"],
+                        item["normalizado"],
+                    )
+                    for item in itens
+                ],
+            )
+        return len(itens)
+
+    def chunk_count(self, documento_id: str) -> int:
+        with self.connect() as conn:
+            row = conn.execute(
+                "SELECT COUNT(*) AS c FROM chunks WHERE documento_id = ?", (documento_id,)
+            ).fetchone()
+        return int(row["c"]) if row else 0
+
+    def get_chunks(
+        self, documento_id: str, limit: Optional[int] = None, offset: int = 0
+    ) -> List[dict]:
+        sql = "SELECT * FROM chunks WHERE documento_id = ? ORDER BY ordem"
+        params: List = [documento_id]
+        if limit is not None:
+            sql += " LIMIT ? OFFSET ?"
+            params.extend([limit, offset])
+        with self.connect() as conn:
+            rows = conn.execute(sql, params).fetchall()
+        return [self._row_to_chunk(r) for r in rows]
+
+    def get_chunks_by_ids(self, ids: List[str]) -> List[dict]:
+        if not ids:
+            return []
+        placeholders = ",".join("?" for _ in ids)
+        with self.connect() as conn:
+            rows = conn.execute(
+                f"SELECT * FROM chunks WHERE id IN ({placeholders})", ids
+            ).fetchall()
+        by_id = {r["id"]: self._row_to_chunk(r) for r in rows}
+        return [by_id[i] for i in ids if i in by_id]
+
+    def buscar_chunks(
+        self, termo: str, documento_id: Optional[str] = None, limit: int = 20
+    ) -> List[dict]:
+        from .texto import normalizar
+
+        tokens = [
+            t
+            for t in normalizar(termo).split()
+            if len(t) >= 3 and t not in STOPWORDS
+        ]
+        if not tokens:
+            return []
+        score = " + ".join(
+            "CASE WHEN normalizado LIKE ? THEN 1 ELSE 0 END" for _ in tokens
+        )
+        params: List = [f"%{t}%" for t in tokens]
+        sql = f"SELECT *, ({score}) AS relevancia FROM chunks WHERE ({score}) > 0"
+        params = params + params
+        if documento_id:
+            sql += " AND documento_id = ?"
+            params.append(documento_id)
+        sql += " ORDER BY relevancia DESC, documento_id, ordem LIMIT ?"
+        params.append(limit)
+        with self.connect() as conn:
+            rows = conn.execute(sql, params).fetchall()
+        return [self._row_to_chunk(r) for r in rows]
+
+    def amostrar_chunks(self, documento_id: str, quantidade: int = 24) -> List[dict]:
+        total = self.chunk_count(documento_id)
+        if total == 0:
+            return []
+        if total <= quantidade:
+            return self.get_chunks(documento_id)
+        passo = max(1, total // quantidade)
+        with self.connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM chunks WHERE documento_id = ? AND ordem % ? = 0 ORDER BY ordem LIMIT ?",
+                (documento_id, passo, quantidade),
+            ).fetchall()
+        return [self._row_to_chunk(r) for r in rows]
+
+    def _row_to_chunk(self, row: sqlite3.Row) -> dict:
+        dados = {
+            "id": row["id"],
+            "documento_id": row["documento_id"],
+            "ordem": row["ordem"],
+            "pagina": row["pagina"],
+            "texto": row["texto"],
+        }
+        if "relevancia" in row.keys():
+            dados["relevancia"] = row["relevancia"]
+        return dados
 
 
 def _tokenize(text: str) -> List[str]:

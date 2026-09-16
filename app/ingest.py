@@ -9,7 +9,15 @@ from .db import Database
 from .keywords import is_tech, termos_encontrados
 from .models import SyncRequest, SyncResponse
 from .rag import get_rag_index
-from .sources import CamaraClient, SenadoClient, TEMA_CIENCIA_TECNOLOGIA, TEMA_COMUNICACOES
+from .sources import (
+    CamaraClient,
+    CneClient,
+    DouClient,
+    SenadoClient,
+    TEMA_CIENCIA_TECNOLOGIA,
+    TEMA_COMUNICACOES,
+)
+from .sources.dou import CONSULTAS_PADRAO, intervalo_padrao
 
 _sync_lock = threading.Lock()
 _sync_state = {
@@ -188,6 +196,89 @@ def sync_senado(
     return total
 
 
+def sync_cne(
+    db: Database,
+    rag,
+    progress: _Progress,
+    max_itens: int,
+    extrair_texto: bool,
+) -> int:
+    total = 0
+    with CneClient(
+        timeout=get_settings().http_timeout,
+        delay=0.2,
+        retries=get_settings().request_retries,
+    ) as client:
+        try:
+            itens = client.listar()
+        except RuntimeError:
+            itens = []
+        if max_itens and len(itens) > max_itens:
+            itens = itens[-max_itens:]
+        progress.fase(f"CNE: {len(itens)} pareceres relatados encontrados", "cne")
+        pares = []
+        for item in itens:
+            texto = ""
+            if extrair_texto:
+                try:
+                    texto = client.extrair_texto(item["url"], item["id"])
+                except RuntimeError:
+                    texto = ""
+            prop = client.normalize(item, texto)
+            db.upsert_proposicao(prop)
+            pares.append((prop, None, texto or None))
+            total += 1
+            progress.inc()
+            if len(pares) >= 20:
+                _flush_index(rag, pares)
+                pares = []
+        if pares:
+            _flush_index(rag, pares)
+    db.log_sync("cne", total)
+    return total
+
+
+def sync_dou(
+    db: Database,
+    rag,
+    progress: _Progress,
+    consultas: List[str],
+    paginas: int,
+    data_inicio: str,
+    data_fim: str,
+) -> int:
+    total = 0
+    consultas = consultas or CONSULTAS_PADRAO
+    with DouClient(
+        timeout=get_settings().http_timeout,
+        delay=0.3,
+        retries=get_settings().request_retries,
+    ) as client:
+        for termo in consultas:
+            try:
+                achados = client.buscar(termo, data_inicio, data_fim, paginas=paginas)
+            except RuntimeError:
+                continue
+            inseridos = 0
+            pares = []
+            for item in achados:
+                prop = client.normalize(item)
+                if prop is None:
+                    continue
+                db.upsert_proposicao(prop)
+                pares.append((prop, None))
+                total += 1
+                inseridos += 1
+                progress.inc()
+            if pares:
+                _flush_index(rag, pares)
+            progress.fase(
+                f"Diário Oficial '{termo}': {inseridos} atos relevantes", "dou"
+            )
+    db.log_sync("dou", total)
+    return total
+
+
 def run_sync(req: SyncRequest, progress_cb: Optional[Callable] = None) -> SyncResponse:
     settings = get_settings()
     db = Database(settings.db_path)
@@ -229,6 +320,27 @@ def run_sync(req: SyncRequest, progress_cb: Optional[Callable] = None) -> SyncRe
                 req.tipos,
                 req.max_itens_por_ano,
                 req.buscar_tramitacoes,
+            )
+        if req.cne:
+            resposta.cne = sync_cne(
+                db,
+                rag,
+                progress,
+                req.cne_max,
+                req.cne_extrair_texto,
+            )
+        if req.diario_oficial:
+            data_inicio, data_fim = intervalo_padrao(
+                max(len(anos), 3) if anos else 7
+            )
+            resposta.diario_oficial = sync_dou(
+                db,
+                rag,
+                progress,
+                req.dou_consultas,
+                req.dou_paginas,
+                data_inicio,
+                data_fim,
             )
         resposta.indexados = rag.count()
     finally:

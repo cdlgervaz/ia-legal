@@ -5,9 +5,15 @@ import chromadb
 
 from .config import get_settings
 from .db import Database
-from .models import Proposicao, SearchHit
+from .models import DocumentoCatalogo, Proposicao, SearchHit
+from .temas import classificar
+from .texto import sem_acento
 
 COLLECTION_NAME = "proposicoes_tech"
+
+
+def _sem_acento(texto: str) -> str:
+    return sem_acento(texto).lower()
 
 
 class RagIndex:
@@ -17,6 +23,7 @@ class RagIndex:
         self._client: Optional[chromadb.ClientAPI] = None
         self._collection = None
         self._embedding_error: Optional[str] = None
+        self._temas_cache: dict = {}
 
     def _embedding_function(self):
         provider = self.settings.resolved_embedding_provider()
@@ -52,7 +59,9 @@ class RagIndex:
             self._embedding_error = str(exc)
             return 0
 
-    def build_document(self, prop: Proposicao, tramitacoes: Optional[List] = None) -> str:
+    def build_document(
+        self, prop: Proposicao, tramitacoes: Optional[List] = None, texto: Optional[str] = None
+    ) -> str:
         partes = [f"{prop.tipo} {prop.numero}/{prop.ano} ({prop.casa})"]
         partes.append(f"Ementa: {prop.ementa}")
         if prop.autor:
@@ -63,6 +72,8 @@ class RagIndex:
             partes.append(f"Situação atual: {prop.situacao}")
         if prop.orgao:
             partes.append(f"Órgão atual: {prop.orgao}")
+        if texto:
+            partes.append(f"Texto: {texto}")
         if tramitacoes:
             linhas = []
             for t in tramitacoes[-8:]:
@@ -76,10 +87,8 @@ class RagIndex:
                 partes.append("Movimentações recentes:\n" + "\n".join(linhas))
         return "\n".join(partes)
 
-    def index_proposicao(self, prop: Proposicao, tramitacoes: Optional[List] = None) -> None:
-        collection = self._get_collection()
-        documento = self.build_document(prop, tramitacoes)
-        metadata = {
+    def _metadata_proposicao(self, prop: Proposicao) -> dict:
+        return {
             "casa": prop.casa,
             "tipo": prop.tipo,
             "numero": prop.numero,
@@ -87,30 +96,71 @@ class RagIndex:
             "situacao": prop.situacao or "",
             "url": prop.url or "",
             "temas": "; ".join(prop.temas),
+            "origem": "proposicao",
         }
-        collection.upsert(ids=[prop.id], documents=[documento], metadatas=[metadata])
+
+    def index_proposicao(
+        self,
+        prop: Proposicao,
+        tramitacoes: Optional[List] = None,
+        texto: Optional[str] = None,
+    ) -> None:
+        collection = self._get_collection()
+        documento = self.build_document(prop, tramitacoes, texto)
+        collection.upsert(
+            ids=[prop.id], documents=[documento], metadatas=[self._metadata_proposicao(prop)]
+        )
 
     def index_many(self, itens: List[tuple]) -> int:
         collection = self._get_collection()
         if not itens:
             return 0
         ids, documentos, metadatas = [], [], []
-        for prop, tramitacoes in itens:
+        for item in itens:
+            prop, tramitacoes = item[0], item[1]
+            texto = item[2] if len(item) > 2 else None
             ids.append(prop.id)
-            documentos.append(self.build_document(prop, tramitacoes))
-            metadatas.append(
-                {
-                    "casa": prop.casa,
-                    "tipo": prop.tipo,
-                    "numero": prop.numero,
-                    "ano": prop.ano,
-                    "situacao": prop.situacao or "",
-                    "url": prop.url or "",
-                    "temas": "; ".join(prop.temas),
-                }
-            )
+            documentos.append(self.build_document(prop, tramitacoes, texto))
+            metadatas.append(self._metadata_proposicao(prop))
         collection.upsert(ids=ids, documents=documentos, metadatas=metadatas)
         return len(ids)
+
+    def delete_chunks(self, documento_id: str) -> None:
+        try:
+            collection = self._get_collection()
+            collection.delete(where={"documento_id": documento_id})
+        except Exception as exc:
+            self._embedding_error = str(exc)
+
+    def index_chunks(self, item: DocumentoCatalogo, chunks: List[dict]) -> int:
+        collection = self._get_collection()
+        if not chunks:
+            return 0
+        temas = item.temas or classificar(" ".join(c["texto"] for c in chunks))
+        temas = [t for t in temas if t][:3]
+        total = 0
+        lote = 100
+        for inicio in range(0, len(chunks), lote):
+            ids, documentos, metadatas = [], [], []
+            for chunk in chunks[inicio : inicio + lote]:
+                ids.append(f"{item.id}#{chunk['ordem']:05d}")
+                documentos.append(f"{item.titulo} ({item.tipo}, {item.ano}).\n{chunk['texto']}")
+                metadata = {
+                    "origem": "documento",
+                    "documento_id": item.id,
+                    "titulo": item.titulo,
+                    "tipo": item.tipo,
+                    "ano": item.ano or 0,
+                    "orgao": item.orgao or "",
+                    "url": item.url or "",
+                    "pagina": chunk.get("pagina") or 0,
+                }
+                for indice in range(3):
+                    metadata[f"tema{indice + 1}"] = temas[indice] if indice < len(temas) else ""
+                metadatas.append(metadata)
+            collection.upsert(ids=ids, documents=documentos, metadatas=metadatas)
+            total += len(ids)
+        return total
 
     def _where(
         self,
@@ -118,6 +168,7 @@ class RagIndex:
         tipo: Optional[str],
         ano_de: Optional[int],
         ano_ate: Optional[int],
+        documento_id: Optional[str] = None,
     ) -> Optional[dict]:
         filtros: List[dict] = []
         if casa:
@@ -130,11 +181,50 @@ class RagIndex:
             filtros.append({"ano": {"$gte": ano_de}})
         elif ano_ate is not None:
             filtros.append({"ano": {"$lte": ano_ate}})
+        if documento_id:
+            filtros.append({"documento_id": documento_id})
         if not filtros:
             return None
         if len(filtros) == 1:
             return filtros[0]
         return {"$and": filtros}
+
+    def _temas_do_documento(self, documento_id: str) -> List[str]:
+        doc = self.db.get_documento(documento_id)
+        return doc["temas"] if doc else []
+
+    def _temas_da_proposicao(self, prop: Proposicao) -> List[str]:
+        if prop.id in self._temas_cache:
+            return self._temas_cache[prop.id]
+        temas = classificar(self.build_document(prop), maximo=4)
+        self._temas_cache[prop.id] = temas
+        return temas
+
+    def _hit_documento(
+        self, chunk: dict, titulo: str, score: float, consulta: str
+    ) -> SearchHit:
+        doc = self.db.get_documento(chunk["documento_id"]) or {}
+        prop = Proposicao(
+            id=chunk["documento_id"],
+            casa=doc.get("orgao") or "Documento",
+            tipo=doc.get("tipo") or "Documento",
+            numero="",
+            ano=doc.get("ano") or 0,
+            ementa=doc.get("titulo") or titulo,
+            url=doc.get("url"),
+            temas=doc.get("temas") or [],
+            fonte="documento",
+        )
+        trecho = self._snippet(chunk["texto"], consulta, largura=700) or chunk["texto"]
+        return SearchHit(
+            proposicao=prop,
+            score=score,
+            trecho=trecho,
+            origem="documento",
+            documento_id=chunk["documento_id"],
+            titulo=doc.get("titulo") or titulo,
+            pagina=chunk.get("pagina"),
+        )
 
     def search(
         self,
@@ -144,45 +234,99 @@ class RagIndex:
         tipo: Optional[str] = None,
         ano_de: Optional[int] = None,
         ano_ate: Optional[int] = None,
+        tema: Optional[str] = None,
+        documento_id: Optional[str] = None,
     ) -> tuple[List[SearchHit], str]:
-        if self.count() == 0:
-            return self._search_textual(query, limit, casa, tipo, ano_de, ano_ate), "textual"
-        try:
-            collection = self._get_collection()
-            result = collection.query(
-                query_texts=[query],
-                n_results=max(limit * 3, limit),
-                where=self._where(casa, tipo, ano_de, ano_ate),
-            )
-        except Exception as exc:
-            self._embedding_error = str(exc)
-            return self._search_textual(query, limit, casa, tipo, ano_de, ano_ate), "textual"
+        candidatos: List[SearchHit] = []
+        sem_ok = False
+        if self.count() > 0:
+            try:
+                collection = self._get_collection()
+                result = collection.query(
+                    query_texts=[query],
+                    n_results=min(max(limit * 6, 30), 200),
+                    where=self._where(casa, tipo, ano_de, ano_ate, documento_id),
+                )
+                candidatos = self._hits_do_resultado(result, query, tema)
+                sem_ok = True
+            except Exception as exc:
+                self._embedding_error = str(exc)
+        textuais = self._search_textual(
+            query, limit, casa, tipo, ano_de, ano_ate, tema, documento_id
+        )
+        combinados: dict = {}
+        for hit in candidatos + textuais:
+            if hit.origem == "documento":
+                chave = ("documento", hit.documento_id or "")
+            else:
+                chave = ("proposicao", hit.proposicao.id)
+            atual = combinados.get(chave)
+            if atual is None or hit.score > atual.score:
+                combinados[chave] = hit
+        selecionados = sorted(combinados.values(), key=lambda h: h.score, reverse=True)[:limit]
+        if not selecionados:
+            return [], "textual"
+        if sem_ok and candidatos and textuais:
+            modo = "hibrida"
+        elif sem_ok and candidatos:
+            modo = "semantica"
+        else:
+            modo = "textual"
+        return selecionados, modo
 
+    def _hits_do_resultado(self, result: dict, query: str, tema: Optional[str]) -> List[SearchHit]:
         ids = (result.get("ids") or [[]])[0]
         documentos = (result.get("documents") or [[]])[0]
         distancias = (result.get("distances") or [[]])[0]
-        ordem = list(dict.fromkeys(ids))
-        props = self.db.get_many(ordem)
-        by_id = {p.id: p for p in props}
+        metadatas = (result.get("metadatas") or [[]])[0]
+
+        ids_prop: List[str] = []
+        ids_chunk: List[str] = []
+        for item_id in dict.fromkeys(ids):
+            if "#" in item_id:
+                ids_chunk.append(item_id)
+            else:
+                ids_prop.append(item_id)
+
+        props = {p.id: p for p in self.db.get_many(ids_prop)}
+        chunks = {c["id"]: c for c in self.db.get_chunks_by_ids(ids_chunk)}
         doc_by_id = {i: d for i, d in zip(ids, documentos)}
         dist_by_id = {i: d for i, d in zip(ids, distancias)}
+        meta_by_id = {i: m for i, m in zip(ids, metadatas)}
 
-        hits: List[SearchHit] = []
-        for pid in ordem:
-            prop = by_id.get(pid)
-            if prop is None:
-                continue
-            distancia = dist_by_id.get(pid, 1.0)
-            hits.append(
-                SearchHit(
-                    proposicao=prop,
-                    score=round(max(0.0, 1.0 - float(distancia)), 4),
-                    trecho=doc_by_id.get(pid),
+        hits_prop: List[SearchHit] = []
+        hits_doc: List[SearchHit] = []
+        for item_id in dict.fromkeys(ids):
+            distancia = float(dist_by_id.get(item_id, 1.0))
+            score = round(max(0.0, 1.0 - distancia), 4)
+            if item_id in props:
+                prop = props[item_id]
+                if tema and tema not in self._temas_da_proposicao(prop):
+                    continue
+                hits_prop.append(
+                    SearchHit(
+                        proposicao=prop,
+                        score=score,
+                        trecho=self._snippet(doc_by_id.get(item_id), query),
+                    )
                 )
+                continue
+            chunk = chunks.get(item_id)
+            if chunk is None:
+                continue
+            if tema and tema not in self._temas_do_documento(chunk["documento_id"]):
+                continue
+            meta = meta_by_id.get(item_id) or {}
+            hits_doc.append(
+                self._hit_documento(chunk, str(meta.get("titulo") or ""), score, query)
             )
-        if not hits:
-            return self._search_textual(query, limit, casa, tipo, ano_de, ano_ate), "textual"
-        return hits[:limit], "semantica"
+
+        melhores: dict[str, SearchHit] = {}
+        for hit in hits_doc:
+            atual = melhores.get(hit.documento_id or "")
+            if atual is None or hit.score > atual.score:
+                melhores[hit.documento_id or ""] = hit
+        return hits_prop + list(melhores.values())
 
     def _search_textual(
         self,
@@ -192,20 +336,70 @@ class RagIndex:
         tipo: Optional[str],
         ano_de: Optional[int],
         ano_ate: Optional[int],
+        tema: Optional[str] = None,
+        documento_id: Optional[str] = None,
     ) -> List[SearchHit]:
-        props = self.db.buscar_textual(query, limit=limit * 3)
         hits: List[SearchHit] = []
-        for prop in props:
-            if casa and prop.casa != casa:
+        if not documento_id:
+            for prop in self.db.buscar_textual(query, limit=limit * 3):
+                if casa and prop.casa != casa:
+                    continue
+                if tipo and prop.tipo != tipo:
+                    continue
+                if ano_de is not None and prop.ano < ano_de:
+                    continue
+                if ano_ate is not None and prop.ano > ano_ate:
+                    continue
+                if tema and tema not in self._temas_da_proposicao(prop):
+                    continue
+                hits.append(SearchHit(proposicao=prop, score=0.45, trecho=self.build_document(prop)))
+        for chunk in self.db.buscar_chunks(query, documento_id=documento_id, limit=limit * 3):
+            if tema and tema not in self._temas_do_documento(chunk["documento_id"]):
                 continue
-            if tipo and prop.tipo != tipo:
+            relevancia = int(chunk.get("relevancia") or 1)
+            score = min(0.59, 0.35 + 0.08 * relevancia)
+            hits.append(self._hit_documento(chunk, "", score, query))
+        melhores: dict[str, SearchHit] = {}
+        for hit in hits:
+            if hit.origem == "documento":
+                chave = hit.documento_id or ""
+            else:
+                chave = hit.proposicao.id
+            atual = melhores.get(chave)
+            if atual is None or hit.score > atual.score:
+                melhores[chave] = hit
+        ordenados = sorted(melhores.values(), key=lambda h: h.score, reverse=True)
+        return ordenados[:limit]
+
+    def buscar_no_documento(
+        self, documento_id: str, termo: str, limit: int = 20, modo: str = "chave"
+    ) -> List[SearchHit]:
+        if modo == "semantica":
+            return self.search(termo, limit=limit, documento_id=documento_id)[0]
+        chunks = self.db.buscar_chunks(termo, documento_id=documento_id, limit=limit)
+        return [self._hit_documento(chunk, "", 0.0, termo) for chunk in chunks]
+
+    def _snippet(self, texto: Optional[str], query: str, largura: int = 340) -> Optional[str]:
+        if not texto:
+            return None
+        if len(texto) <= largura + 80:
+            return texto
+        normalizado = _sem_acento(texto)
+        melhor = -1
+        for termo in query.lower().split():
+            termo = _sem_acento(termo).strip()
+            if len(termo) < 4:
                 continue
-            if ano_de is not None and prop.ano < ano_de:
-                continue
-            if ano_ate is not None and prop.ano > ano_ate:
-                continue
-            hits.append(SearchHit(proposicao=prop, score=0.5, trecho=self.build_document(prop)))
-        return hits[:limit]
+            posicao = normalizado.find(termo)
+            if posicao >= 0 and (melhor < 0 or posicao < melhor):
+                melhor = posicao
+        if melhor < 0:
+            return texto[:largura].strip() + " ..."
+        inicio = max(0, melhor - largura // 3)
+        fim = min(len(texto), inicio + largura)
+        prefixo = "..." if inicio > 0 else ""
+        sufixo = " ..." if fim < len(texto) else ""
+        return f"{prefixo}{texto[inicio:fim].strip()}{sufixo}"
 
     def reset(self) -> None:
         try:

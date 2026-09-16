@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IA Legal - Legislação de Tecnologia</title>
+  <title>IA Legal - Políticas Educacionais</title>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
@@ -12,7 +12,7 @@
       <div class="logo">IAL</div>
       <div>
         <h1>IA Legal</h1>
-        <p>Busca e acompanhamento de legislação brasileira de tecnologia para aulas, artigos e pesquisas</p>
+        <p>Acervo inteligente de Políticas Educacionais: leis, BNCC, BNC, pareceres e documentos orientadores</p>
       </div>
     </div>
     <div class="status-badge" id="status-badge">
@@ -21,20 +21,28 @@
   </header>
 
   <nav class="tabs">
-    <button data-tab="buscar" class="active">Buscar legislação</button>
+    <button data-tab="buscar" class="active">Buscar</button>
     <button data-tab="perguntar">Perguntar à IA</button>
+    <button data-tab="documentos">Documentos</button>
     <button data-tab="acompanhar">Acompanhar andamento</button>
     <button data-tab="config">Configurações</button>
+    <a href="/letras">Letras-Espanhol ↗</a>
   </nav>
 
   <main>
     <section id="tab-buscar" class="tab-panel active">
       <div class="card">
         <form id="search-form" class="search-bar">
-          <input id="search-input" type="text" placeholder="Ex.: inteligência artificial, proteção de dados, cibersegurança, educação digital..." autocomplete="off" />
+          <input id="search-input" type="text" placeholder="Ex.: BNCC Computação, formação continuada, FUNDEB, IA na educação, gestão democrática..." autocomplete="off" />
           <button class="btn" type="submit">Buscar</button>
         </form>
         <div class="filters">
+          <label>Tema
+            <select id="f-tema"><option value="">Todos</option></select>
+          </label>
+          <label>Documento
+            <select id="f-documento"><option value="">Todos</option></select>
+          </label>
           <label>Casa
             <select id="f-casa">
               <option value="">Todas</option>
@@ -49,6 +57,7 @@
               <option value="PEC">PEC</option>
               <option value="PLP">PLP</option>
               <option value="MPV">MPV</option>
+              <option value="Parecer">Parecer</option>
             </select>
           </label>
           <label>Ano de
@@ -73,12 +82,21 @@
 
     <section id="tab-perguntar" class="tab-panel">
       <div class="card">
+        <div class="filters" style="margin-top:0">
+          <label>Tema
+            <select id="c-tema"><option value="">Todos</option></select>
+          </label>
+          <label>Documento
+            <select id="c-documento"><option value="">Todos</option></select>
+          </label>
+        </div>
+        <p class="hint" id="chat-filtro" style="margin-top:8px"></p>
         <div id="chat-window" class="chat-window">
-          <div class="msg assistant">Olá. Faça uma pergunta sobre a legislação brasileira de tecnologia. Exemplos:
-- "O que o Marco Legal da IA propõe?"
-- "Como está a tramitação dos projetos sobre proteção de dados?"
-- "Quais projetos tratam de educação digital?"
-- "Resuma as propostas sobre cibersegurança."</div>
+          <div class="msg assistant">Olá. Sou seu assistente de Políticas Educacionais. Posso explicar leis, bases curriculares e documentos orientadores com base no acervo. Exemplos:
+- "O que a BNCC Computação propõe para o ensino fundamental?"
+- "Como a LDB trata da formação docente?"
+- "O que diz a LGPD sobre dados de estudantes?"
+- "Quais as diferenças entre BNC-Formação e BNC-Formação Continuada?"</div>
         </div>
         <form id="chat-form" class="chat-input">
           <textarea id="chat-input" placeholder="Escreva sua pergunta..." rows="1"></textarea>
@@ -88,10 +106,37 @@
       </div>
     </section>
 
+    <section id="tab-documentos" class="tab-panel">
+      <div class="card">
+        <div class="filters" style="margin-top:0">
+          <label>Tema
+            <select id="d-tema"><option value="">Todos</option></select>
+          </label>
+          <label>Tipo
+            <select id="d-tipo"><option value="">Todos</option></select>
+          </label>
+          <label>Filtrar título
+            <input id="d-busca" type="text" placeholder="ex.: BNCC" />
+          </label>
+          <label>&nbsp;
+            <button class="btn secondary" id="d-atualizar" type="button">Atualizar lista</button>
+          </label>
+          <label>&nbsp;
+            <button class="btn" id="d-importar" type="button">Importar catálogo</button>
+          </label>
+        </div>
+        <p class="hint">Importe os documentos oficiais uma vez; depois basta consultar, buscar dentro do texto ou pedir resumos.</p>
+        <div id="d-status"></div>
+      </div>
+
+      <div id="d-detalhe" class="card doc-detail hidden"></div>
+      <div id="d-lista" class="doc-list"></div>
+    </section>
+
     <section id="tab-acompanhar" class="tab-panel">
       <div class="card">
         <h2 style="margin-top:0">Acompanhamento da tramitação</h2>
-        <p class="hint">Lista as proposições indexadas, mais recentes primeiro, com a situação atual.</p>
+        <p class="hint">Proposições capturadas pela sincronização, com a situação atual. Inclui o Marco Legal da IA (PL 2338/2023).</p>
         <div class="filters">
           <label>Casa
             <select id="a-casa">
@@ -104,7 +149,7 @@
             <input id="a-ano" type="number" min="1988" max="2100" placeholder="2024" />
           </label>
           <label>Filtrar ementa
-            <input id="a-busca" type="text" placeholder="ex.: dados" />
+            <input id="a-busca" type="text" placeholder="ex.: inteligência artificial" />
           </label>
           <label>&nbsp;
             <button class="btn secondary" id="a-atualizar" type="button">Atualizar lista</button>
@@ -123,8 +168,16 @@
 
     <section id="tab-config" class="tab-panel">
       <div class="card">
-        <h2 style="margin-top:0">Sincronizar base legislativa</h2>
-        <p class="hint">Busca proposições de tecnologia nas APIs oficiais da Câmara e do Senado, filtra por tema e indexa para busca semântica.</p>
+        <h2 style="margin-top:0">Importar documentos oficiais</h2>
+        <p class="hint">Baixa do catálogo (leis, BNCC, BNC, pareceres do CNE, PBIA/EBIA), divide em trechos e indexa para busca e perguntas.</p>
+        <button class="btn" id="cfg-importar" type="button">Importar todo o catálogo</button>
+        <button class="btn secondary" id="cfg-importar-status" type="button">Ver status</button>
+        <div id="cfg-importar-progresso"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2 style="margin-top:0">Sincronizar base legislativa (proposições)</h2>
+        <p class="hint">Busca proposições nas APIs oficiais da Câmara e do Senado, filtra por tema e indexa para busca semântica e acompanhamento.</p>
         <div class="field-grid">
           <label>Anos (separados por vírgula)
             <input id="s-anos" type="text" placeholder="2024, 2023, 2022" />
@@ -161,7 +214,7 @@
     </div>
   </div>
 
-  <footer>Dados das APIs de Dados Abertos da Câmara dos Deputados e do Senado Federal. Ferramenta de apoio à pesquisa; confira sempre o texto oficial.</footer>
+  <footer>Fontes: Planalto, MEC/CNE, Câmara dos Deputados e Senado Federal. Ferramenta de apoio ao estudo; confira sempre o texto oficial.</footer>
 
   <script src="/static/app.js"></script>
 </body>

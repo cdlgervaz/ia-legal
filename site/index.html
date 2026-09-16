@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letras-Espanhol nas universidades públicas do Brasil</title>
+  <meta name="description" content="Mapa interativo das universidades públicas brasileiras que ofertam Licenciatura em Letras com habilitação em Espanhol.">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="topo__interno">
+      <div class="topo__marca">
+        <span class="topo__selo">LE</span>
+        <div>
+          <h1>Letras com Espanhol nas universidades públicas</h1>
+          <p>Mapa interativo das licenciaturas em Letras com habilitação em Espanhol (simples ou dupla) nas universidades federais e estaduais do Brasil.</p>
+        </div>
+      </div>
+      <div class="busca">
+        <label class="sr-only" for="campo-busca">Buscar universidade, cidade ou curso</label>
+        <input id="campo-busca" type="search" placeholder="Buscar universidade, sigla, cidade ou curso…" autocomplete="off">
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="layout">
+    <section class="painel painel--mapa" aria-label="Mapa e resumo">
+      <div class="resumo" id="resumo"></div>
+
+      <div class="mapa-wrap">
+        <div class="mapa" id="mapa" aria-label="Mapa do Brasil"></div>
+        <div class="tooltip" id="tooltip" hidden></div>
+      </div>
+
+      <nav class="legenda" id="legenda" aria-label="Filtrar por região"></nav>
+      <p class="dica">Clique em uma região, em um estado do mapa ou em uma universidade para ver os detalhes.</p>
+    </section>
+
+    <section class="painel painel--lista" aria-label="Lista de universidades">
+      <div class="trilha" id="trilha"></div>
+
+      <div class="filtros" id="filtros" role="group" aria-label="Filtros">
+        <div class="filtros__grupo" data-grupo="hab">
+          <span class="filtros__rotulo">Habilitação</span>
+          <button class="chip is-ativo" data-filtro="hab" data-valor="todas">Todas</button>
+          <button class="chip" data-filtro="hab" data-valor="Espanhol">Espanhol (simples)</button>
+          <button class="chip" data-filtro="hab" data-valor="Português/Espanhol">Português/Espanhol (dupla)</button>
+          <button class="chip" data-filtro="hab" data-valor="outras">Outras duplas</button>
+        </div>
+        <div class="filtros__grupo" data-grupo="mod">
+          <span class="filtros__rotulo">Modalidade</span>
+          <button class="chip is-ativo" data-filtro="mod" data-valor="todas">Todas</button>
+          <button class="chip" data-filtro="mod" data-valor="Presencial">Presencial</button>
+          <button class="chip" data-filtro="mod" data-valor="EAD">EAD</button>
+        </div>
+      </div>
+
+      <div class="contagem" id="contagem"></div>
+      <div class="lista" id="lista"></div>
+      <p class="vazio" id="vazio" hidden>Nenhuma universidade encontrada para os filtros selecionados.</p>
+    </section>
+  </main>
+
+  <div class="drawer" id="drawer" hidden>
+    <div class="drawer__fundo" data-fechar></div>
+    <aside class="drawer__painel" role="dialog" aria-modal="true" aria-labelledby="drawer-titulo">
+      <button class="drawer__fechar" data-fechar aria-label="Fechar detalhes">&times;</button>
+      <div id="drawer-conteudo"></div>
+    </aside>
+  </div>
+
+  <footer class="rodape">
+    <p><strong>Fontes:</strong> Microdados do Censo da Educação Superior (INEP/MEC), e-MEC e portais oficiais das instituições.</p>
+    <p>Levantamento de referência. Links e ofertas podem mudar a cada processo seletivo — confirme no site da universidade, no e-MEC e no edital do SISU vigente. Institutos Federais não são listados por não serem universidades.</p>
+  </footer>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/mapa.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

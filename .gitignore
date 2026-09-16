@@ -6,3 +6,9 @@ __pycache__/
 .env
 *.log
 .DS_Store
+data/documentos/
+data/letras/documentos/
+data/letras/letras.db
+data/letras/cache_busca.json
+data/letras/disciplinas.csv
+data/letras/disciplinas.json

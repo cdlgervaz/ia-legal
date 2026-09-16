@@ -14,18 +14,22 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "IA Legal - Legislação de Tecnologia"
+    app_name: str = "IA Legal - Políticas Educacionais"
     data_dir: Path = BASE_DIR / "data"
     host: str = "127.0.0.1"
     port: int = 8000
+    app_user: str = "professor"
+    app_password: Optional[str] = None
 
-    llm_provider: str = "openai"
+    llm_provider: str = "ollama"
     llm_base_url: Optional[str] = None
     llm_api_key: Optional[str] = None
-    llm_model: str = "gpt-4o-mini"
+    llm_model: str = "qwen2.5:1.5b"
+    llm_model_fallbacks: str = ""
     llm_temperature: float = 0.2
+    llm_max_tokens: int = 700
 
-    embedding_provider: str = "auto"
+    embedding_provider: str = "chroma"
     embedding_model: str = "text-embedding-3-small"
 
     http_timeout: float = 30.0
@@ -33,6 +37,9 @@ class Settings(BaseSettings):
     request_retries: int = 3
 
     default_search_limit: int = 8
+    chunk_size: int = 1400
+    chunk_overlap: int = 250
+    max_context_chars: int = 24000
 
     @property
     def db_path(self) -> Path:
@@ -41,6 +48,11 @@ class Settings(BaseSettings):
     @property
     def chroma_path(self) -> Path:
         return self.data_dir / "chroma"
+
+    @property
+    def docs_dir(self) -> Path:
+        self.data_dir.joinpath("documentos").mkdir(parents=True, exist_ok=True)
+        return self.data_dir / "documentos"
 
     def resolved_llm_key(self) -> Optional[str]:
         if self.llm_api_key:

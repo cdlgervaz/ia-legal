@@ -1,5 +1,9 @@
 const MESES = ["jan.", "fev.", "mar.", "abr.", "maio", "jun.", "jul.", "ago.", "set.", "out.", "nov.", "dez."];
 
+let TEMAS = {};
+let TIPOS_DOC = [];
+let ULTIMO_TERMO = "";
+
 function $(sel) {
   return document.querySelector(sel);
 }
@@ -30,6 +34,10 @@ async function api(path, options = {}) {
   return resp.json();
 }
 
+function rotuloTema(tema) {
+  return TEMAS[tema] || tema;
+}
+
 function dataAcesso() {
   const agora = new Date();
   return `${agora.getDate()} ${MESES[agora.getMonth()]} ${agora.getFullYear()}`;
@@ -52,8 +60,40 @@ function copiar(texto, botao) {
   });
 }
 
+function destacar(texto, termo) {
+  let saida = escapeHtml(texto);
+  if (!termo) return saida;
+  termo
+    .split(/\s+/)
+    .filter((t) => t.length >= 3)
+    .forEach((t) => {
+      const re = new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+      saida = saida.replace(re, "<mark>$1</mark>");
+    });
+  return saida;
+}
+
 function resultCard(hit) {
   const p = hit.proposicao;
+  if (hit.origem === "documento") {
+    const pagina = hit.pagina ? `<span class="tag">p. ${hit.pagina}</span>` : `<span class="tag">documento</span>`;
+    return `
+      <article class="result doc-hit">
+        <header>
+          ${pagina}
+          <span class="casa">${escapeHtml(p.tipo)}${p.ano ? " · " + p.ano : ""}</span>
+          <span class="score">${hit.score ? "relevância " + (hit.score * 100).toFixed(0) + "%" : "busca textual"}</span>
+        </header>
+        <p class="ementa"><strong>${escapeHtml(hit.titulo || p.ementa)}</strong></p>
+        <p class="ementa">${escapeHtml(hit.trecho || "")}</p>
+        <div class="temas">${(p.temas || []).map((t) => `<span>${escapeHtml(rotuloTema(t))}</span>`).join("")}</div>
+        <div class="actions">
+          ${p.url ? `<a class="btn ghost" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Abrir oficial</a>` : ""}
+          <button class="btn ghost" data-doc="${escapeHtml(hit.documento_id)}" type="button">Buscar no documento</button>
+          <button class="btn ghost" data-perguntar-doc="${escapeHtml(hit.documento_id)}" type="button">Perguntar sobre ele</button>
+        </div>
+      </article>`;
+  }
   const temas = (p.temas || []).slice(0, 6).map((t) => `<span>${escapeHtml(t)}</span>`).join("");
   const score = hit.score && hit.score > 0 ? `<span class="score">relevância ${(hit.score * 100).toFixed(0)}%</span>` : "";
   return `
@@ -64,6 +104,7 @@ function resultCard(hit) {
         ${score}
       </header>
       <p class="ementa">${escapeHtml(p.ementa)}</p>
+      ${hit.trecho ? `<p class="ementa hint">${escapeHtml(hit.trecho)}</p>` : ""}
       <div class="temas">${temas}</div>
       <div class="meta">
         ${p.situacao ? `<span>Situação: ${escapeHtml(p.situacao)}</span>` : ""}
@@ -91,12 +132,28 @@ function ligarAcoes(container) {
   container.querySelectorAll("[data-detail]").forEach((botao) => {
     botao.addEventListener("click", () => abrirDetalhe(botao.dataset.detail));
   });
+  container.querySelectorAll("[data-doc]").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      mostrarAba("documentos");
+      abrirDocumento(botao.dataset.doc);
+    });
+  });
+  container.querySelectorAll("[data-perguntar-doc]").forEach((botao) => {
+    botao.addEventListener("click", () => perguntarSobreDocumento(botao.dataset.perguntarDoc));
+  });
 }
 
 function guardar(hits) {
   (hits || []).forEach((hit) => {
     cache[hit.proposicao.id] = hit.proposicao;
   });
+}
+
+function filtrosExtras() {
+  return {
+    tema: $("#f-tema").value || null,
+    documento_id: $("#f-documento").value || null,
+  };
 }
 
 async function executarBusca(evento) {
@@ -108,6 +165,7 @@ async function executarBusca(evento) {
   resultados.innerHTML = `<div class="loading"><span class="spinner"></span>Buscando...</div>`;
   modo.textContent = "";
   try {
+    const extras = filtrosExtras();
     const body = {
       query,
       limit: parseInt($("#f-limit").value, 10),
@@ -115,12 +173,17 @@ async function executarBusca(evento) {
       tipo: $("#f-tipo").value || null,
       ano_de: $("#f-ano-de").value ? parseInt($("#f-ano-de").value, 10) : null,
       ano_ate: $("#f-ano-ate").value ? parseInt($("#f-ano-ate").value, 10) : null,
+      tema: extras.tema,
+      documento_id: extras.documento_id,
     };
     const data = await api("/api/search", { method: "POST", body: JSON.stringify(body) });
     guardar(data.resultados);
-    modo.textContent = `${data.total} resultado(s) - busca ${data.modo}.`;
+    const filtros = [extras.tema ? `tema: ${rotuloTema(extras.tema)}` : "", extras.documento_id ? "documento selecionado" : ""]
+      .filter(Boolean)
+      .join(" · ");
+    modo.textContent = `${data.total} resultado(s) - busca ${data.modo}${filtros ? " · " + filtros : ""}.`;
     if (!data.resultados.length) {
-      resultados.innerHTML = `<div class="alert info">Nenhum resultado. Sincronize a base na aba Configurações ou reformule a consulta.</div>`;
+      resultados.innerHTML = `<div class="alert info">Nenhum resultado. Importe os documentos na aba Documentos, sincronize a base nas Configurações ou reformule a consulta.</div>`;
       return;
     }
     resultados.innerHTML = data.resultados.map(resultCard).join("");
@@ -138,12 +201,30 @@ function bolhaAssistente(texto, fontes) {
   const links = (fontes || [])
     .map((hit, indice) => {
       const p = hit.proposicao;
-      const marca = p.url ? `<a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.tipo)} ${escapeHtml(p.numero)}/${p.ano}</a>` : `${escapeHtml(p.tipo)} ${escapeHtml(p.numero)}/${p.ano}`;
+      const rotulo =
+        hit.origem === "documento"
+          ? `${escapeHtml(hit.titulo || p.ementa)}${hit.pagina ? " (p. " + hit.pagina + ")" : ""}`
+          : `${escapeHtml(p.tipo)} ${escapeHtml(p.numero)}/${p.ano}`;
+      const marca = p.url ? `<a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${rotulo}</a>` : rotulo;
       return `<div>[${indice + 1}] ${marca} - ${escapeHtml(p.casa)}${p.situacao ? " - " + escapeHtml(p.situacao) : ""}</div>`;
     })
     .join("");
   const corpo = escapeHtml(texto).replace(/\[(\d+)\]/g, "<strong>[$1]</strong>");
   return `<div class="msg assistant">${corpo}${links ? `<div class="sources">${links}</div>` : ""}</div>`;
+}
+
+function atualizarFiltroChat() {
+  const tema = $("#c-tema").value;
+  const doc = $("#c-documento").value;
+  const partes = [];
+  if (tema) partes.push(`tema ${rotuloTema(tema)}`);
+  if (doc) {
+    const opcao = $("#c-documento").selectedOptions[0];
+    if (opcao) partes.push(`documento "${opcao.textContent}"`);
+  }
+  $("#chat-filtro").textContent = partes.length
+    ? `Respondendo com foco em ${partes.join(" e ")}.`
+    : "";
 }
 
 async function enviarPergunta(evento) {
@@ -157,12 +238,17 @@ async function enviarPergunta(evento) {
   janela.scrollTop = janela.scrollHeight;
   const aguardando = document.createElement("div");
   aguardando.className = "msg assistant";
-  aguardando.innerHTML = `<span class="spinner"></span>Consultando a base legislativa...`;
+  aguardando.innerHTML = `<span class="spinner"></span>Consultando o acervo...`;
   janela.appendChild(aguardando);
   janela.scrollTop = janela.scrollHeight;
   $("#chat-send").disabled = true;
   try {
-    const data = await api("/api/chat", { method: "POST", body: JSON.stringify({ query: pergunta }) });
+    const body = {
+      query: pergunta,
+      tema: $("#c-tema").value || null,
+      documento_id: $("#c-documento").value || null,
+    };
+    const data = await api("/api/chat", { method: "POST", body: JSON.stringify(body) });
     guardar(data.fontes);
     aguardando.outerHTML = bolhaAssistente(data.resposta, data.fontes);
   } catch (erro) {
@@ -217,6 +303,289 @@ async function abrirDetalhe(id) {
   }
 }
 
+/* ---------- Documentos ---------- */
+
+async function carregarTemas() {
+  try {
+    const data = await api("/api/temas");
+    (data.temas || []).forEach((t) => {
+      TEMAS[t.id] = t.rotulo;
+    });
+    const selects = ["#f-tema", "#c-tema", "#d-tema"];
+    selects.forEach((sel) => {
+      const alvo = $(sel);
+      if (!alvo) return;
+      (data.temas || []).forEach((t) => {
+        const opcao = document.createElement("option");
+        opcao.value = t.id;
+        opcao.textContent = t.rotulo;
+        alvo.appendChild(opcao);
+      });
+    });
+  } catch (erro) {
+    /* silencioso */
+  }
+}
+
+async function carregarDocumentosFiltro() {
+  try {
+    const data = await api("/api/documentos");
+    const importados = (data.itens || []).filter((d) => d.importado);
+    ["#f-documento", "#c-documento"].forEach((sel) => {
+      const alvo = $(sel);
+      if (!alvo) return;
+      const anterior = alvo.value;
+      alvo.innerHTML = '<option value="">Todos</option>';
+      importados.forEach((doc) => {
+        const opcao = document.createElement("option");
+        opcao.value = doc.id;
+        opcao.textContent = doc.titulo;
+        alvo.appendChild(opcao);
+      });
+      if (anterior) alvo.value = anterior;
+    });
+  } catch (erro) {
+    /* silencioso */
+  }
+}
+
+function docCard(doc) {
+  const temas = (doc.temas || []).map((t) => `<span>${escapeHtml(rotuloTema(t))}</span>`).join("");
+  const status = doc.importado
+    ? `<span class="status ok">${doc.chunks} trechos</span>`
+    : doc.importavel
+      ? `<span class="status pendente">não importado</span>`
+      : `<span class="status manual">importar manual</span>`;
+  return `
+    <article class="doc-card">
+      <header>
+        <div>
+          <h3>${escapeHtml(doc.titulo)}</h3>
+          <p class="hint">${escapeHtml(doc.tipo)}${doc.ano ? " · " + doc.ano : ""}${doc.orgao ? " · " + escapeHtml(doc.orgao) : ""}</p>
+        </div>
+        ${status}
+      </header>
+      <p class="doc-desc">${escapeHtml(doc.descricao || "")}</p>
+      <div class="temas">${temas}</div>
+      <div class="actions">
+        ${doc.importado ? `<button class="btn ghost" data-doc="${escapeHtml(doc.id)}" type="button">Abrir e buscar no documento</button>` : ""}
+        ${doc.url ? `<a class="btn ghost" href="${escapeHtml(doc.url)}" target="_blank" rel="noopener">Abrir oficial</a>` : ""}
+        ${doc.importado ? `<button class="btn ghost" data-perguntar-doc="${escapeHtml(doc.id)}" type="button">Perguntar</button>` : ""}
+      </div>
+    </article>`;
+}
+
+async function carregarDocumentos() {
+  const lista = $("#d-lista");
+  lista.innerHTML = `<div class="loading"><span class="spinner"></span>Carregando documentos...</div>`;
+  try {
+    const params = new URLSearchParams();
+    if ($("#d-tema").value) params.set("tema", $("#d-tema").value);
+    if ($("#d-tipo").value) params.set("tipo", $("#d-tipo").value);
+    if ($("#d-busca").value) params.set("q", $("#d-busca").value);
+    const data = await api(`/api/documentos?${params.toString()}`);
+    if (!TIPOS_DOC.length) {
+      TIPOS_DOC = [...new Set((data.itens || []).map((d) => d.tipo))].sort();
+      const select = $("#d-tipo");
+      TIPOS_DOC.forEach((tipo) => {
+        const opcao = document.createElement("option");
+        opcao.value = tipo;
+        opcao.textContent = tipo;
+        select.appendChild(opcao);
+      });
+    }
+    if (!data.itens.length) {
+      lista.innerHTML = `<div class="alert info">Nenhum documento com esses filtros.</div>`;
+      return;
+    }
+    const importados = data.itens.filter((d) => d.importado).length;
+    lista.innerHTML = `<p class="hint">${data.total} documento(s), ${importados} já importado(s).</p>` + data.itens.map(docCard).join("");
+    ligarAcoes(lista);
+  } catch (erro) {
+    lista.innerHTML = `<div class="alert error">Erro ao listar documentos: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+async function abrirDocumento(id) {
+  const painel = $("#d-detalhe");
+  painel.classList.remove("hidden");
+  painel.innerHTML = `<div class="loading"><span class="spinner"></span>Carregando documento...</div>`;
+  painel.scrollIntoView({ behavior: "smooth", block: "start" });
+  try {
+    const doc = await api(`/api/documentos/${encodeURIComponent(id)}`);
+    const temas = (doc.temas || []).map((t) => `<span>${escapeHtml(rotuloTema(t))}</span>`).join("");
+    painel.innerHTML = `
+      <header class="doc-detail-header">
+        <div>
+          <h2>${escapeHtml(doc.titulo)}</h2>
+          <p class="hint">${escapeHtml(doc.tipo)}${doc.ano ? " · " + doc.ano : ""}${doc.orgao ? " · " + escapeHtml(doc.orgao) : ""}${doc.importado ? " · " + doc.chunks + " trechos indexados" : " · não importado"}</p>
+        </div>
+        <button class="btn ghost" id="doc-fechar" type="button">Fechar</button>
+      </header>
+      <p>${escapeHtml(doc.descricao || "")}</p>
+      <div class="temas">${temas}</div>
+      ${doc.observacao ? `<p class="hint">${escapeHtml(doc.observacao)}</p>` : ""}
+      <div class="actions" style="margin:10px 0">
+        ${doc.url ? `<a class="btn secondary" href="${escapeHtml(doc.url)}" target="_blank" rel="noopener">Abrir oficial</a>` : ""}
+        ${doc.importado ? `<button class="btn secondary" id="doc-resumo" type="button">Gerar resumo para aula (IA)</button>` : ""}
+        ${doc.importado ? `<button class="btn secondary" id="doc-perguntar" type="button">Perguntar sobre este documento</button>` : ""}
+      </div>
+      <div id="doc-resumo-box"></div>
+      ${
+        doc.importado
+          ? `<div class="doc-busca">
+              <h3>Buscar dentro do documento</h3>
+              <form id="doc-busca-form" class="search-bar">
+                <input id="doc-busca-input" type="text" placeholder="Palavra-chave ou pergunta (ex.: carga horária, avaliação, competências)" autocomplete="off" />
+                <select id="doc-busca-modo">
+                  <option value="chave">Palavra-chave</option>
+                  <option value="semantica">Semântica (IA)</option>
+                </select>
+                <button class="btn" type="submit">Buscar</button>
+              </form>
+              <div id="doc-busca-resultados" class="results"></div>
+            </div>`
+          : ""
+      }`;
+    $("#doc-fechar").addEventListener("click", () => painel.classList.add("hidden"));
+    const botaoResumo = $("#doc-resumo");
+    if (botaoResumo) {
+      botaoResumo.addEventListener("click", () => resumirDocumento(id));
+    }
+    const botaoPerguntar = $("#doc-perguntar");
+    if (botaoPerguntar) {
+      botaoPerguntar.addEventListener("click", () => perguntarSobreDocumento(id));
+    }
+    const formBusca = $("#doc-busca-form");
+    if (formBusca) {
+      formBusca.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+        buscarNoDocumento(id);
+      });
+    }
+  } catch (erro) {
+    painel.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+async function resumirDocumento(id) {
+  const box = $("#doc-resumo-box");
+  box.innerHTML = `<div class="loading"><span class="spinner"></span>Gerando resumo com IA (pode levar um minuto)...</div>`;
+  try {
+    const data = await api(`/api/documentos/${encodeURIComponent(id)}/resumo`, { method: "POST" });
+    box.innerHTML = `<div class="alert info" style="white-space:pre-wrap">${escapeHtml(data.resumo)}</div>`;
+  } catch (erro) {
+    box.innerHTML = `<div class="alert warn">${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+async function buscarNoDocumento(id) {
+  const termo = $("#doc-busca-input").value.trim();
+  if (!termo) return;
+  ULTIMO_TERMO = termo;
+  const modo = $("#doc-busca-modo").value;
+  const resultados = $("#doc-busca-resultados");
+  resultados.innerHTML = `<div class="loading"><span class="spinner"></span>Buscando...</div>`;
+  try {
+    const params = new URLSearchParams({ q: termo, modo, limit: "30" });
+    const data = await api(`/api/documentos/${encodeURIComponent(id)}/busca?${params.toString()}`);
+    if (!data.resultados.length) {
+      resultados.innerHTML = `<div class="alert info">Nenhum trecho encontrado para "${escapeHtml(termo)}".</div>`;
+      return;
+    }
+    resultados.innerHTML =
+      `<p class="hint">${data.total} trecho(s) — busca ${data.modo === "semantica" ? "semântica" : "por palavra-chave"}.</p>` +
+      data.resultados
+        .map((hit) => {
+          const pagina = hit.pagina ? `<span class="tag">p. ${hit.pagina}</span>` : `<span class="tag">trecho</span>`;
+          return `
+            <article class="result doc-trecho">
+              <header>${pagina}<span class="score">${hit.score ? "relevância " + (hit.score * 100).toFixed(0) + "%" : ""}</span></header>
+              <p class="ementa">${destacar(hit.trecho || "", termo)}</p>
+              <div class="actions">
+                <button class="btn ghost" data-copiar-trecho type="button">Copiar trecho</button>
+              </div>
+            </article>`;
+        })
+        .join("");
+    resultados.querySelectorAll("[data-copiar-trecho]").forEach((botao) => {
+      botao.addEventListener("click", () => {
+        const trecho = botao.closest(".result").querySelector(".ementa").textContent;
+        copiar(trecho, botao);
+      });
+    });
+  } catch (erro) {
+    resultados.innerHTML = `<div class="alert error">Erro na busca: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+function perguntarSobreDocumento(id) {
+  const select = $("#c-documento");
+  if (select) {
+    select.value = id;
+    if (select.value !== id) {
+      const opcao = document.createElement("option");
+      opcao.value = id;
+      opcao.textContent = id;
+      select.appendChild(opcao);
+      select.value = id;
+    }
+  }
+  atualizarFiltroChat();
+  mostrarAba("perguntar");
+  $("#chat-input").focus();
+}
+
+async function importarCatalogo() {
+  const status = $("#d-status");
+  status.innerHTML = `<div class="loading"><span class="spinner"></span>Iniciando importação do catálogo...</div>`;
+  $("#d-importar").disabled = true;
+  try {
+    await api("/api/documentos/importar/background", {
+      method: "POST",
+      body: JSON.stringify({ ids: [], forcar: false, baixar: true }),
+    });
+    acompanharImportacao();
+  } catch (erro) {
+    status.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+    $("#d-importar").disabled = false;
+  }
+}
+
+async function acompanharImportacao() {
+  const status = $("#d-status");
+  const progresso = $("#cfg-importar-progresso");
+  try {
+    const estado = await api("/api/documentos/importar/status");
+    const alvo = progresso || status;
+    if (estado.running) {
+      alvo.innerHTML = `
+        <div class="progress"><div></div></div>
+        <p class="hint">${escapeHtml(estado.fase)} — ${estado.processados}/${estado.total} documentos, ${estado.chunks} trechos indexados.</p>`;
+      setTimeout(acompanharImportacao, 2500);
+    } else {
+      const res = estado.resultado;
+      if (res) {
+        alvo.innerHTML = `<div class="alert info">Importação concluída: ${res.importados} documento(s), ${res.chunks} trecho(s) em ${res.duracao_segundos}s.
+        ${res.erros && res.erros.length ? `<br><strong>Atenção:</strong> ${res.erros.map(escapeHtml).join("<br>")}` : ""}</div>`;
+      } else {
+        alvo.innerHTML = `<p class="hint">${escapeHtml(estado.fase || "ocioso")}</p>`;
+      }
+      $("#d-importar").disabled = false;
+      $("#cfg-importar").disabled = false;
+      carregarDocumentos();
+      carregarDocumentosFiltro();
+      atualizarStatus();
+    }
+  } catch (erro) {
+    status.innerHTML = `<div class="alert error">Erro ao consultar status: ${escapeHtml(erro.message)}</div>`;
+    $("#d-importar").disabled = false;
+    $("#cfg-importar").disabled = false;
+  }
+}
+
+/* ---------- Fim documentos ---------- */
+
 async function carregarAcompanhamento() {
   const tbody = $("#a-tbody");
   tbody.innerHTML = `<tr><td colspan="6"><span class="spinner"></span>Carregando...</td></tr>`;
@@ -254,9 +623,10 @@ async function atualizarStatus() {
   try {
     const info = await api("/api/health");
     $("#status-dot").className = `dot ${info.llm_configurado ? "on" : "off"}`;
+    const docs = (info.stats && info.stats.documentos) || 0;
     $("#status-text").textContent = info.llm_configurado
-      ? `IA ativa (${info.llm_provider}) - ${info.indexados} itens`
-      : `Busca ativa - ${info.indexados} itens - LLM não configurado`;
+      ? `IA ativa (${info.llm_provider}) · ${docs} documentos · ${info.indexados} itens`
+      : `Busca ativa · ${docs} documentos · ${info.indexados} itens · LLM não configurado`;
     return info;
   } catch (erro) {
     $("#status-dot").className = "dot off";
@@ -275,10 +645,11 @@ async function atualizarConfigInfo() {
   const porCasa = Object.entries(stats.por_casa || {}).map(([k, v]) => `${k}: ${v}`).join(" | ") || "-";
   const porAno = Object.entries(stats.por_ano || {}).slice(0, 8).map(([k, v]) => `${k}: ${v}`).join(" | ") || "-";
   $("#config-info").innerHTML = `
-    <p><strong>Itens indexados:</strong> ${info.indexados}</p>
+    <p><strong>Documentos importados:</strong> ${stats.documentos || 0} (${stats.documentos_chunks || 0} trechos)</p>
     <p><strong>Proposições na base:</strong> ${stats.total || 0} (${porCasa})</p>
     <p><strong>Por ano:</strong> ${porAno}</p>
     <p><strong>Embeddings:</strong> ${escapeHtml(info.embeddings)}</p>
+    <p><strong>Autenticação:</strong> ${info.autenticacao ? "ativada" : "desativada (defina APP_PASSWORD no .env para proteger o acesso)"}</p>
     <p><strong>LLM:</strong> ${info.llm_configurado ? "configurado (" + escapeHtml(info.llm_provider) + ")" : "não configurado - defina LLM_API_KEY no arquivo .env"}</p>`;
 }
 
@@ -336,16 +707,21 @@ async function acompanharSync() {
   }
 }
 
+function mostrarAba(nome) {
+  document.querySelectorAll("nav.tabs button").forEach((b) => {
+    b.classList.toggle("active", b.dataset.tab === nome);
+  });
+  document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+  const painel = $(`#tab-${nome}`);
+  if (painel) painel.classList.add("active");
+  if (nome === "acompanhar") carregarAcompanhamento();
+  if (nome === "config") atualizarConfigInfo();
+  if (nome === "documentos") carregarDocumentos();
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
-    botao.addEventListener("click", () => {
-      document.querySelectorAll("nav.tabs button").forEach((b) => b.classList.remove("active"));
-      document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
-      botao.classList.add("active");
-      $(`#tab-${botao.dataset.tab}`).classList.add("active");
-      if (botao.dataset.tab === "acompanhar") carregarAcompanhamento();
-      if (botao.dataset.tab === "config") atualizarConfigInfo();
-    });
+    botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
   });
 }
 
@@ -358,18 +734,36 @@ function ligarEventos() {
       enviarPergunta(evento);
     }
   });
+  $("#c-tema").addEventListener("change", atualizarFiltroChat);
+  $("#c-documento").addEventListener("change", atualizarFiltroChat);
   $("#a-atualizar").addEventListener("click", carregarAcompanhamento);
   $("#s-iniciar").addEventListener("click", sincronizar);
   $("#s-status").addEventListener("click", acompanharSync);
+  $("#d-atualizar").addEventListener("click", carregarDocumentos);
+  $("#d-busca").addEventListener("keydown", (evento) => {
+    if (evento.key === "Enter") {
+      evento.preventDefault();
+      carregarDocumentos();
+    }
+  });
+  $("#d-importar").addEventListener("click", importarCatalogo);
+  $("#cfg-importar").addEventListener("click", () => {
+    mostrarAba("documentos");
+    importarCatalogo();
+  });
+  $("#cfg-importar-status").addEventListener("click", acompanharImportacao);
   $("#modal-close").addEventListener("click", () => $("#modal").classList.add("hidden"));
   $("#modal").addEventListener("click", (evento) => {
     if (evento.target.id === "modal") $("#modal").classList.add("hidden");
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   ligarTabs();
   ligarEventos();
+  await carregarTemas();
+  await carregarDocumentosFiltro();
+  await carregarDocumentos();
   atualizarStatus();
   carregarAcompanhamento();
 });

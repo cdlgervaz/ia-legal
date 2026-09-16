@@ -101,7 +101,55 @@ TECH_KEYWORDS = [
     "energia renovavel",
 ]
 
+EDUCACAO_KEYWORDS = [
+    "educacao",
+    "educacional",
+    "formacao de professores",
+    "formacao inicial",
+    "formacao continuada",
+    "formacao docente",
+    "professor",
+    "docente",
+    "licenciatura",
+    "pedagogia",
+    "curriculo",
+    "diretrizes curriculares",
+    "base nacional comum curricular",
+    "bncc",
+    "educacao basica",
+    "educacao infantil",
+    "ensino fundamental",
+    "ensino medio",
+    "educacao superior",
+    "educacao a distancia",
+    "ensino remoto",
+    "ensino hibrido",
+    "escola",
+    "estudante",
+    "aluno",
+    "aprendizagem",
+    "alfabetizacao",
+    "avaliacao educacional",
+    "conselho nacional de educacao",
+    "cne",
+    "mec",
+    "capes",
+    "inep",
+    "plano nacional de educacao",
+    "pne",
+    "politica nacional de educacao",
+    "educacao digital",
+    "cultura digital",
+    "letramento digital",
+    "secretaria de educacao",
+    "rede publica de ensino",
+    "instituicao de ensino",
+    "curso de graduacao",
+    "pos-graduacao",
+]
+
 _PATTERNS = None
+_EDU_PATTERNS = None
 
 
 def _normalize(text: str) -> str:
@@ -130,3 +178,38 @@ def termos_encontrados(text: str) -> list:
 
 def is_tech(text: str, minimo: int = 1) -> bool:
     return len(termos_encontrados(text)) >= minimo
+
+
+def _get_edu_patterns():
+    global _EDU_PATTERNS
+    if _EDU_PATTERNS is None:
+        _EDU_PATTERNS = [
+            (_normalize(k).strip(), re.compile(r"\b" + re.escape(_normalize(k).strip()) + r"\b"))
+            for k in EDUCACAO_KEYWORDS
+        ]
+    return _EDU_PATTERNS
+
+
+def termos_educacao(text: str) -> list:
+    normalizado = _normalize(text)
+    achados = []
+    for termo, regex in _get_edu_patterns():
+        if regex.search(normalizado):
+            achados.append(termo)
+    return achados
+
+
+def is_educacao(text: str, minimo: int = 1) -> bool:
+    return len(termos_educacao(text)) >= minimo
+
+
+def relevante(text: str) -> bool:
+    return is_tech(text) or is_educacao(text)
+
+
+def termos_relevantes(text: str) -> list:
+    vistos = []
+    for termo in termos_encontrados(text) + termos_educacao(text):
+        if termo not in vistos:
+            vistos.append(termo)
+    return vistos
