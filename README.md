@@ -316,6 +316,8 @@ busca híbrida/RAG -> interface`.
 - **Licença do conteúdo:** Creative Commons **CC BY-NC-ND 4.0** (Atribuição — NãoComercial —
   **SemDerivadas**). Permite copiar e distribuir **sem alterações**, sem fins comerciais e com
   citação. **Não permite adaptações** — pelo menos por ora. Texto integral em [`LICENSE`](LICENSE).
+- **Licença do código-fonte:** **PolyForm Strict 1.0.0** — uso apenas **não comercial**; proibido
+  **distribuir, modificar ou criar obras derivadas**. Texto em [`LICENSE-CODE`](LICENSE-CODE).
 - **Software e dependências:** mantêm suas próprias licenças. Os modelos de IA usados são de
   código aberto (Qwen 2.5, Gemma, NVIDIA Nemotron, Z-AI GLM) e os embeddings são locais
   (`all-MiniLM-L6-v2`).

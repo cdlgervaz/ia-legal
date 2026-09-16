@@ -22,7 +22,7 @@ autorização prévia e expressa da pessoa ou equipe responsável.
 Ao utilizar o acervo, as respostas ou os documentos obtidos, **cite a fonte**:
 
 > GERVAZ, Camila. **IAgora, profe? — Acervo inteligente de Políticas Educacionais**.
-> [Ano]. Disponível em: [URL]. Acesso em: [data].
+> 2026. Disponível em: https://ia-legal.onrender.com. Acesso em: 16 set. 2026.
 
 Ao citar conteúdo de um documento específico, cite também a **norma original** indicada na
 resposta, que é sempre a fonte oficial.
@@ -50,7 +50,9 @@ art. 8º, IV). Já a **compilação, a organização dos dados, o software e a i
 protegidos. Todo o conteúdo autoral é disponibilizado sob **CC BY-NC-ND 4.0**: permitida a cópia e
 a distribuição **sem alterações**, **sem fins comerciais** e **com citação da autoria**. **Não é
 permitido modificar, adaptar ou criar obras derivadas** — pelo menos por ora. Os componentes de
-terceiros mantêm suas próprias licenças. Ver `LICENSE` e `CREDITOS.md`.
+terceiros mantêm suas próprias licenças. O **código-fonte** está sob a **PolyForm Strict 1.0.0**
+(uso apenas não comercial; proibido distribuir, modificar ou criar obras derivadas). Ver
+`LICENSE`, `LICENSE-CODE` e `CREDITOS.md`.
 
 ## 7. Garantias e responsabilidade
 

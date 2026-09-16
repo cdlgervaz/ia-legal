@@ -3,7 +3,7 @@
 **Projeto:** IAgora, profe? — Acervo inteligente de Políticas Educacionais
 **Controladora:** Camila Gervaz
 **Contato:** cgervaz@proton.me
-**Última atualização:** [DATA]
+**Última atualização:** 16 set. 2026
 
 Esta política explica, de forma simples, quais dados são tratados por esta ferramenta e como,
 em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD).

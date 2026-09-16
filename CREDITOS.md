@@ -44,7 +44,7 @@ protegidos.
 Se você usar este acervo em trabalho acadêmico, aula, artigo ou material didático, cite a fonte:
 
 > GERVAZ, Camila. **IAgora, profe? — Acervo inteligente de Políticas Educacionais**.
-> [Ano]. Disponível em: [URL]. Acesso em: [data].
+> 2026. Disponível em: https://ia-legal.onrender.com. Acesso em: 16 set. 2026.
 
 Ao citar um documento específico, cite também a **norma original** indicada na resposta (por
 exemplo, "BRASIL. Lei nº 9.394/1996" ou "BRASIL. Conselho Nacional de Educação. Parecer CNE
@@ -64,3 +64,7 @@ Texto integral da licença: arquivo [`LICENSE`](LICENSE) ou
 https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.pt
 
 Privacidade e tratamento de dados: ver [`POLITICA_DE_PRIVACIDADE.md`](POLITICA_DE_PRIVACIDADE.md).
+
+**Licença do código-fonte:** o software está sob a **PolyForm Strict License 1.0.0** (uso apenas
+não comercial; **proibido distribuir, modificar ou criar obras derivadas**). Texto integral em
+[`LICENSE-CODE`](LICENSE-CODE).
