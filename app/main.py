@@ -130,6 +130,7 @@ def search(req: SearchRequest) -> SearchResponse:
         ano_ate=req.ano_ate,
         tema=req.tema,
         documento_id=req.documento_id,
+        categoria=req.categoria,
     )
     return SearchResponse(query=req.query, modo=modo, total=len(hits), resultados=hits)
 
@@ -148,6 +149,7 @@ def chat(req: ChatRequest) -> ChatResponse:
         ano_ate=req.ano_ate,
         tema=req.tema,
         documento_id=req.documento_id,
+        categoria=req.categoria,
     )
     if not hits:
         return ChatResponse(

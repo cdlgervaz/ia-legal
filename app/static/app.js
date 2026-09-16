@@ -77,14 +77,26 @@ function resultCard(hit) {
   const p = hit.proposicao;
   if (hit.origem === "documento") {
     const pagina = hit.pagina ? `<span class="tag">p. ${hit.pagina}</span>` : `<span class="tag">documento</span>`;
+    const categoria = hit.categoria ? `<span class="tag tag-cat">${escapeHtml(hit.categoria)}</span>` : "";
+    const vig = hit.vigente === true
+      ? `<span class="badge vigente">Vigente</span>`
+      : hit.vigente === false
+        ? `<span class="badge nao-vigente">Substituído/Revogado</span>`
+        : "";
+    const situacaoTxt = [
+      hit.situacao,
+      hit.substituido_por ? `Substituído por: ${hit.substituido_por}` : "",
+    ].filter(Boolean).join(" ");
     return `
       <article class="result doc-hit">
         <header>
-          ${pagina}
+          ${categoria || pagina}
           <span class="casa">${escapeHtml(p.tipo)}${p.ano ? " · " + p.ano : ""}</span>
+          ${vig}
           <span class="score">${hit.score ? "relevância " + (hit.score * 100).toFixed(0) + "%" : "busca textual"}</span>
         </header>
         <p class="ementa"><strong>${escapeHtml(hit.titulo || p.ementa)}</strong></p>
+        ${situacaoTxt ? `<p class="hint">${escapeHtml(situacaoTxt)}</p>` : ""}
         <p class="ementa">${escapeHtml(hit.trecho || "")}</p>
         <div class="temas">${(p.temas || []).map((t) => `<span>${escapeHtml(rotuloTema(t))}</span>`).join("")}</div>
         <div class="actions">
@@ -170,7 +182,7 @@ async function executarBusca(evento) {
       query,
       limit: parseInt($("#f-limit").value, 10),
       casa: $("#f-casa").value || null,
-      tipo: $("#f-tipo").value || null,
+      categoria: $("#f-tipo").value || null,
       ano_de: $("#f-ano-de").value ? parseInt($("#f-ano-de").value, 10) : null,
       ano_ate: $("#f-ano-ate").value ? parseInt($("#f-ano-ate").value, 10) : null,
       tema: extras.tema,

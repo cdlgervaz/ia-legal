@@ -3,6 +3,7 @@ from typing import List, Optional
 
 import chromadb
 
+from .catalog import categoria_de
 from .config import get_settings
 from .db import Database
 from .models import DocumentoCatalogo, Proposicao, SearchHit
@@ -150,6 +151,7 @@ class RagIndex:
                     "documento_id": item.id,
                     "titulo": item.titulo,
                     "tipo": item.tipo,
+                    "categoria": item.categoria or categoria_de(item.tipo),
                     "ano": item.ano or 0,
                     "orgao": item.orgao or "",
                     "url": item.url or "",
@@ -169,12 +171,15 @@ class RagIndex:
         ano_de: Optional[int],
         ano_ate: Optional[int],
         documento_id: Optional[str] = None,
+        categoria: Optional[str] = None,
     ) -> Optional[dict]:
         filtros: List[dict] = []
         if casa:
             filtros.append({"casa": casa})
         if tipo:
             filtros.append({"tipo": tipo})
+        if categoria:
+            filtros.append({"categoria": categoria})
         if ano_de is not None and ano_ate is not None:
             filtros.append({"ano": {"$gte": ano_de, "$lte": ano_ate}})
         elif ano_de is not None:
@@ -224,6 +229,10 @@ class RagIndex:
             documento_id=chunk["documento_id"],
             titulo=doc.get("titulo") or titulo,
             pagina=chunk.get("pagina"),
+            categoria=doc.get("categoria") or categoria_de(doc.get("tipo") or ""),
+            vigente=doc.get("vigente"),
+            situacao=doc.get("situacao"),
+            substituido_por=doc.get("substituido_por"),
         )
 
     def search(
@@ -236,6 +245,7 @@ class RagIndex:
         ano_ate: Optional[int] = None,
         tema: Optional[str] = None,
         documento_id: Optional[str] = None,
+        categoria: Optional[str] = None,
     ) -> tuple[List[SearchHit], str]:
         candidatos: List[SearchHit] = []
         sem_ok = False
@@ -245,14 +255,14 @@ class RagIndex:
                 result = collection.query(
                     query_texts=[query],
                     n_results=min(max(limit * 6, 30), 200),
-                    where=self._where(casa, tipo, ano_de, ano_ate, documento_id),
+                    where=self._where(casa, tipo, ano_de, ano_ate, documento_id, categoria),
                 )
                 candidatos = self._hits_do_resultado(result, query, tema)
                 sem_ok = True
             except Exception as exc:
                 self._embedding_error = str(exc)
         textuais = self._search_textual(
-            query, limit, casa, tipo, ano_de, ano_ate, tema, documento_id
+            query, limit, casa, tipo, ano_de, ano_ate, tema, documento_id, categoria
         )
         combinados: dict = {}
         for hit in candidatos + textuais:
@@ -338,9 +348,10 @@ class RagIndex:
         ano_ate: Optional[int],
         tema: Optional[str] = None,
         documento_id: Optional[str] = None,
+        categoria: Optional[str] = None,
     ) -> List[SearchHit]:
         hits: List[SearchHit] = []
-        if not documento_id:
+        if not documento_id and not categoria:
             for prop in self.db.buscar_textual(query, limit=limit * 3):
                 if casa and prop.casa != casa:
                     continue
@@ -356,6 +367,11 @@ class RagIndex:
         for chunk in self.db.buscar_chunks(query, documento_id=documento_id, limit=limit * 3):
             if tema and tema not in self._temas_do_documento(chunk["documento_id"]):
                 continue
+            if categoria:
+                doc = self.db.get_documento(chunk["documento_id"]) or {}
+                doc_categoria = doc.get("categoria") or categoria_de(doc.get("tipo") or "")
+                if doc_categoria != categoria:
+                    continue
             relevancia = int(chunk.get("relevancia") or 1)
             score = min(0.59, 0.35 + 0.08 * relevancia)
             hits.append(self._hit_documento(chunk, "", score, query))

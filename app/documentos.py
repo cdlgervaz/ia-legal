@@ -10,7 +10,7 @@ from typing import List, Optional, Tuple
 
 import httpx
 
-from .catalog import CATALOGO, get as get_catalogo
+from .catalog import CATALOGO, categoria_de, get as get_catalogo
 from .config import get_settings
 from .db import Database
 from .models import DocumentoCatalogo, ImportRequest
@@ -284,6 +284,10 @@ def importar_documento(
             "chunks": len(chunks),
             "paginas": total_paginas,
             "importado_em": _now(),
+            "categoria": item.categoria or categoria_de(item.tipo),
+            "vigente": item.vigente,
+            "situacao": item.situacao,
+            "substituido_por": item.substituido_por,
         }
     )
     return {

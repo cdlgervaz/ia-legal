@@ -45,6 +45,10 @@ class DocumentoCatalogo(BaseModel):
     temas: List[str] = Field(default_factory=list)
     importavel: bool = True
     observacao: Optional[str] = None
+    categoria: str = ""
+    vigente: Optional[bool] = None
+    situacao: Optional[str] = None
+    substituido_por: Optional[str] = None
 
 
 class DocumentoInfo(DocumentoCatalogo):
@@ -68,6 +72,7 @@ class SearchRequest(BaseModel):
     limit: int = 8
     casa: Optional[str] = None
     tipo: Optional[str] = None
+    categoria: Optional[str] = None
     ano_de: Optional[int] = None
     ano_ate: Optional[int] = None
     tema: Optional[str] = None
@@ -82,6 +87,10 @@ class SearchHit(BaseModel):
     documento_id: Optional[str] = None
     titulo: Optional[str] = None
     pagina: Optional[int] = None
+    categoria: Optional[str] = None
+    vigente: Optional[bool] = None
+    situacao: Optional[str] = None
+    substituido_por: Optional[str] = None
 
 
 class SearchResponse(BaseModel):
@@ -96,6 +105,7 @@ class ChatRequest(BaseModel):
     limit: int = 8
     casa: Optional[str] = None
     tipo: Optional[str] = None
+    categoria: Optional[str] = None
     ano_de: Optional[int] = None
     ano_ate: Optional[int] = None
     tema: Optional[str] = None

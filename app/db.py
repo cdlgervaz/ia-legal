@@ -105,6 +105,17 @@ class Database:
     def _init(self) -> None:
         with self.connect() as conn:
             conn.executescript(SCHEMA)
+            colunas = {
+                r["name"] for r in conn.execute("PRAGMA table_info(documentos)").fetchall()
+            }
+            for nome, tipo_sql in (
+                ("categoria", "TEXT"),
+                ("vigente", "INTEGER"),
+                ("situacao", "TEXT"),
+                ("substituido_por", "TEXT"),
+            ):
+                if nome not in colunas:
+                    conn.execute(f"ALTER TABLE documentos ADD COLUMN {nome} {tipo_sql}")
 
     def upsert_proposicao(self, prop: Proposicao) -> None:
         with self.connect() as conn:
@@ -332,8 +343,9 @@ class Database:
             conn.execute(
                 """
                 INSERT INTO documentos
-                    (id, titulo, tipo, ano, orgao, url, temas, arquivo, chunks, paginas, importado_em)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (id, titulo, tipo, ano, orgao, url, temas, arquivo, chunks, paginas,
+                     importado_em, categoria, vigente, situacao, substituido_por)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(id) DO UPDATE SET
                     titulo=excluded.titulo,
                     tipo=excluded.tipo,
@@ -344,7 +356,11 @@ class Database:
                     arquivo=excluded.arquivo,
                     chunks=excluded.chunks,
                     paginas=excluded.paginas,
-                    importado_em=excluded.importado_em
+                    importado_em=excluded.importado_em,
+                    categoria=excluded.categoria,
+                    vigente=excluded.vigente,
+                    situacao=excluded.situacao,
+                    substituido_por=excluded.substituido_por
                 """,
                 (
                     doc["id"],
@@ -358,6 +374,12 @@ class Database:
                     int(doc.get("chunks") or 0),
                     int(doc.get("paginas") or 0),
                     doc.get("importado_em") or _now(),
+                    doc.get("categoria") or "",
+                    None
+                    if doc.get("vigente") is None
+                    else (1 if doc.get("vigente") else 0),
+                    doc.get("situacao"),
+                    doc.get("substituido_por"),
                 ),
             )
 
@@ -388,6 +410,16 @@ class Database:
             "chunks": row["chunks"],
             "paginas": row["paginas"],
             "importado_em": row["importado_em"],
+            "categoria": row["categoria"] if "categoria" in row.keys() else "",
+            "vigente": (
+                None
+                if "vigente" not in row.keys() or row["vigente"] is None
+                else bool(row["vigente"])
+            ),
+            "situacao": row["situacao"] if "situacao" in row.keys() else None,
+            "substituido_por": (
+                row["substituido_por"] if "substituido_por" in row.keys() else None
+            ),
         }
 
     def delete_chunks(self, documento_id: str) -> None:
