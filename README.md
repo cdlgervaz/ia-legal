@@ -51,6 +51,26 @@ com resposta fundamentada e **gerar resumos didáticos**.
 O catálogo fica em `app/catalog.py` e pode ser editado livremente. PBIA e PL 2338 aparecem como
 links oficiais; o PL é capturado também pela sincronização (Câmara/Senado).
 
+### Categoria e vigência (1990+)
+
+Cada documento tem uma **categoria**, usada no filtro da busca — **Lei**, **Parecer** ou
+**Documento norteador** — e um campo de **vigência** (Vigente / Substituído), indicando quando foi
+superado e por qual norma. Foram incluídos, a partir de 1990:
+
+- **Leis e decretos:** LDB (9.394/1996), Lei 13.415/2017 e Lei 14.945/2024 (ensino médio), Marco
+  Civil da Internet (12.965/2014), LGPD (13.709/2018), PNED (14.533/2023), Decreto 9.057/2017
+  (EaD), Decreto 11.713/2023 (regulamenta a PNED).
+- **Pareceres:** Parecer CNE nº 15/2026 (diretrizes para uso da IA na educação), CNE/CP 22/2019 e
+  14/2020 (formação de professores), CNE/CEB 7/2010 (DCN da Educação Básica) e 5/2011 (DCNEM,
+  substituído), CNE/CEB 2/2022 (BNCC Computação) e CNE/CEB 4/2025 (dispositivos digitais).
+- **Documentos norteadores:** BNCC (EI/EF e EM), BNCC Computação, DCN da Educação Básica e do
+  Ensino Médio, PCNs (substituídos pela BNCC), EBIA e Estratégia Brasileira de Educação Midiática.
+
+No filtro **"Tipo de documento"** da busca, a resposta inclui **apenas** a categoria selecionada, e
+cada resultado mostra um selo **Vigente** ou **Substituído/Revogado** (com a norma que o
+substituiu, quando houver). Observe que o Parecer CNE nº 15/2026 está como *parecer relatado*
+(set/2026), ainda em revisão técnica antes da publicação no Diário Oficial da União.
+
 ## Instalação
 
 Requisitos: Python 3.10+.
