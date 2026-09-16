@@ -98,6 +98,7 @@ def health() -> dict:
         "app": settings.app_name,
         "llm_configurado": settings.llm_enabled(),
         "llm_provider": settings.llm_provider if settings.llm_enabled() else None,
+        "llm_model": settings.llm_model if settings.llm_enabled() else None,
         "embeddings": settings.resolved_embedding_provider(),
         "indexados": rag.count(),
         "autenticacao": bool(settings.app_password),

@@ -161,8 +161,8 @@ abertos (protocolo compatível), mantendo `EMBEDDING_PROVIDER=chroma`:
 | OpenRouter | `https://openrouter.ai/api/v1` | modelos `:free` |
 | Together | `https://api.together.xyz/v1` | Llama / Qwen |
 
-Nesses casos use `LLM_PROVIDER=openai` — é apenas o nome do **protocolo** compatível, não a
-empresa — e coloque a `LLM_API_KEY` do serviço. Para desligar a geração: `LLM_PROVIDER=none`.
+Nesses casos use `LLM_PROVIDER=openrouter` (rótulo genérico de API compatível; não tem relação com
+a empresa OpenAI) e coloque a `LLM_API_KEY` do serviço. Para desligar a geração: `LLM_PROVIDER=none`.
 
 - `EMBEDDING_PROVIDER=chroma` mantém os embeddings no modelo local do ChromaDB (aberto, offline).
   **Mantenha esse valor** para continuar compatível com o índice já construído.

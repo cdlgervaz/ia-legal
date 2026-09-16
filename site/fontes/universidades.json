@@ -28,8 +28,20 @@
               "url_ppc": "https://www.ufac.br/site/ufac/prograd/cursos/rio-branco/licenciatura/letras-espanhol/licenciatura-em-espanhol.pdf/view",
               "ppc_tipo": "matriz",
               "cursos": [
-                { "cidade": "Rio Branco", "campus": "Campus Sede", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Cruzeiro do Sul", "campus": "Campus Floresta", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Rio Branco",
+                  "campus": "Campus Sede",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Cruzeiro do Sul",
+                  "campus": "Campus Floresta",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -46,13 +58,28 @@
               "url_ppc": "http://edoc.ufam.edu.br/bitstream/123456789/2562/8/PPC-Letras-2019-2.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Manaus", "campus": "Campus Universitário — FLET", "nome": "Letras — Língua e Literatura Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Benjamin Constant", "campus": "Campus Alto Solimões", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Manaus",
+                  "campus": "Campus Universitário — FLET",
+                  "nome": "Letras — Língua e Literatura Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Benjamin Constant",
+                  "campus": "Campus Alto Solimões",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
         },
-        "AP": { "nome": "Amapá", "universidades": [] },
+        "AP": {
+          "nome": "Amapá",
+          "universidades": []
+        },
         "PA": {
           "nome": "Pará",
           "universidades": [
@@ -65,9 +92,27 @@
               "url_ppc": "https://fale.ufpa.br/index.php/fgradecurricular",
               "ppc_tipo": "matriz",
               "cursos": [
-                { "cidade": "Belém", "campus": "Campus Guamá — FALEM", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Castanhal", "campus": "Campus Castanhal", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Abaetetuba", "campus": "Campus Abaetetuba", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Belém",
+                  "campus": "Campus Guamá — FALEM",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Castanhal",
+                  "campus": "Campus Castanhal",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Abaetetuba",
+                  "campus": "Campus Abaetetuba",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -80,11 +125,17 @@
               "nome": "Universidade Federal de Rondônia",
               "categoria": "federal",
               "site": "https://unir.br",
-              "url_curso": "https://letrasespanhol.unir.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_curso": "https://letrasespanhol.unir.br/pagina/exibir/17065",
+              "url_ppc": "https://secons.unir.br/uploads/ato/161_PPC_Letras__Ingles__Espanhol___Alterada_por_Resol_1329324404.doc",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Porto Velho", "campus": "Campus José Ribeiro Filho", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Porto Velho",
+                  "campus": "Campus José Ribeiro Filho",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -98,15 +149,24 @@
               "categoria": "federal",
               "site": "https://ufrr.br",
               "url_curso": "https://ufrr.br/letrasespanhol/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://ufrr.br/letrasespanhol/documentos-para-download/",
+              "ppc_tipo": "lista",
               "cursos": [
-                { "cidade": "Boa Vista", "campus": "Campus Paricarana", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Boa Vista",
+                  "campus": "Campus Paricarana",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
         },
-        "TO": { "nome": "Tocantins", "universidades": [] }
+        "TO": {
+          "nome": "Tocantins",
+          "universidades": []
+        }
       }
     },
     "Nordeste": {
@@ -121,11 +181,23 @@
               "categoria": "federal",
               "site": "https://ufal.br",
               "url_curso": "https://fale.ufal.br/graduacao/letras-espanhol/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://fale.ufal.br/graduacao/letras-espanhol/copy_of_documentos/projeto-pedagogico-de-curso/ppc-letras-espanhol-presencial-2024-docx-4-1-1.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Maceió", "campus": "Campus A. C. Simões", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Maceió",
+                  "campus": "Campus A. C. Simões",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -133,12 +205,24 @@
               "nome": "Universidade Estadual de Alagoas",
               "categoria": "estadual",
               "site": "https://www.uneal.edu.br",
-              "url_curso": "https://www.uneal.edu.br/campus-iv",
-              "url_ppc": "https://www.uneal.edu.br/jdownloads/Institucional/Campi+Documentos/Campus+IV+-+Documentos/Letras+Portugues-Espanhol+-+Campus+IV/PPC+Letras+Portugues-Espanhol.pdf",
+              "url_curso": "https://www.uneal.edu.br/",
+              "url_ppc": "https://www.uneal.edu.br/jdownloads/Ensino/PPC/PORTUGUES%20ESPANHOL%20IV.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "São Miguel dos Campos", "campus": "Campus IV", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "São Miguel dos Campos", "campus": "Campus IV", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "São Miguel dos Campos",
+                  "campus": "Campus IV",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "São Miguel dos Campos",
+                  "campus": "Campus IV",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -155,7 +239,13 @@
               "url_ppc": "https://colegiadosdeletras.ufba.br/402/grade-curricular",
               "ppc_tipo": "matriz",
               "cursos": [
-                { "cidade": "Salvador", "campus": "Campus Ondina", "nome": "Letras — Língua Estrangeira Moderna (Espanhol)", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Salvador",
+                  "campus": "Campus Ondina",
+                  "nome": "Letras — Língua Estrangeira Moderna (Espanhol)",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -167,7 +257,13 @@
               "url_ppc": "http://www.letrasespanhol.uefs.br/arquivos/File/PPCLetrasPortugueseEspanhol.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Feira de Santana", "campus": "Campus Universitário", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Feira de Santana",
+                  "campus": "Campus Universitário",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -179,7 +275,13 @@
               "url_ppc": "https://www.uesc.br/letras/2022/ppc-colegiado-letras.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Ilhéus", "campus": "Campus Soane Nazaré de Andrade", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Ilhéus",
+                  "campus": "Campus Soane Nazaré de Andrade",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -193,13 +295,32 @@
               "categoria": "federal",
               "site": "https://www.ufc.br",
               "url_curso": "https://letrasdiurno.ufc.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://letrasdiurno.ufc.br/wp-content/uploads/2024/10/1-ppc-letras-portugues-e-espanhol.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Fortaleza", "campus": "Campus do Pici — CH", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Fortaleza", "campus": "Campus do Pici — CH", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD (UAB)", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
-              ]
+                {
+                  "cidade": "Fortaleza",
+                  "campus": "Campus do Pici — CH",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Fortaleza",
+                  "campus": "Campus do Pici — CH",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD (UAB)",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
+              ],
+              "obs": "PPC de Português/Espanhol (diurno); há PPC próprio do curso noturno de Espanhol."
             },
             {
               "sigla": "UECE",
@@ -210,7 +331,13 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Fortaleza", "campus": "Campus do Itaperi", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Fortaleza",
+                  "campus": "Campus do Itaperi",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -227,7 +354,13 @@
               "url_ppc": "http://www.ufma.br/portalUFMA/arquivo/XQnoKT5HsUme8L9.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "São Luís", "campus": "Campus Bacanga", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "São Luís",
+                  "campus": "Campus Bacanga",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -236,11 +369,23 @@
               "categoria": "estadual",
               "site": "https://www.uema.br",
               "url_curso": "https://www.uema.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://www.prog.uema.br/wp-content/uploads/2023/05/FINAL-LETRAS-ESPANHOL-S%C3%83O-LUIS.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "São Luís", "campus": "Campus Paulo VI", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Bacabal", "campus": "Campus Bacabal", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "São Luís",
+                  "campus": "Campus Paulo VI",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Bacabal",
+                  "campus": "Campus Bacabal",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -257,8 +402,20 @@
               "url_ppc": "https://www.ccae.ufpb.br/letras/wp-content/uploads/sites/170/sites/295/2025/04/ppc-letras.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "João Pessoa", "campus": "Campus I", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD (UAB)", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "João Pessoa",
+                  "campus": "Campus I",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD (UAB)",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -267,12 +424,30 @@
               "categoria": "estadual",
               "site": "https://uepb.edu.br",
               "url_curso": "https://centros.uepb.edu.br/cche/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://centros.uepb.edu.br/cche/files/2019/02/PPC-Letras-Espanhol_Licenciatura_CCHE.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Campina Grande", "campus": "Campus I", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Monteiro", "campus": "Campus VI", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Campina Grande", "campus": "EAD", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Campina Grande",
+                  "campus": "Campus I",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Monteiro",
+                  "campus": "Campus VI",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Campina Grande",
+                  "campus": "EAD",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -280,11 +455,17 @@
               "nome": "Universidade Federal de Campina Grande",
               "categoria": "federal",
               "site": "https://www.ufcg.edu.br",
-              "url_curso": "https://www.ufcg.edu.br/",
+              "url_curso": "https://www.cfp.ufcg.edu.br/Letras/",
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Campina Grande", "campus": "Campus I", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Campina Grande",
+                  "campus": "Campus I",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -301,8 +482,20 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Recife", "campus": "Campus Recife", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD (UAB)", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Recife",
+                  "campus": "Campus Recife",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD (UAB)",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -314,7 +507,13 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Recife", "campus": "Campus Dois Irmãos", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Recife",
+                  "campus": "Campus Dois Irmãos",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -326,8 +525,20 @@
               "url_ppc": "https://upe.br/matanorte/wp-content/uploads/2018/02/ESPANHOL-PPC_Unificado_Licenciatura_em_Letras_Portugues_Espanhol.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Nazaré da Mata", "campus": "Campus Mata Norte", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Petrolina", "campus": "Campus Petrolina", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Nazaré da Mata",
+                  "campus": "Campus Mata Norte",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Petrolina",
+                  "campus": "Campus Petrolina",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -341,11 +552,23 @@
               "categoria": "estadual",
               "site": "https://www.uespi.br",
               "url_curso": "https://www.uespi.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://nead.uespi.br/uploads/GRADUACAO_LETRAS_ESPANHOL.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Teresina", "campus": "Campus Poeta Torquato Neto", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Teresina",
+                  "campus": "Campus Poeta Torquato Neto",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             }
           ]
@@ -362,8 +585,20 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Natal", "campus": "Campus Central", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Currais Novos", "campus": "CERES", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Natal",
+                  "campus": "Campus Central",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Currais Novos",
+                  "campus": "CERES",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -372,11 +607,23 @@
               "categoria": "estadual",
               "site": "https://portal.uern.br",
               "url_curso": "https://portal.uern.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://portal.uern.br/proeg/wp-content/uploads/2023/08/PPC-Letras-Lingua-Espanhola-CAPF-2014-Atualizado-em-2019.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Mossoró", "campus": "Campus Central", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Pau dos Ferros", "campus": "Campus Pau dos Ferros", "nome": "Letras — Língua Espanhola", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Mossoró",
+                  "campus": "Campus Central",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Pau dos Ferros",
+                  "campus": "Campus Pau dos Ferros",
+                  "nome": "Letras — Língua Espanhola",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -390,12 +637,30 @@
               "categoria": "federal",
               "site": "https://www.ufs.br",
               "url_curso": "https://www.ufs.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://www.ufs.br/uploads/page_attach/path/21874/Projeto_Pedag_gico_de_Letras_Potugu_s-_Espanhol.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "São Cristóvão", "campus": "Campus São Cristóvão", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "São Cristóvão", "campus": "Campus São Cristóvão", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD (UAB)", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "São Cristóvão",
+                  "campus": "Campus São Cristóvão",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "São Cristóvão",
+                  "campus": "Campus São Cristóvão",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD (UAB)",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             }
           ]
@@ -417,7 +682,13 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Brasília", "campus": "Campus Darcy Ribeiro — Instituto de Letras", "nome": "Letras — Língua Espanhola e Respectiva Literatura", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Brasília",
+                  "campus": "Campus Darcy Ribeiro — Instituto de Letras",
+                  "nome": "Letras — Língua Espanhola e Respectiva Literatura",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -434,7 +705,13 @@
               "url_ppc": "https://letras.ufg.br/n/1954-projeto-pedagogico-documentos-utilizados",
               "ppc_tipo": "lista",
               "cursos": [
-                { "cidade": "Goiânia", "campus": "Campus Samambaia — Faculdade de Letras", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Goiânia",
+                  "campus": "Campus Samambaia — Faculdade de Letras",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -447,11 +724,17 @@
               "nome": "Universidade Federal de Mato Grosso",
               "categoria": "federal",
               "site": "https://www.ufmt.br",
-              "url_curso": "https://www.ufmt.br/curso/portugueseespanhol",
+              "url_curso": "https://www.ufmt.br/curso/portugueseespanhol/pagina/curso/5415",
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Cuiabá", "campus": "Campus Cuiabá — Instituto de Linguagens", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Cuiabá",
+                  "campus": "Campus Cuiabá — Instituto de Linguagens",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -460,13 +743,32 @@
               "categoria": "estadual",
               "site": "https://unemat.br",
               "url_curso": "https://altoaraguaia.unemat.br/faculdades/falect/graduacao/letras-licenciatura-graduacao-presencial-noturno-alto-araguai",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://dead.unemat.br/home/downloads/projetos/Letras_Espanhol_3034_res_conepe_5_2015.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Alto Araguaia", "campus": "Campus Alto Araguaia", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Rondonópolis", "campus": "Campus Rondonópolis", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Tangará da Serra", "campus": "Campus Tangará da Serra", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
-              ]
+                {
+                  "cidade": "Alto Araguaia",
+                  "campus": "Campus Alto Araguaia",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Rondonópolis",
+                  "campus": "Campus Rondonópolis",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Tangará da Serra",
+                  "campus": "Campus Tangará da Serra",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
+              ],
+              "obs": "PPC do curso a distância (DEAD); os presenciais têm projetos próprios por campus."
             }
           ]
         },
@@ -482,10 +784,34 @@
               "url_ppc": "https://cptl.ufms.br/files/2024/10/PPC-Curso-de-Letras-PortuguesEspanhol.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Campo Grande", "campus": "Cidade Universitária — FAALC", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Aquidauana", "campus": "Campus Aquidauana — CPAQ", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Três Lagoas", "campus": "Campus Três Lagoas — CPTL", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Campo Grande", "campus": "EAD (AGEAD/UAB)", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Campo Grande",
+                  "campus": "Cidade Universitária — FAALC",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Aquidauana",
+                  "campus": "Campus Aquidauana — CPAQ",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Três Lagoas",
+                  "campus": "Campus Três Lagoas — CPTL",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Campo Grande",
+                  "campus": "EAD (AGEAD/UAB)",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -497,8 +823,20 @@
               "url_ppc": "https://www.uems.br/cursos/graduacao/licenciatura-em-letras-habilitacao-portugues-espanhol-licenciatura-dourados/Projeto-Pedagogico",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Campo Grande", "campus": "Campus Campo Grande", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Dourados", "campus": "Campus Dourados", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Campo Grande",
+                  "campus": "Campus Campo Grande",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Dourados",
+                  "campus": "Campus Dourados",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -520,7 +858,13 @@
               "url_ppc": "https://letras.ufes.br/pt-br/ppc-2019-versao-atual",
               "ppc_tipo": "lista",
               "cursos": [
-                { "cidade": "Vitória", "campus": "Campus Goiabeiras", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Vitória",
+                  "campus": "Campus Goiabeiras",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -533,11 +877,17 @@
               "nome": "Universidade Federal de Minas Gerais",
               "categoria": "federal",
               "site": "https://www.ufmg.br",
-              "url_curso": "https://grad.letras.ufmg.br/",
-              "url_ppc": "http://www.letras.ufmg.br/padrao_cms/documentos/eventos/vivavoz/Projeto+Pedag%C3%B3gico+do+curso+de+Letras+da+UFMG-+site.pdf",
-              "ppc_tipo": "ppc",
+              "url_curso": "https://www.ufmg.br/curso/graduacao-letras-licenciatura/",
+              "url_ppc": "https://grad.letras.ufmg.br/curso/matriz-curricular",
+              "ppc_tipo": "matriz",
               "cursos": [
-                { "cidade": "Belo Horizonte", "campus": "Campus Pampulha — FALE", "nome": "Letras (habilitação em Espanhol)", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Belo Horizonte",
+                  "campus": "Campus Pampulha — FALE",
+                  "nome": "Letras (habilitação em Espanhol)",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -549,7 +899,13 @@
               "url_ppc": "https://www2.ufjf.br/fale/wp-content/uploads/sites/205/2024/02/Compet%C3%AAncias-Portugu%C3%AAs-Espanhol-e-respectivas-literaturas.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Juiz de Fora", "campus": "Campus Sede — FALE", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Juiz de Fora",
+                  "campus": "Campus Sede — FALE",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -561,7 +917,13 @@
               "url_ppc": "https://letras.ufv.br/wp-content/uploads/2023/03/PROJETO-PEDAGOGICO-DO-CURSO-DE-LETRAS-PORTUGUES-ESPANHOL.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Viçosa", "campus": "Campus Viçosa", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Viçosa",
+                  "campus": "Campus Viçosa",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -570,10 +932,16 @@
               "categoria": "federal",
               "site": "https://ufu.br",
               "url_curso": "https://www.ileel.ufu.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://www.ileel.ufu.br/letras/wp-content/uploads/2014/02/ppc_volume_1.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Uberlândia", "campus": "Campus Santa Mônica — ILEEL", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Uberlândia",
+                  "campus": "Campus Santa Mônica — ILEEL",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -585,7 +953,13 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Uberaba", "campus": "Campus Uberaba", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Uberaba",
+                  "campus": "Campus Uberaba",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -594,10 +968,16 @@
               "categoria": "federal",
               "site": "https://www.unifal-mg.edu.br",
               "url_curso": "https://www.unifal-mg.edu.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://unifal-mg.edu.br/graduacao/wp-content/uploads/sites/94/2020/02/Projeto-Letras.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Alfenas", "campus": "Campus Alfenas", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Alfenas",
+                  "campus": "Campus Alfenas",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -611,10 +991,16 @@
               "categoria": "federal",
               "site": "https://ufrj.br",
               "url_curso": "https://letras.ufrj.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://siga.ufrj.br/sira/repositorio-curriculo/distribuicoes/3D610696-0A2A-0637-0860-4E2E8DD8A1DE.html",
+              "ppc_tipo": "matriz",
               "cursos": [
-                { "cidade": "Rio de Janeiro", "campus": "Cidade Universitária — Fundão", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Rio de Janeiro",
+                  "campus": "Cidade Universitária — Fundão",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -623,10 +1009,16 @@
               "categoria": "federal",
               "site": "https://www.uff.br",
               "url_curso": "https://www.uff.br/curso/letras-espanhol-licenciatura/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://ggl.letras.uff.br/wp-content/uploads/sites/543/2026/03/PPCs-Espanhol-2026.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Niterói", "campus": "Campus Gragoatá", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Niterói",
+                  "campus": "Campus Gragoatá",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -635,10 +1027,16 @@
               "categoria": "estadual",
               "site": "https://www.uerj.br",
               "url_curso": "https://www.institutodeletras.uerj.br/habilitacoes",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://www.dep.uerj.br/fluxos/letras_portugues_espanhol_licenciatura.pdf",
+              "ppc_tipo": "matriz",
               "cursos": [
-                { "cidade": "Rio de Janeiro", "campus": "Campus Maracanã — Instituto de Letras", "nome": "Letras — Português/Espanhol e Respectivas Literaturas", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Rio de Janeiro",
+                  "campus": "Campus Maracanã — Instituto de Letras",
+                  "nome": "Letras — Português/Espanhol e Respectivas Literaturas",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -650,7 +1048,13 @@
               "url_ppc": "https://cursos.ufrrj.br/grad/letras/files/2023/12/PPC-aprovado-em-2023-.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Nova Iguaçu", "campus": "Campus Nova Iguaçu", "nome": "Letras — Português/Espanhol/Literaturas", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Nova Iguaçu",
+                  "campus": "Campus Nova Iguaçu",
+                  "nome": "Letras — Português/Espanhol/Literaturas",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -667,7 +1071,13 @@
               "url_ppc": "https://dlm.fflch.usp.br/sites/dlm.fflch.usp.br/files/Projeto%20Pedago%CC%81gico%20do%20Curso%20de%20Letras%202021.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "São Paulo", "campus": "Cidade Universitária — FFLCH", "nome": "Letras (habilitação em Espanhol)", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "São Paulo",
+                  "campus": "Cidade Universitária — FFLCH",
+                  "nome": "Letras (habilitação em Espanhol)",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -679,7 +1089,13 @@
               "url_ppc": "https://www.ibilce.unesp.br/#!/graduacao/cursos/letras-diurno/projeto-pedagogico/",
               "ppc_tipo": "lista",
               "cursos": [
-                { "cidade": "São José do Rio Preto", "campus": "IBILCE", "nome": "Letras — Português/Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "São José do Rio Preto",
+                  "campus": "IBILCE",
+                  "nome": "Letras — Português/Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -691,7 +1107,13 @@
               "url_ppc": "https://cursos.siiu.unifesp.br/graduacao/curso/1615/projeto-pedagogico",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Guarulhos", "campus": "Campus Guarulhos", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Guarulhos",
+                  "campus": "Campus Guarulhos",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -703,7 +1125,13 @@
               "url_ppc": "https://www.prograd.ufscar.br/en/assets/arquivos/cursos/cursos-oferecidos/letras/letras-projeto-pedagogico.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "São Carlos", "campus": "Campus São Carlos", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "São Carlos",
+                  "campus": "Campus São Carlos",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -725,7 +1153,13 @@
               "url_ppc": "http://www.humanas.ufpr.br/portal/letrasportuguesespanhol/ppc/",
               "ppc_tipo": "lista",
               "cursos": [
-                { "cidade": "Curitiba", "campus": "Campus Reitoria — Setor de Humanas", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Curitiba",
+                  "campus": "Campus Reitoria — Setor de Humanas",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -734,10 +1168,16 @@
               "categoria": "estadual",
               "site": "https://www.uel.br",
               "url_curso": "https://graduacao.uel.br/letras-espanhol/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://sites.uel.br/clch/wp-content/uploads/2025/06/Letras-Espanhol.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Londrina", "campus": "Campus Universitário", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Londrina",
+                  "campus": "Campus Universitário",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -749,8 +1189,20 @@
               "url_ppc": "https://www2.uepg.br/prograd/wp-content/uploads/sites/19/2024/04/PPC-LETRAS.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Ponta Grossa", "campus": "Campus Uvaranas", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Ponta Grossa",
+                  "campus": "Campus Uvaranas",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -762,9 +1214,27 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Cascavel", "campus": "Campus Cascavel", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Foz do Iguaçu", "campus": "Campus Foz do Iguaçu", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Marechal Cândido Rondon", "campus": "Campus Marechal C. Rondon", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Cascavel",
+                  "campus": "Campus Cascavel",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Foz do Iguaçu",
+                  "campus": "Campus Foz do Iguaçu",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Marechal Cândido Rondon",
+                  "campus": "Campus Marechal C. Rondon",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -773,10 +1243,16 @@
               "categoria": "estadual",
               "site": "https://www.unicentro.br",
               "url_curso": "https://www3.unicentro.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://www3.unicentro.br/proen/wp-content/uploads/sites/41/2022/12/PPC-Letras-Espanhol-2023.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Irati", "campus": "Campus Irati", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Irati",
+                  "campus": "Campus Irati",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -785,12 +1261,25 @@
               "categoria": "estadual",
               "site": "https://www.unespar.edu.br",
               "url_curso": "https://www.unespar.edu.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://prograd.unespar.edu.br/assuntos/graduacao/cursos/apucarana/ppc/ppc-letras-espanhol-apuc.pdf",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Apucarana", "campus": "Campus Apucarana", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "União da Vitória", "campus": "Campus União da Vitória", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
-              ]
+                {
+                  "cidade": "Apucarana",
+                  "campus": "Campus Apucarana",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "União da Vitória",
+                  "campus": "Campus União da Vitória",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
+              ],
+              "obs": "PPC do campus Apucarana; o campus União da Vitória tem projeto próprio (Português/Espanhol)."
             },
             {
               "sigla": "UENP",
@@ -801,7 +1290,13 @@
               "url_ppc": "https://uenp.edu.br/letras-espanhol-matriz.html",
               "ppc_tipo": "matriz",
               "cursos": [
-                { "cidade": "Jacarezinho", "campus": "Campus Jacarezinho", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Jacarezinho",
+                  "campus": "Campus Jacarezinho",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -813,7 +1308,13 @@
               "url_ppc": "https://portal.unila.edu.br/graduacao/letras-espanhol-portugues/nde/PPCLEPLE2018.1.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Foz do Iguaçu", "campus": "Campus Foz do Iguaçu", "nome": "Letras — Espanhol e Português como Línguas Estrangeiras", "habilitacao": "Espanhol/Português (LE)", "modalidade": "Presencial" }
+                {
+                  "cidade": "Foz do Iguaçu",
+                  "campus": "Campus Foz do Iguaçu",
+                  "nome": "Letras — Espanhol e Português como Línguas Estrangeiras",
+                  "habilitacao": "Espanhol/Português (LE)",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -821,12 +1322,24 @@
               "nome": "Universidade Federal da Fronteira Sul",
               "categoria": "federal",
               "site": "https://www.uffs.edu.br",
-              "url_curso": "https://www.uffs.edu.br/campi/chapeco/cursos/graduacao/letras-portugues-e-espanhol",
+              "url_curso": "https://www.uffs.edu.br/",
               "url_ppc": "https://www.uffs.edu.br/uffs/conteudo/PPC_Letras_Portugues_Espanhol_CL_2019+(1).pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Realeza", "campus": "Campus Realeza", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Chapecó", "campus": "Campus Chapecó", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Realeza",
+                  "campus": "Campus Realeza",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Chapecó",
+                  "campus": "Campus Chapecó",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -843,7 +1356,13 @@
               "url_ppc": "https://coordlinguasestrangeiras.paginas.ufsc.br/files/2025/03/PPC-Licenciatura-Espanhol.pdf",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Florianópolis", "campus": "Campus Trindade", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Florianópolis",
+                  "campus": "Campus Trindade",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
@@ -860,8 +1379,20 @@
               "url_ppc": null,
               "ppc_tipo": null,
               "cursos": [
-                { "cidade": "Porto Alegre", "campus": "Campus Vale", "nome": "Letras — Língua Espanhola e Literaturas", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Porto Alegre", "campus": "Campus Vale", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Porto Alegre",
+                  "campus": "Campus Vale",
+                  "nome": "Letras — Língua Espanhola e Literaturas",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Porto Alegre",
+                  "campus": "Campus Vale",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -873,8 +1404,20 @@
               "url_ppc": "https://www.ufsm.br/cursos/graduacao/santa-maria/letras/projeto-pedagogico",
               "ppc_tipo": "lista",
               "cursos": [
-                { "cidade": "Santa Maria", "campus": "Campus Camobi", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Santa Maria",
+                  "campus": "Campus Camobi",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -883,10 +1426,16 @@
               "categoria": "federal",
               "site": "https://www.furg.br",
               "url_curso": "https://www.furg.br/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://ila.furg.br/graduacao/letras-espanhol/ppc-letras-espanhol",
+              "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Rio Grande", "campus": "Campus Carreiros", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Rio Grande",
+                  "campus": "Campus Carreiros",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             },
             {
@@ -895,11 +1444,23 @@
               "categoria": "federal",
               "site": "https://portal.ufpel.edu.br",
               "url_curso": "https://wp.ufpel.edu.br/letraslibras/",
-              "url_ppc": null,
-              "ppc_tipo": null,
+              "url_ppc": "https://wp.ufpel.edu.br/espanhol/ppc/",
+              "ppc_tipo": "lista",
               "cursos": [
-                { "cidade": "Pelotas", "campus": "Campus Anglo", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Vários polos", "campus": "EAD", "nome": "Letras — Espanhol", "habilitacao": "Espanhol", "modalidade": "EAD" }
+                {
+                  "cidade": "Pelotas",
+                  "campus": "Campus Anglo",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Vários polos",
+                  "campus": "EAD",
+                  "nome": "Letras — Espanhol",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "EAD"
+                }
               ]
             },
             {
@@ -911,9 +1472,27 @@
               "url_ppc": "https://cursos.unipampa.edu.br/cursos/letrasportugueseliteraturas/pagina_fixa/ppc/",
               "ppc_tipo": "ppc",
               "cursos": [
-                { "cidade": "Jaguarão", "campus": "Campus Jaguarão", "nome": "Letras — Espanhol e Literatura Hispânica", "habilitacao": "Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Jaguarão", "campus": "Campus Jaguarão", "nome": "Letras — Português e Espanhol", "habilitacao": "Português/Espanhol", "modalidade": "Presencial" },
-                { "cidade": "Bagé", "campus": "Campus Bagé", "nome": "Letras — Línguas Adicionais: Inglês, Espanhol e Literaturas", "habilitacao": "Inglês/Espanhol", "modalidade": "Presencial" }
+                {
+                  "cidade": "Jaguarão",
+                  "campus": "Campus Jaguarão",
+                  "nome": "Letras — Espanhol e Literatura Hispânica",
+                  "habilitacao": "Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Jaguarão",
+                  "campus": "Campus Jaguarão",
+                  "nome": "Letras — Português e Espanhol",
+                  "habilitacao": "Português/Espanhol",
+                  "modalidade": "Presencial"
+                },
+                {
+                  "cidade": "Bagé",
+                  "campus": "Campus Bagé",
+                  "nome": "Letras — Línguas Adicionais: Inglês, Espanhol e Literaturas",
+                  "habilitacao": "Inglês/Espanhol",
+                  "modalidade": "Presencial"
+                }
               ]
             }
           ]
