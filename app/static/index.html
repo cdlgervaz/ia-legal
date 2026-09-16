@@ -15,8 +15,11 @@
         <p>Acervo inteligente de Políticas Educacionais: leis, BNCC, BNC, pareceres e documentos orientadores</p>
       </div>
     </div>
-    <div class="status-badge" id="status-badge">
-      <span class="dot off" id="status-dot"></span><span id="status-text">Carregando...</span>
+    <div class="topbar-right">
+      <button class="btn ghost topbar-btn" id="abrir-ajuda" type="button">Como usar</button>
+      <div class="status-badge" id="status-badge">
+        <span class="dot off" id="status-dot"></span><span id="status-text">Carregando...</span>
+      </div>
     </div>
   </header>
 
@@ -54,7 +57,7 @@
         <p>Pergunte em linguagem natural sobre leis, BNCC, pareceres do CNE e documentos norteadores de tecnologia e educação.</p>
         <div class="chat-exemplos">
           <button type="button" class="chip" data-exemplo="O que propõe a BNCC Computação para a educação básica?">BNCC Computação</button>
-          <button type="button" class="chip" data-exemplo="Como a LDB trata da formação de professores?">LDB e formação docente</button>
+          <button type="button" class="chip" data-exemplo="Como a LDB trata da formação docente?">LDB e formação docente</button>
           <button type="button" class="chip" data-exemplo="O que diz o Parecer CNE nº 15/2026 sobre o uso de inteligência artificial na educação?">Parecer CNE 15/2026 (IA)</button>
           <button type="button" class="chip" data-exemplo="Quais leis protegem os dados pessoais de estudantes?">LGPD e dados de estudantes</button>
           <button type="button" class="chip" data-exemplo="O que mudou no Ensino Médio com a Lei 14.945/2024?">Novo Ensino Médio</button>
@@ -187,6 +190,60 @@
     <div class="modal-content">
       <button class="modal-close" id="modal-close" type="button">x</button>
       <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="onboarding" class="modal hidden">
+    <div class="modal-content onboarding">
+      <button class="modal-close" id="onboarding-close" type="button">x</button>
+      <div class="guia-cabecalho">
+        <div class="guia-logo">IA</div>
+        <h2>Boas-vindas ao IAgora, profe?</h2>
+        <p>Este guia rápido mostra como fazer buscas e como o acervo pode ajudar no dia a dia de quem estuda, pesquisa e ensina.</p>
+      </div>
+
+      <h3>Como fazer uma busca</h3>
+      <ol class="guia-passos">
+        <li><strong>Escreva em linguagem natural</strong>, como você falaria: ex. "O que propõe a BNCC Computação?". Não é preciso usar palavras-chave técnicas.</li>
+        <li><strong>Leia a resposta com fontes.</strong> Cada trecho aparece com marcadores [1], [2]... que apontam para a lei, o parecer ou o documento usado.</li>
+        <li><strong>Ajuste o foco (opcional).</strong> Em "Buscar no acervo", use os chips <em>Lei</em>, <em>Parecer</em> ou <em>Documento norteador</em>. Na conversa, use o seletor <em>"Responder apenas sobre"</em>.</li>
+        <li><strong>Confira o texto oficial.</strong> Nos resultados, use "Abrir oficial" para ler o documento na fonte. Documentos têm selo <em>Vigente</em> ou <em>Substituído</em>.</li>
+        <li><strong>Explore as outras abas:</strong> "Documentos" (catálogo completo) e "Acompanhar andamento" (tramitação de projetos de lei).</li>
+      </ol>
+
+      <h3>Exemplos de uso no dia a dia</h3>
+
+      <div class="guia-perfil">
+        <h4>Graduação</h4>
+        <div class="chat-exemplos">
+          <button type="button" class="chip" data-pergunta="Explique a BNCC Computação de forma simples, como para quem está começando a estudar o tema.">Explicar um documento de forma simples</button>
+          <button type="button" class="chip" data-pergunta="O que a LDB diz sobre a formação de docentes?">LDB e formação de docentes</button>
+          <button type="button" class="chip" data-pergunta="Quais leis tratam do uso de celular na escola?">Uso de celular na escola</button>
+        </div>
+      </div>
+
+      <div class="guia-perfil">
+        <h4>Pós-graduação</h4>
+        <div class="chat-exemplos">
+          <button type="button" class="chip" data-pergunta="Compare a BNC-Formação (2019) com a BNC-Formação Continuada (2020).">Comparar duas normas</button>
+          <button type="button" class="chip" data-pergunta="O que propõe o Parecer CNE nº 15/2026 sobre o uso de inteligência artificial na educação?">Parecer CNE 15/2026 (IA)</button>
+          <button type="button" class="chip" data-pergunta="Quais documentos norteadores foram substituídos pela BNCC?">Documentos substituídos pela BNCC</button>
+        </div>
+      </div>
+
+      <div class="guia-perfil">
+        <h4>Docência</h4>
+        <div class="chat-exemplos">
+          <button type="button" class="chip" data-pergunta="Resuma a Política Nacional de Educação Digital (Lei 14.533/2023) e aponte usos em sala de aula.">PNED para a sala de aula</button>
+          <button type="button" class="chip" data-pergunta="Como a Estratégia Brasileira de Educação Midiática pode ser trabalhada em sala de aula?">Educação midiática em sala</button>
+          <button type="button" class="chip" data-pergunta="Quais são as regras do ECA Digital (Lei 15.211/2025) sobre o uso de dispositivos por menores?">Regras do ECA Digital</button>
+        </div>
+      </div>
+
+      <p class="guia-rodape">As respostas servem de apoio ao estudo e à pesquisa. Confira sempre o texto oficial indicado nas fontes.</p>
+      <div class="guia-acoes">
+        <button class="btn" id="onboarding-comecar" type="button">Começar a usar</button>
+      </div>
     </div>
   </div>
 

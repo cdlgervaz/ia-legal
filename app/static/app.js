@@ -700,6 +700,24 @@ function mostrarAba(nome) {
   if (nome === "documentos") carregarDocumentos();
 }
 
+function abrirOnboarding() {
+  const el = $("#onboarding");
+  if (el) el.classList.remove("hidden");
+}
+
+function fecharOnboarding(marcar) {
+  const el = $("#onboarding");
+  if (!el) return;
+  el.classList.add("hidden");
+  if (marcar !== false) {
+    try {
+      localStorage.setItem("iagora_guia_v1", "1");
+    } catch (erro) {
+      /* armazenamento indisponível */
+    }
+  }
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
     botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
@@ -735,6 +753,27 @@ function ligarEventos() {
   $("#modal").addEventListener("click", (evento) => {
     if (evento.target.id === "modal") $("#modal").classList.add("hidden");
   });
+  const ajuda = $("#abrir-ajuda");
+  if (ajuda) ajuda.addEventListener("click", () => abrirOnboarding());
+  const fecharGuia = $("#onboarding-close");
+  if (fecharGuia) fecharGuia.addEventListener("click", () => fecharOnboarding());
+  const comecar = $("#onboarding-comecar");
+  if (comecar) comecar.addEventListener("click", () => fecharOnboarding());
+  const onboarding = $("#onboarding");
+  if (onboarding) {
+    onboarding.addEventListener("click", (evento) => {
+      if (evento.target.id === "onboarding") fecharOnboarding();
+    });
+    onboarding.querySelectorAll(".chip[data-pergunta]").forEach((botao) => {
+      botao.addEventListener("click", () => {
+        fecharOnboarding();
+        mostrarAba("perguntar");
+        const campo = $("#chat-input");
+        campo.value = botao.dataset.pergunta;
+        enviarPergunta();
+      });
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -755,6 +794,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   const campoChat = $("#chat-input");
   if (campoChat) campoChat.focus();
+  let jaViuGuia = false;
+  try {
+    jaViuGuia = localStorage.getItem("iagora_guia_v1") === "1";
+  } catch (erro) {
+    jaViuGuia = false;
+  }
+  if (!jaViuGuia) setTimeout(abrirOnboarding, 500);
   await carregarTemas();
   await carregarDocumentosFiltro();
   await carregarDocumentos();

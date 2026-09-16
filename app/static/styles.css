@@ -252,3 +252,25 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px
 .chat-filtro-ctx label { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
 .chat-filtro-ctx select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
 
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-btn { color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.35); padding: 7px 14px; }
+.topbar-btn:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+
+.onboarding { max-width: 800px; }
+.guia-cabecalho { text-align: center; margin-bottom: 8px; }
+.guia-logo {
+  width: 52px; height: 52px; margin: 0 auto 10px; border-radius: 16px;
+  display: grid; place-items: center; font-weight: 700; color: #fff;
+  background: linear-gradient(120deg, #1e3a8a, #0d9488);
+}
+.guia-cabecalho h2 { margin: 0 0 6px; }
+.guia-cabecalho p { margin: 0; color: var(--muted); font-size: 14px; }
+.onboarding h3 { margin: 20px 0 8px; font-size: 16px; }
+.guia-passos { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; }
+.guia-passos li { margin-bottom: 7px; }
+.guia-perfil { margin-top: 12px; }
+.guia-perfil h4 { margin: 0 0 8px; font-size: 14px; color: var(--primary); }
+.guia-perfil .chat-exemplos { justify-content: flex-start; }
+.guia-rodape { font-size: 12.5px; color: var(--muted); margin: 18px 0 8px; }
+.guia-acoes { text-align: right; }
+
