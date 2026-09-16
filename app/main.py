@@ -59,7 +59,8 @@ llm = LLMClient(settings)
 async def autenticar(request: Request, call_next):
     if not settings.app_password:
         return await call_next(request)
-    if request.url.path in ("/api/health", "/favicon.ico"):
+    caminho = request.url.path
+    if caminho in ("/api/health", "/favicon.ico") or caminho == "/letras" or caminho.startswith("/letras/"):
         return await call_next(request)
     cabecalho = request.headers.get("authorization", "")
     if cabecalho.lower().startswith("basic "):
