@@ -65,7 +65,8 @@ def build_user_prompt(query: str, contexto: str) -> str:
         f"{query}\n\n"
         "Contexto recuperado (proposições e trechos de documentos oficiais):\n"
         f"{contexto}\n\n"
-        "Responda em português, de forma didática, citando as fontes com [n]."
+        "Responda em português, de forma didática, citando as fontes com [n]. "
+        "Responda diretamente: não mostre etapas de raciocínio, rascunhos ou texto em inglês."
     )
 
 
