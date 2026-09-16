@@ -21,84 +21,46 @@
   </header>
 
   <nav class="tabs">
-    <button data-tab="buscar" class="active">Buscar</button>
-    <button data-tab="perguntar">Perguntar à IA</button>
+    <button data-tab="perguntar" class="active">Conversar</button>
+    <button data-tab="buscar">Buscar no acervo</button>
     <button data-tab="documentos">Documentos</button>
     <button data-tab="acompanhar">Acompanhar andamento</button>
     <button data-tab="config">Configurações</button>
-    <a href="/letras">Letras-Espanhol ↗</a>
   </nav>
 
   <main>
-    <section id="tab-buscar" class="tab-panel active">
+    <section id="tab-buscar" class="tab-panel">
       <div class="card">
+        <h2 style="margin-top:0">Buscar no acervo</h2>
         <form id="search-form" class="search-bar">
-          <input id="search-input" type="text" placeholder="Ex.: BNCC Computação, formação continuada, FUNDEB, IA na educação, gestão democrática..." autocomplete="off" />
+          <input id="search-input" type="text" placeholder="Ex.: BNCC Computação, formação continuada, IA na educação, LGPD, FUNDEB..." autocomplete="off" />
           <button class="btn" type="submit">Buscar</button>
         </form>
-        <div class="filters">
-          <label>Tema
-            <select id="f-tema"><option value="">Todos</option></select>
-          </label>
-          <label>Documento
-            <select id="f-documento"><option value="">Todos</option></select>
-          </label>
-          <label>Casa
-            <select id="f-casa">
-              <option value="">Todas</option>
-              <option value="Câmara">Câmara</option>
-              <option value="Senado">Senado</option>
-            </select>
-          </label>
-          <label>Tipo de documento
-            <select id="f-tipo">
-              <option value="">Todos</option>
-              <option value="Lei">Lei</option>
-              <option value="Parecer">Parecer</option>
-              <option value="Documento norteador">Documento norteador</option>
-            </select>
-          </label>
-          <label>Ano de
-            <input id="f-ano-de" type="number" min="1988" max="2100" placeholder="2019" />
-          </label>
-          <label>Ano até
-            <input id="f-ano-ate" type="number" min="1988" max="2100" placeholder="2026" />
-          </label>
-          <label>Resultados
-            <select id="f-limit">
-              <option>5</option>
-              <option selected>8</option>
-              <option>15</option>
-              <option>30</option>
-            </select>
-          </label>
-        </div>
         <p class="hint" id="search-modo"></p>
       </div>
       <div id="search-results" class="results"></div>
     </section>
 
-    <section id="tab-perguntar" class="tab-panel">
-      <div class="card">
-        <div class="filters" style="margin-top:0">
-          <label>Tema
-            <select id="c-tema"><option value="">Todos</option></select>
-          </label>
-          <label>Documento
-            <select id="c-documento"><option value="">Todos</option></select>
-          </label>
+    <section id="tab-perguntar" class="tab-panel active">
+      <div class="chat-hero">
+        <div class="chat-hero-logo">IAL</div>
+        <h2>Como posso ajudar hoje?</h2>
+        <p>Pergunte em linguagem natural sobre leis, BNCC, pareceres do CNE e documentos norteadores de tecnologia e educação.</p>
+        <div class="chat-exemplos">
+          <button type="button" class="chip" data-exemplo="O que propõe a BNCC Computação para a educação básica?">BNCC Computação</button>
+          <button type="button" class="chip" data-exemplo="Como a LDB trata da formação de professores?">LDB e formação docente</button>
+          <button type="button" class="chip" data-exemplo="O que diz o Parecer CNE nº 15/2026 sobre o uso de inteligência artificial na educação?">Parecer CNE 15/2026 (IA)</button>
+          <button type="button" class="chip" data-exemplo="Quais leis protegem os dados pessoais de estudantes?">LGPD e dados de estudantes</button>
+          <button type="button" class="chip" data-exemplo="O que mudou no Ensino Médio com a Lei 14.945/2024?">Novo Ensino Médio</button>
         </div>
-        <p class="hint" id="chat-filtro" style="margin-top:8px"></p>
+      </div>
+      <div class="card chat-card">
         <div id="chat-window" class="chat-window">
-          <div class="msg assistant">Olá. Sou seu assistente de Políticas Educacionais. Posso explicar leis, bases curriculares e documentos orientadores com base no acervo. Exemplos:
-- "O que a BNCC Computação propõe para o ensino fundamental?"
-- "Como a LDB trata da formação docente?"
-- "O que diz a LGPD sobre dados de estudantes?"
-- "Quais as diferenças entre BNC-Formação e BNC-Formação Continuada?"</div>
+          <div class="msg assistant">Olá! Sou o assistente do acervo de Políticas Educacionais. Pergunte em linguagem natural e eu respondo com base nas leis, pareceres e documentos oficiais indexados — citando as fontes.</div>
         </div>
         <form id="chat-form" class="chat-input">
           <textarea id="chat-input" placeholder="Escreva sua pergunta..." rows="1"></textarea>
-          <button class="btn" type="submit" id="chat-send">Perguntar</button>
+          <button class="btn" type="submit" id="chat-send">Enviar</button>
         </form>
         <p class="hint" id="chat-hint"></p>
       </div>

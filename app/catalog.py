@@ -566,6 +566,174 @@ CATALOGO: List[DocumentoCatalogo] = [
         vigente=True,
         situacao="Vigente.",
     ),
+    DocumentoCatalogo(
+        id="eca-digital-15211-2025",
+        titulo="Lei nº 15.211/2025 - ECA Digital (proteção de crianças e adolescentes no ambiente digital)",
+        tipo="Lei",
+        ano=2025,
+        orgao="Congresso Nacional",
+        descricao=(
+            "Estatuto Digital da Criança e do Adolescente: deveres de cuidado, verificação de "
+            "idade, proteção contra conteúdos nocivos e uso de dispositivos por menores."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15211.htm",
+        formato="html",
+        temas=["tecnologia", "ia_educacao", "gestao"],
+        vigente=True,
+        situacao="Vigente; regulamentação em curso.",
+    ),
+    DocumentoCatalogo(
+        id="eca-8069-1990",
+        titulo="Lei nº 8.069/1990 - Estatuto da Criança e do Adolescente (ECA)",
+        tipo="Lei",
+        ano=1990,
+        orgao="Congresso Nacional",
+        descricao=(
+            "Proteção integral de crianças e adolescentes, incluindo o direito à educação e a "
+            "proteção contra conteúdos e práticas nocivas (base do ECA Digital)."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/leis/l8069.htm",
+        formato="html",
+        temas=["gestao", "curriculo"],
+        vigente=True,
+        situacao="Vigente, com alterações; complementado pela Lei nº 15.211/2025 (ECA Digital).",
+    ),
+    DocumentoCatalogo(
+        id="lei-12737-2012",
+        titulo="Lei nº 12.737/2012 - Crimes informáticos (Lei Carolina Dieckmann)",
+        tipo="Lei",
+        ano=2012,
+        orgao="Congresso Nacional",
+        descricao=(
+            "Tipifica delitos informáticos (invasão de dispositivo, interceptação indevida de "
+            "dados) e altera o Código Penal."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12737.htm",
+        formato="html",
+        temas=["tecnologia", "ia_educacao"],
+        vigente=True,
+        situacao="Vigente, com alterações posteriores (ex.: Lei nº 14.155/2021).",
+    ),
+    DocumentoCatalogo(
+        id="lei-14155-2021",
+        titulo="Lei nº 14.155/2021 - Agravamento de penas por crimes cibernéticos",
+        tipo="Lei",
+        ano=2021,
+        orgao="Congresso Nacional",
+        descricao=(
+            "Torna mais graves as penas para invasão de dispositivo informático, furto mediante "
+            "fraude eletrônica e estelionato praticado por meio eletrônico."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14155.htm",
+        formato="html",
+        temas=["tecnologia"],
+        vigente=True,
+        situacao="Vigente.",
+    ),
+    DocumentoCatalogo(
+        id="lei-11892-2008",
+        titulo="Lei nº 11.892/2008 - Rede Federal de Educação Profissional, Científica e Tecnológica",
+        tipo="Lei",
+        ano=2008,
+        orgao="Congresso Nacional",
+        descricao=(
+            "Institui a Rede Federal e os Institutos Federais de Educação, Ciência e Tecnologia "
+            "(IFs), referência em educação profissional e tecnológica."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11892.htm",
+        formato="html",
+        temas=["curriculo", "gestao", "formacao_docente"],
+        vigente=True,
+        situacao="Vigente, com alterações.",
+    ),
+    DocumentoCatalogo(
+        id="lei-9998-2000",
+        titulo="Lei nº 9.998/2000 - FUST (Fundo de Universalização dos Serviços de Telecomunicações)",
+        tipo="Lei",
+        ano=2000,
+        orgao="Congresso Nacional",
+        descricao=(
+            "Cria o FUST para universalizar serviços de telecomunicações, incluindo conectividade "
+            "de escolas públicas."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/leis/l9998.htm",
+        formato="html",
+        temas=["tecnologia", "financiamento"],
+        vigente=True,
+        situacao="Vigente, com alterações (inclusive regras de uso do FUST em conectividade escolar).",
+    ),
+    DocumentoCatalogo(
+        id="decreto-9204-2017",
+        titulo="Decreto nº 9.204/2017 - Programa de Inovação Educação Conectada",
+        tipo="Decreto",
+        ano=2017,
+        orgao="Presidência da República",
+        descricao=(
+            "Institui o Programa de Inovação Educação Conectada, voltado à conectividade e ao uso "
+            "pedagógico de tecnologias nas escolas."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/decreto/d9204.htm",
+        formato="html",
+        temas=["tecnologia", "curriculo", "gestao"],
+        vigente=True,
+        situacao="Vigente; articulado à Estratégia Nacional de Educação Conectada e à PNED.",
+    ),
+    DocumentoCatalogo(
+        id="curriculo-cieb-computacao",
+        titulo="Currículo de Referência em Tecnologia e Computação (CIEB)",
+        tipo="Currículo de referência",
+        ano=2018,
+        orgao="CIEB (Centro de Inovação para a Educação Brasileira)",
+        descricao=(
+            "Referencial curricular para tecnologia e computação na educação básica, alinhado à "
+            "BNCC e à BNCC Computação, com eixos de pensamento computacional, mundo digital e "
+            "cultura digital."
+        ),
+        url="https://curriculo.cieb.net.br/assets/docs/Curriculo_de_Referencia_em_Tecnologia_e_Computacao.pdf",
+        formato="pdf",
+        temas=["tecnologia", "curriculo", "ia_educacao"],
+        categoria="Documento norteador",
+        vigente=True,
+        situacao="Referencial orientador (documento não normativo); alinhado à BNCC Computação.",
+    ),
+    DocumentoCatalogo(
+        id="guia-ia-mec",
+        titulo="Guia sobre o uso de Inteligência Artificial na Educação (MEC)",
+        tipo="Documento norteador",
+        ano=2024,
+        orgao="Ministério da Educação",
+        descricao=(
+            "Orientação para professores e gestores sobre o uso ético e pedagógico da IA na "
+            "educação, alinhada ao Parecer CNE nº 15/2026."
+        ),
+        url="https://www.gov.br/mec/pt-br/centrais-de-conteudo/publicacoes",
+        formato="html",
+        importavel=False,
+        temas=["ia_educacao", "tecnologia", "formacao_docente"],
+        categoria="Documento norteador",
+        vigente=True,
+        situacao="Documento orientador do MEC.",
+        observacao="Publicação do MEC; baixe o PDF na Central de Conteúdo e importe localmente.",
+    ),
+    DocumentoCatalogo(
+        id="referenciais-sbc-computacao",
+        titulo="Diretrizes para o Ensino de Computação na Educação Básica (SBC)",
+        tipo="Currículo de referência",
+        ano=2019,
+        orgao="Sociedade Brasileira de Computação (SBC)",
+        descricao=(
+            "Diretrizes da SBC para a inserção da Computação na educação básica, base técnica das "
+            "normas de Computação (BNCC Computação e Resolução CNE/CEB nº 1/2022)."
+        ),
+        url="https://www.sbc.org.br/educacao",
+        formato="html",
+        importavel=False,
+        temas=["tecnologia", "curriculo"],
+        categoria="Documento norteador",
+        vigente=True,
+        situacao="Referencial orientador (documento técnico não normativo).",
+        observacao="Baixe o documento no portal da SBC e importe localmente.",
+    ),
 ]
 
 

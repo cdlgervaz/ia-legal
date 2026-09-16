@@ -161,13 +161,6 @@ function guardar(hits) {
   });
 }
 
-function filtrosExtras() {
-  return {
-    tema: $("#f-tema").value || null,
-    documento_id: $("#f-documento").value || null,
-  };
-}
-
 async function executarBusca(evento) {
   if (evento) evento.preventDefault();
   const query = $("#search-input").value.trim();
@@ -177,23 +170,10 @@ async function executarBusca(evento) {
   resultados.innerHTML = `<div class="loading"><span class="spinner"></span>Buscando...</div>`;
   modo.textContent = "";
   try {
-    const extras = filtrosExtras();
-    const body = {
-      query,
-      limit: parseInt($("#f-limit").value, 10),
-      casa: $("#f-casa").value || null,
-      categoria: $("#f-tipo").value || null,
-      ano_de: $("#f-ano-de").value ? parseInt($("#f-ano-de").value, 10) : null,
-      ano_ate: $("#f-ano-ate").value ? parseInt($("#f-ano-ate").value, 10) : null,
-      tema: extras.tema,
-      documento_id: extras.documento_id,
-    };
+    const body = { query, limit: 12 };
     const data = await api("/api/search", { method: "POST", body: JSON.stringify(body) });
     guardar(data.resultados);
-    const filtros = [extras.tema ? `tema: ${rotuloTema(extras.tema)}` : "", extras.documento_id ? "documento selecionado" : ""]
-      .filter(Boolean)
-      .join(" · ");
-    modo.textContent = `${data.total} resultado(s) - busca ${data.modo}${filtros ? " · " + filtros : ""}.`;
+    modo.textContent = `${data.total} resultado(s) - busca ${data.modo}.`;
     if (!data.resultados.length) {
       resultados.innerHTML = `<div class="alert info">Nenhum resultado. Importe os documentos na aba Documentos, sincronize a base nas Configurações ou reformule a consulta.</div>`;
       return;
@@ -226,17 +206,7 @@ function bolhaAssistente(texto, fontes) {
 }
 
 function atualizarFiltroChat() {
-  const tema = $("#c-tema").value;
-  const doc = $("#c-documento").value;
-  const partes = [];
-  if (tema) partes.push(`tema ${rotuloTema(tema)}`);
-  if (doc) {
-    const opcao = $("#c-documento").selectedOptions[0];
-    if (opcao) partes.push(`documento "${opcao.textContent}"`);
-  }
-  $("#chat-filtro").textContent = partes.length
-    ? `Respondendo com foco em ${partes.join(" e ")}.`
-    : "";
+  return;
 }
 
 async function enviarPergunta(evento) {
@@ -255,11 +225,7 @@ async function enviarPergunta(evento) {
   janela.scrollTop = janela.scrollHeight;
   $("#chat-send").disabled = true;
   try {
-    const body = {
-      query: pergunta,
-      tema: $("#c-tema").value || null,
-      documento_id: $("#c-documento").value || null,
-    };
+    const body = { query: pergunta };
     const data = await api("/api/chat", { method: "POST", body: JSON.stringify(body) });
     guardar(data.fontes);
     aguardando.outerHTML = bolhaAssistente(data.resposta, data.fontes);
@@ -746,8 +712,6 @@ function ligarEventos() {
       enviarPergunta(evento);
     }
   });
-  $("#c-tema").addEventListener("change", atualizarFiltroChat);
-  $("#c-documento").addEventListener("change", atualizarFiltroChat);
   $("#a-atualizar").addEventListener("click", carregarAcompanhamento);
   $("#s-iniciar").addEventListener("click", sincronizar);
   $("#s-status").addEventListener("click", acompanharSync);
@@ -773,6 +737,15 @@ function ligarEventos() {
 document.addEventListener("DOMContentLoaded", async () => {
   ligarTabs();
   ligarEventos();
+  document.querySelectorAll(".chip[data-exemplo]").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      const campo = $("#chat-input");
+      campo.value = botao.dataset.exemplo;
+      enviarPergunta();
+    });
+  });
+  const campoChat = $("#chat-input");
+  if (campoChat) campoChat.focus();
   await carregarTemas();
   await carregarDocumentosFiltro();
   await carregarDocumentos();

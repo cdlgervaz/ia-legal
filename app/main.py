@@ -33,7 +33,6 @@ from .temas import lista_temas
 
 settings = get_settings()
 STATIC_DIR = Path(__file__).resolve().parent / "static"
-SITE_DIR = Path(__file__).resolve().parent.parent / "site"
 
 
 @asynccontextmanager
@@ -45,13 +44,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.app_name, lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-if SITE_DIR.exists():
-    @app.get("/letras", include_in_schema=False)
-    def letras_index() -> FileResponse:
-        return FileResponse(SITE_DIR / "index.html")
-
-    app.mount("/letras", StaticFiles(directory=SITE_DIR, html=True), name="letras")
-
 llm = LLMClient(settings)
 
 
@@ -60,7 +52,7 @@ async def autenticar(request: Request, call_next):
     if not settings.app_password:
         return await call_next(request)
     caminho = request.url.path
-    if caminho in ("/api/health", "/favicon.ico") or caminho == "/letras" or caminho.startswith("/letras/"):
+    if caminho in ("/api/health", "/favicon.ico"):
         return await call_next(request)
     cabecalho = request.headers.get("authorization", "")
     if cabecalho.lower().startswith("basic "):

@@ -227,3 +227,21 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px
 .badge.nao-vigente { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 .tag-cat { background: #eef2ff; color: #3730a3; }
 
+.chat-hero { text-align: center; padding: 30px 16px 22px; }
+.chat-hero-logo {
+  width: 58px; height: 58px; margin: 0 auto 14px; border-radius: 18px;
+  display: grid; place-items: center; font-weight: 700; font-size: 20px; color: #fff;
+  background: linear-gradient(120deg, #1e3a8a, #0d9488);
+  box-shadow: 0 10px 24px rgba(30, 58, 138, 0.25);
+}
+.chat-hero h2 { margin: 0 0 6px; font-size: 26px; }
+.chat-hero p { margin: 0 auto 18px; color: var(--muted); max-width: 640px; font-size: 14.5px; }
+.chat-exemplos { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 780px; margin: 0 auto; }
+.chip {
+  border: 1px solid var(--border); background: #fff; color: var(--text);
+  padding: 9px 14px; border-radius: 999px; cursor: pointer; font-size: 13.5px;
+}
+.chip:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; }
+.chat-card { max-width: 880px; margin: 0 auto; }
+#tab-perguntar .chat-window { min-height: 260px; max-height: 56vh; }
+
