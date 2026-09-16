@@ -276,6 +276,7 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px
 .guia-check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-right: auto; }
 
 .tour { position: fixed; inset: 0; z-index: 80; pointer-events: none; }
+.tour.hidden { display: none; }
 .tour-card {
   position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
   width: min(560px, 92vw); background: #fff; border: 1px solid var(--border);
