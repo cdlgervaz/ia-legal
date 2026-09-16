@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional
 
 from .config import Settings
@@ -5,6 +6,25 @@ from .config import Settings
 
 class LLMNotConfigured(RuntimeError):
     pass
+
+
+_PT_STOP = {
+    "de", "para", "que", "com", "não", "nao", "dos", "das", "uma", "por", "sobre",
+    "como", "mais", "e", "o", "a", "os", "as", "um", "à", "ao", "se", "não",
+}
+_EN_STOP = {
+    "the", "and", "of", "to", "is", "are", "for", "with", "this", "that", "you",
+    "not", "in", "on", "as", "be", "it", "an", "here", "here's", "process", "user",
+}
+
+
+def parece_ingles(texto: str) -> bool:
+    palavras = re.findall(r"[a-zà-ÿ]+", (texto or "").lower())
+    if len(palavras) < 8:
+        return False
+    pt = sum(1 for p in palavras if p in _PT_STOP)
+    en = sum(1 for p in palavras if p in _EN_STOP)
+    return en >= 3 and en > pt
 
 
 SYSTEM_PROMPT = """Você é um assistente de ensino e pesquisa em Políticas Educacionais brasileiras, \
@@ -24,7 +44,9 @@ projeto em tramitação.
 implicações para a prática escolar.
 8. Use LINGUAGEM NEUTRA: evite marcas de gênero (ex.: "professor/professora", "aluno/aluna", \
 "pesquisador/pesquisadora"). Prefira termos neutros como "docentes", "estudantes", "você", \
-"quem pesquisa", "a pessoa". Não use "bem-vindo(a)" nem formas duais."""
+"quem pesquisa", "a pessoa". Não use "bem-vindo(a)" nem formas duais.
+9. Responda SEMPRE em português do Brasil. É proibido responder em inglês ou em outro idioma, \
+mesmo que parte das instruções esteja em inglês ou que o modelo pense em inglês."""
 
 
 def build_context(fontes: List) -> str:
@@ -111,17 +133,37 @@ class LLMClient:
             if m.strip()
         ]
         ultimo_erro: Optional[Exception] = None
+        temp = self.settings.llm_temperature if temperature is None else temperature
         for modelo in modelos:
             try:
                 resposta = client.chat.completions.create(
                     model=modelo,
                     messages=mensagens,
-                    temperature=self.settings.llm_temperature
-                    if temperature is None
-                    else temperature,
+                    temperature=temp,
                     max_tokens=self.settings.llm_max_tokens,
                 )
-                return (resposta.choices[0].message.content or "").strip()
+                texto = (resposta.choices[0].message.content or "").strip()
+                if texto and parece_ingles(texto):
+                    try:
+                        reforco = {
+                            "role": "system",
+                            "content": (
+                                "Responda exclusivamente em português do Brasil. "
+                                "É proibido usar inglês."
+                            ),
+                        }
+                        resposta_pt = client.chat.completions.create(
+                            model=modelo,
+                            messages=mensagens + [reforco],
+                            temperature=temp,
+                            max_tokens=self.settings.llm_max_tokens,
+                        )
+                        texto_pt = (resposta_pt.choices[0].message.content or "").strip()
+                        if texto_pt and not parece_ingles(texto_pt):
+                            return texto_pt
+                    except Exception:
+                        pass
+                return texto
             except Exception as exc:
                 ultimo_erro = exc
                 continue
