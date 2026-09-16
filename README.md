@@ -321,6 +321,10 @@ identifica as disciplinas relacionadas a tecnologia.
 # baixar um PPC específico (ex.: sites atrás de Cloudflare)
 .venv/bin/python scripts/coletar_letras.py --sigla UFR --so-urls \
   --url https://ufr.edu.br/portal/wp-content/uploads/2020/01/PPC_....pdf
+
+# crawlear uma página-índice em busca dos links de Letras/PPC
+.venv/bin/python scripts/coletar_letras.py --sigla UFRN --so-urls \
+  --seed https://www.ufrn.br/academico/ensino/graduacao/cursos
 ```
 
 Quando um site bloqueia o acesso (HTTP 403 / desafio Cloudflare), o coletor tenta

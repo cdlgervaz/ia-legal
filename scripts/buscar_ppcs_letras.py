@@ -137,20 +137,25 @@ def main() -> None:
                 if not u.get("url_ppc"):
                     pendentes.append(u)
 
-    print(f"Buscando PPCs para {len(pendentes)} instituições…\n")
+    print(f"Buscando PPCs para {len(pendentes)} instituições…\n", flush=True)
     resultados = {}
+    SAIDA.parent.mkdir(parents=True, exist_ok=True)
     for u in pendentes:
-        cands = buscar_uni(u["sigla"], u["nome"], u.get("site"))
+        try:
+            cands = buscar_uni(u["sigla"], u["nome"], u.get("site"))
+        except Exception as exc:  # noqa: BLE001
+            cands = []
+            print(f"   [erro] {exc}", flush=True)
         resultados[u["sigla"]] = cands
-        print(f"### {u['sigla']} — {u['nome']}")
+        print(f"### {u['sigla']} — {u['nome']}", flush=True)
         for c in cands:
-            print(f"   [{c['score']:>2}] {c['titulo'][:70]} | {c['url'][:120]}")
+            print(f"   [{c['score']:>2}] {c['titulo'][:70]} | {c['url']}", flush=True)
         if not cands:
-            print("   (nada relevante)")
-        print()
+            print("   (nada relevante)", flush=True)
+        print(flush=True)
+        SAIDA.write_text(json.dumps(resultados, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    SAIDA.write_text(json.dumps(resultados, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Candidatos salvos em {SAIDA}")
+    print(f"Candidatos salvos em {SAIDA}", flush=True)
 
 
 if __name__ == "__main__":
