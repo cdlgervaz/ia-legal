@@ -164,6 +164,35 @@ class RagIndex:
             total += len(ids)
         return total
 
+    def index_politicas(self, politicas: List[dict]) -> int:
+        collection = self._get_collection()
+        if not politicas:
+            return 0
+        ids, documentos, metadatas = [], [], []
+        for p in politicas:
+            texto = (
+                f"{p.get('nome') or ''}. "
+                f"Área: {p.get('area_nome') or ''}. "
+                f"Órgão: {p.get('orgao') or ''}. "
+                f"{p.get('legislacao') or ''} {p.get('instrumento_legal') or ''}. "
+                f"{p.get('objetivos') or ''}"
+            )
+            ids.append(f"politica-{p['id']}")
+            documentos.append(texto[:6000])
+            metadatas.append(
+                {
+                    "origem": "politica",
+                    "casa": "IPEA",
+                    "tipo": "Política pública",
+                    "ano": p.get("ano") or 0,
+                    "temas": p.get("area_nome") or "",
+                    "url": p.get("link") or "",
+                    "politica_id": p["id"],
+                }
+            )
+        collection.upsert(ids=ids, documents=documentos, metadatas=metadatas)
+        return len(ids)
+
     def _where(
         self,
         casa: Optional[str],
@@ -284,6 +313,33 @@ class RagIndex:
             modo = "textual"
         return selecionados, modo
 
+    def _hit_politica(self, pol: dict, score: float, consulta: str) -> SearchHit:
+        situacao = "Vigente" if pol.get("vigente") else "Descontinuada"
+        prop = Proposicao(
+            id=f"politica-{pol['id']}",
+            casa="IPEA",
+            tipo="Política pública",
+            numero="",
+            ano=pol.get("ano") or 0,
+            ementa=pol.get("objetivos") or pol.get("nome") or "",
+            autor=pol.get("orgao"),
+            url=pol.get("link"),
+            situacao=situacao,
+            orgao=pol.get("orgao"),
+            temas=[pol.get("area_nome")] if pol.get("area_nome") else [],
+            fonte="ipea",
+        )
+        return SearchHit(
+            proposicao=prop,
+            score=score,
+            trecho=self._snippet(pol.get("objetivos") or pol.get("nome"), consulta, largura=500),
+            origem="politica",
+            titulo=pol.get("nome"),
+            categoria="Política pública",
+            vigente=pol.get("vigente"),
+            situacao=situacao,
+        )
+
     def _hits_do_resultado(self, result: dict, query: str, tema: Optional[str]) -> List[SearchHit]:
         ids = (result.get("ids") or [[]])[0]
         documentos = (result.get("documents") or [[]])[0]
@@ -292,14 +348,26 @@ class RagIndex:
 
         ids_prop: List[str] = []
         ids_chunk: List[str] = []
+        ids_pol: List[str] = []
         for item_id in dict.fromkeys(ids):
-            if "#" in item_id:
+            if item_id.startswith("politica-"):
+                ids_pol.append(item_id)
+            elif "#" in item_id:
                 ids_chunk.append(item_id)
             else:
                 ids_prop.append(item_id)
 
         props = {p.id: p for p in self.db.get_many(ids_prop)}
         chunks = {c["id"]: c for c in self.db.get_chunks_by_ids(ids_chunk)}
+        politicas: dict = {}
+        for item_id in ids_pol:
+            try:
+                pid = int(item_id.split("-", 1)[1])
+            except (IndexError, ValueError):
+                continue
+            pol = self.db.get_politica(pid)
+            if pol:
+                politicas[item_id] = pol
         doc_by_id = {i: d for i, d in zip(ids, documentos)}
         dist_by_id = {i: d for i, d in zip(ids, distancias)}
         meta_by_id = {i: m for i, m in zip(ids, metadatas)}
@@ -320,6 +388,10 @@ class RagIndex:
                         trecho=self._snippet(doc_by_id.get(item_id), query),
                     )
                 )
+                continue
+            pol = politicas.get(item_id)
+            if pol is not None:
+                hits_prop.append(self._hit_politica(pol, score, query))
                 continue
             chunk = chunks.get(item_id)
             if chunk is None:

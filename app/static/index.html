@@ -193,7 +193,9 @@
         <h2 style="margin-top:0">Catálogo de Políticas Públicas (IPEA)</h2>
         <p class="hint">Importa as políticas públicas federais do Catálogo do IPEA (área temática, órgão, instrumento legal, vigência e objetivos). Alimenta as abas "Áreas temáticas" e "Linha do tempo".</p>
         <button class="btn" id="cfg-ipea" type="button">Sincronizar Catálogo IPEA</button>
-        <span class="hint" id="cfg-ipea-status" style="margin-left:10px"></span>
+        <button class="btn secondary" id="cfg-ipea-indexar" type="button">Indexar políticas no assistente</button>
+        <div><span class="hint" id="cfg-ipea-status"></span></div>
+        <div><span class="hint" id="cfg-ipea-indexar-status"></span></div>
       </div>
 
       <div class="card" style="margin-top:18px">
@@ -219,11 +221,6 @@
         <button class="btn" id="s-iniciar" type="button">Iniciar sincronização</button>
         <button class="btn secondary" id="s-status" type="button">Ver status</button>
         <div id="s-progress"></div>
-      </div>
-
-      <div class="card" style="margin-top:18px">
-        <h2 style="margin-top:0">Estado do sistema</h2>
-        <div id="config-info" class="hint">Carregando...</div>
       </div>
     </section>
   </main>
@@ -397,6 +394,6 @@
     </p>
   </footer>
 
-  <script src="/static/app.js?v=6"></script>
+  <script src="/static/app.js?v=8"></script>
 </body>
 </html>

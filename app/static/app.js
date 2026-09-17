@@ -617,15 +617,20 @@ async function atualizarStatus() {
 }
 
 async function atualizarConfigInfo() {
+  const alvo = $("#config-info");
+  if (!alvo) {
+    await atualizarStatus();
+    return;
+  }
   const info = await atualizarStatus();
   if (!info) {
-    $("#config-info").innerHTML = `<div class="alert error">Não foi possível contatar o servidor.</div>`;
+    alvo.innerHTML = `<div class="alert error">Não foi possível contatar o servidor.</div>`;
     return;
   }
   const stats = info.stats || {};
   const porCasa = Object.entries(stats.por_casa || {}).map(([k, v]) => `${k}: ${v}`).join(" | ") || "-";
   const porAno = Object.entries(stats.por_ano || {}).slice(0, 8).map(([k, v]) => `${k}: ${v}`).join(" | ") || "-";
-  $("#config-info").innerHTML = `
+  alvo.innerHTML = `
     <p><strong>Documentos importados:</strong> ${stats.documentos || 0} (${stats.documentos_chunks || 0} trechos)</p>
     <p><strong>Proposições na base:</strong> ${stats.total || 0} (${porCasa})</p>
     <p><strong>Por ano:</strong> ${porAno}</p>
@@ -897,6 +902,28 @@ async function carregarPoliticasDecada(decada) {
   }
 }
 
+async function acompanharIndexacaoPoliticas() {
+  const status = $("#cfg-ipea-indexar-status");
+  const botao = $("#cfg-ipea-indexar");
+  try {
+    const estado = await api("/api/politicas/indexar/status");
+    if (estado.running) {
+      if (status) status.textContent = `Indexando políticas... ${estado.processados}/${estado.total}`;
+      setTimeout(acompanharIndexacaoPoliticas, 3000);
+    } else {
+      if (status) {
+        status.textContent = estado.total
+          ? `Concluído: ${estado.processados} políticas indexadas no assistente.`
+          : "Nada para indexar.";
+      }
+      if (botao) botao.disabled = false;
+    }
+  } catch (erro) {
+    if (status) status.textContent = "Erro: " + erro.message;
+    if (botao) botao.disabled = false;
+  }
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
     botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
@@ -943,6 +970,21 @@ function ligarEventos() {
         if (status) status.textContent = "Erro: " + erro.message;
       } finally {
         cfgIpea.disabled = false;
+      }
+    });
+  }
+  const cfgIpeaIndexar = $("#cfg-ipea-indexar");
+  if (cfgIpeaIndexar) {
+    cfgIpeaIndexar.addEventListener("click", async () => {
+      const status = $("#cfg-ipea-indexar-status");
+      cfgIpeaIndexar.disabled = true;
+      if (status) status.textContent = "Iniciando indexação...";
+      try {
+        await api("/api/politicas/indexar/background", { method: "POST" });
+        acompanharIndexacaoPoliticas();
+      } catch (erro) {
+        if (status) status.textContent = "Erro: " + erro.message;
+        cfgIpeaIndexar.disabled = false;
       }
     });
   }

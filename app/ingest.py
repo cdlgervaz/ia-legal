@@ -293,6 +293,60 @@ def sync_ipea(db: Database, progress: Optional[_Progress] = None) -> int:
     return total
 
 
+_index_pol_lock = threading.Lock()
+_index_pol_state = {
+    "running": False,
+    "processados": 0,
+    "total": 0,
+    "mensagens": [],
+    "concluido_em": None,
+}
+
+
+def get_index_pol_state() -> dict:
+    with _index_pol_lock:
+        return copy.deepcopy(_index_pol_state)
+
+
+def _index_pol_update(**kwargs) -> None:
+    with _index_pol_lock:
+        _index_pol_state.update(kwargs)
+
+
+def indexar_politicas(db: Database, rag) -> int:
+    itens = db.list_politicas(limit=100000)
+    total = len(itens)
+    _index_pol_update(running=True, processados=0, total=total, mensagens=[], concluido_em=None)
+    processados = 0
+    lote = 100
+    try:
+        for inicio in range(0, total, lote):
+            rag.index_politicas(itens[inicio : inicio + lote])
+            processados = min(inicio + lote, total)
+            _index_pol_update(processados=processados)
+    finally:
+        _index_pol_update(running=False, processados=processados, concluido_em=_now())
+    return processados
+
+
+def start_indexar_politicas_background() -> bool:
+    if get_index_pol_state()["running"]:
+        return False
+
+    def _run():
+        settings = get_settings()
+        db = Database(settings.db_path)
+        rag = get_rag_index()
+        try:
+            indexar_politicas(db, rag)
+        except Exception as exc:
+            _index_pol_update(running=False, mensagens=[f"erro: {exc}"], concluido_em=_now())
+
+    thread = threading.Thread(target=_run, daemon=True)
+    thread.start()
+    return True
+
+
 def run_sync(req: SyncRequest, progress_cb: Optional[Callable] = None) -> SyncResponse:
     settings = get_settings()
     db = Database(settings.db_path)

@@ -16,7 +16,12 @@ from .documentos import (
     importar,
     start_import_background,
 )
-from .ingest import get_sync_state, start_sync_background
+from .ingest import (
+    get_index_pol_state,
+    get_sync_state,
+    start_indexar_politicas_background,
+    start_sync_background,
+)
 from .llm import LLMClient, LLMNotConfigured
 from .models import (
     ChatRequest,
@@ -140,6 +145,18 @@ def politicas_sincronizar() -> dict:
     from .ingest import sync_ipea
 
     return {"inseridos": sync_ipea(_db())}
+
+
+@app.post("/api/politicas/indexar/background")
+def politicas_indexar_background() -> dict:
+    if not start_indexar_politicas_background():
+        raise HTTPException(status_code=409, detail="Indexação já em andamento.")
+    return {"status": "iniciado", "estado": get_index_pol_state()}
+
+
+@app.get("/api/politicas/indexar/status")
+def politicas_indexar_status() -> dict:
+    return get_index_pol_state()
 
 
 @app.get("/api/politicas/{politica_id}")
