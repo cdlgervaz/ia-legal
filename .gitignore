@@ -6,4 +6,5 @@ __pycache__/
 .env
 *.log
 .DS_Store
+data/chroma/chroma.sqlite3
 data/documentos/

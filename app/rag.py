@@ -17,6 +17,25 @@ def _sem_acento(texto: str) -> str:
     return sem_acento(texto).lower()
 
 
+def montar_indice_se_preciso(chroma_path) -> None:
+    from pathlib import Path
+    import glob
+
+    destino = Path(chroma_path) / "chroma.sqlite3"
+    if destino.exists():
+        return
+    partes = sorted(
+        glob.glob(str(Path(chroma_path).parent / "chroma_parts" / "chroma.sqlite3.part.*"))
+    )
+    if not partes:
+        return
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    with open(destino, "wb") as saida:
+        for parte in partes:
+            with open(parte, "rb") as entrada:
+                saida.write(entrada.read())
+
+
 class RagIndex:
     def __init__(self, db: Database):
         self.db = db
@@ -41,6 +60,7 @@ class RagIndex:
     def _get_collection(self):
         if self._collection is not None:
             return self._collection
+        montar_indice_se_preciso(self.settings.chroma_path)
         self._client = chromadb.PersistentClient(path=str(self.settings.chroma_path))
         self._collection = self._client.get_or_create_collection(
             name=COLLECTION_NAME,

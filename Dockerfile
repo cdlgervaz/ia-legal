@@ -18,6 +18,11 @@ COPY app ./app
 COPY scripts ./scripts
 COPY data ./data
 
+RUN if [ -d data/chroma_parts ]; then \
+        mkdir -p data/chroma && \
+        cat data/chroma_parts/chroma.sqlite3.part.* > data/chroma/chroma.sqlite3; \
+    fi
+
 RUN adduser --disabled-password --gecos "" appuser \
     && chown -R appuser:appuser /app
 
