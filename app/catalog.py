@@ -45,7 +45,40 @@ CATALOGO: List[DocumentoCatalogo] = [
         temas=["financiamento", "gestao", "formacao_docente", "avaliacao"],
         vigente=False,
         situacao="Plano decenal encerrado em 2024.",
-        substituido_por="Novo Plano Nacional de Educação (em tramitação no Congresso Nacional)",
+        substituido_por="Plano Nacional de Educação 2026-2036",
+    ),
+    DocumentoCatalogo(
+        id="pne-10172-2001",
+        titulo="Lei nº 10.172/2001 - Plano Nacional de Educação (PNE 2001-2010)",
+        tipo="Lei",
+        ano=2001,
+        orgao="Congresso Nacional",
+        descricao=(
+            "Aprova o Plano Nacional de Educação com vigência de dez anos (2001-2010), com "
+            "diagnóstico, diretrizes, objetivos e metas para todos os níveis de ensino."
+        ),
+        url="https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10172.htm",
+        formato="html",
+        temas=["financiamento", "gestao", "formacao_docente", "avaliacao"],
+        vigente=False,
+        situacao="Plano decenal encerrado em 2010.",
+        substituido_por="Lei nº 13.005/2014 (PNE 2014-2024)",
+    ),
+    DocumentoCatalogo(
+        id="pne-2026-2036",
+        titulo="Plano Nacional de Educação (PNE) 2026-2036",
+        tipo="Plano",
+        ano=2026,
+        orgao="Ministério da Educação",
+        descricao=(
+            "Novo Plano Nacional de Educação, com diretrizes, metas e estratégias para o decênio "
+            "2026-2036, sucedendo o PNE 2014-2024."
+        ),
+        url="https://www.gov.br/mec/pt-br/pne/documentos/novo-plano-nacional-de-educacao-pne-2026-2036.pdf",
+        formato="pdf",
+        temas=["financiamento", "gestao", "formacao_docente", "avaliacao", "curriculo"],
+        vigente=True,
+        situacao="Vigente (decênio 2026-2036); sucede o PNE 2014-2024.",
     ),
     DocumentoCatalogo(
         id="pned-14533-2023",

@@ -26,7 +26,13 @@ TRILHAS: List[dict] = [
             "O que o PNE previa para o financiamento e qual o prazo?",
         ],
         "consulta": "financiamento da educação FUNDEB recursos vinculados",
-        "documentos": ["cf-1988", "fundeb-14113-2020", "pne-13005-2014"],
+        "documentos": [
+            "cf-1988",
+            "fundeb-14113-2020",
+            "pne-10172-2001",
+            "pne-13005-2014",
+            "pne-2026-2036",
+        ],
     },
     {
         "id": "curriculo",
@@ -78,7 +84,12 @@ TRILHAS: List[dict] = [
             "O que acontece após o término do PNE 2014-2024?",
         ],
         "consulta": "avaliação educacional metas plano nacional de educação",
-        "documentos": ["pne-13005-2014", "parecer-cne-ceb-7-2010"],
+        "documentos": [
+            "pne-10172-2001",
+            "pne-13005-2014",
+            "pne-2026-2036",
+            "parecer-cne-ceb-7-2010",
+        ],
     },
     {
         "id": "tecnologia-ia",
