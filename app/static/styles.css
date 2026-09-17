@@ -368,4 +368,5 @@ footer p { margin: 4px 0; }
 .trilha-card em { font-size: 12px; color: var(--muted); font-style: normal; }
 .trilhas-docs { display: flex; flex-direction: column; gap: 8px; }
 .trilha-doc { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; background: #fff; }
+.export-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 

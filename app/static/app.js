@@ -44,12 +44,55 @@ function dataAcesso() {
 }
 
 function citacao(prop) {
-  const casa = prop.casa === "Senado" ? "Senado Federal" : "Câmara dos Deputados";
-  const local = "Brasília, DF";
   const ano = prop.ano || "";
-  const ementa = prop.ementa ? `${prop.ementa} ` : "";
   const link = prop.url ? `Disponível em: <${prop.url}>. ` : "";
-  return `BRASIL. ${casa}. ${prop.tipo} ${prop.numero}/${ano}. ${ementa}${local}: ${casa}, ${ano}. ${link}Acesso em: ${dataAcesso()}.`;
+  const acesso = `Acesso em: ${dataAcesso()}.`;
+  if (prop.casa === "Câmara" || prop.casa === "Senado") {
+    const casa = prop.casa === "Senado" ? "Senado Federal" : "Câmara dos Deputados";
+    const ementa = prop.ementa ? `${prop.ementa} ` : "";
+    return `BRASIL. ${casa}. ${prop.tipo} ${prop.numero}/${ano}. ${ementa}Brasília, DF: ${casa}, ${ano}. ${link}${acesso}`;
+  }
+  if (prop.casa === "IPEA") {
+    const titulo = prop.ementa || prop.tipo;
+    return `INSTITUTO DE PESQUISA ECONÔMICA APLICADA (IPEA). ${titulo}. Catálogo de Políticas Públicas. ${ano}. ${link}${acesso}`;
+  }
+  const titulo = prop.ementa || `${prop.tipo} ${prop.numero}/${ano}`.trim();
+  return `BRASIL. ${prop.casa}. ${titulo}. ${ano}. ${link}${acesso}`;
+}
+
+function referenciasAbnt(hits) {
+  return (hits || []).map((h) => citacao(h.proposicao)).join("\n\n");
+}
+
+function referenciasRis(hits) {
+  const blocos = (hits || []).map((h) => {
+    const p = h.proposicao;
+    const tipo = p.casa === "IPEA" ? "RPRT" : "GEN";
+    const autor = p.casa === "IPEA" ? "Instituto de Pesquisa Econômica Aplicada (IPEA)" : `Brasil. ${p.casa}`;
+    const linhas = [
+      `TY  - ${tipo}`,
+      `TI  - ${(h.titulo || p.ementa || "").replace(/\s+/g, " ").trim()}`,
+      `AU  - ${autor}`,
+      `PY  - ${p.ano || ""}`,
+      p.situacao ? `N1  - ${p.situacao}` : "",
+      p.url ? `UR  - ${p.url}` : "",
+      "ER  - ",
+    ];
+    return linhas.filter(Boolean).join("\n");
+  });
+  return blocos.join("\n\n");
+}
+
+function baixarArquivo(nome, conteudo, tipo) {
+  const blob = new Blob([conteudo], { type: tipo || "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nome;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function copiar(texto, botao) {
@@ -103,6 +146,7 @@ function resultCard(hit) {
           ${p.url ? `<a class="btn ghost" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Abrir oficial</a>` : ""}
           <button class="btn ghost" data-doc="${escapeHtml(hit.documento_id)}" type="button">Buscar no documento</button>
           <button class="btn ghost" data-perguntar-doc="${escapeHtml(hit.documento_id)}" type="button">Perguntar sobre ele</button>
+          <button class="btn ghost" data-copy="${escapeHtml(p.id)}" type="button">Copiar citação</button>
         </div>
       </article>`;
   }
@@ -133,6 +177,7 @@ function resultCard(hit) {
 }
 
 const cache = {};
+let ultimosResultados = [];
 
 function ligarAcoes(container) {
   container.querySelectorAll("[data-copy]").forEach((botao) => {
@@ -175,6 +220,7 @@ async function executarBusca(evento) {
     const body = { query, limit: 12, categoria };
     const data = await api("/api/search", { method: "POST", body: JSON.stringify(body) });
     guardar(data.resultados);
+    ultimosResultados = data.resultados || [];
     modo.textContent = `${data.total} resultado(s) - busca ${data.modo}${categoria ? " · " + categoria : ""}.`;
     location.hash = `consulta=${encodeURIComponent(query)}`;
     if (!data.resultados.length) {
@@ -1122,6 +1168,24 @@ function ligarEventos() {
   const trilhaVoltar = $("#trilha-voltar");
   if (trilhaVoltar) {
     trilhaVoltar.addEventListener("click", () => $("#trilha-detalhe").classList.add("hidden"));
+  }
+  const copiarAbnt = $("#copiar-abnt");
+  if (copiarAbnt) {
+    copiarAbnt.addEventListener("click", () => {
+      if (!ultimosResultados.length) return;
+      copiar(referenciasAbnt(ultimosResultados), copiarAbnt);
+    });
+  }
+  const baixarRis = $("#baixar-ris");
+  if (baixarRis) {
+    baixarRis.addEventListener("click", () => {
+      if (!ultimosResultados.length) return;
+      baixarArquivo(
+        "referencias-iagora.ris",
+        referenciasRis(ultimosResultados),
+        "application/x-research-info-systems"
+      );
+    });
   }
   $("#search-form").addEventListener("submit", executarBusca);
   $("#chat-form").addEventListener("submit", enviarPergunta);
