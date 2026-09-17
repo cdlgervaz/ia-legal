@@ -703,7 +703,10 @@ function mostrarAba(nome) {
   if (nome === "acompanhar") carregarAcompanhamento();
   if (nome === "config") atualizarConfigInfo();
   if (nome === "documentos") carregarDocumentos();
-  if (nome === "areas") carregarAreas();
+  if (nome === "areas") {
+    carregarAreas();
+    carregarTimeline();
+  }
   if (nome === "timeline") carregarTimeline();
 }
 
@@ -1104,6 +1107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   await carregarTemas();
   await carregarDocumentosFiltro();
   await carregarDocumentos();
+  carregarAreas();
+  carregarTimeline();
   atualizarStatus();
   carregarAcompanhamento();
 });

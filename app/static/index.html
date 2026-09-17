@@ -30,10 +30,9 @@
   </div>
 
   <nav class="tabs">
-    <button data-tab="perguntar" class="active">Conversar</button>
+    <button data-tab="areas" class="active">Áreas temáticas</button>
+    <button data-tab="perguntar">Conversar</button>
     <button data-tab="buscar">Consulta</button>
-    <button data-tab="areas">Áreas temáticas</button>
-    <button data-tab="timeline">Linha do tempo</button>
     <button data-tab="documentos">Documentos</button>
     <button data-tab="acompanhar">Acompanhar andamento</button>
     <button data-tab="config">Configurações</button>
@@ -58,7 +57,7 @@
       <div id="search-results" class="results"></div>
     </section>
 
-    <section id="tab-perguntar" class="tab-panel active">
+    <section id="tab-perguntar" class="tab-panel">
       <div class="chat-hero">
         <div class="chat-hero-logo">IA</div>
         <h2>Como posso ajudar hoje?</h2>
@@ -93,7 +92,7 @@
       </div>
     </section>
 
-    <section id="tab-areas" class="tab-panel">
+    <section id="tab-areas" class="tab-panel active">
       <div class="card">
         <h2 style="margin-top:0">Áreas temáticas</h2>
         <p class="hint">Políticas públicas federais catalogadas pelo IPEA, agrupadas por área. Clique em uma área para ver as políticas — e se continuam em vigor ou foram descontinuadas.</p>
@@ -105,12 +104,10 @@
         <button class="btn secondary" id="areas-voltar" type="button">Voltar às áreas</button>
         <div id="areas-politicas" class="politicas-lista"></div>
       </div>
-    </section>
 
-    <section id="tab-timeline" class="tab-panel">
-      <div class="card">
+      <div class="card" style="margin-top:18px">
         <h2 style="margin-top:0">Linha do tempo</h2>
-        <p class="hint">Políticas públicas federais por década, com indicação de vigente ou descontinuada. Fonte: Catálogo de Políticas Públicas do IPEA.</p>
+        <p class="hint">As mesmas políticas, por década, com indicação de vigente ou descontinuada. Fonte: Catálogo de Políticas Públicas do IPEA.</p>
         <div id="timeline-decadas" class="chip-row"></div>
       </div>
       <div id="timeline-detalhe" class="card hidden">
@@ -394,6 +391,6 @@
     </p>
   </footer>
 
-  <script src="/static/app.js?v=8"></script>
+  <script src="/static/app.js?v=9"></script>
 </body>
 </html>
