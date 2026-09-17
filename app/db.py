@@ -95,6 +95,23 @@ CREATE TABLE IF NOT EXISTS politicas (
 CREATE INDEX IF NOT EXISTS idx_pol_ano ON politicas(ano);
 CREATE INDEX IF NOT EXISTS idx_pol_area ON politicas(area_nome);
 CREATE INDEX IF NOT EXISTS idx_pol_vigente ON politicas(vigente);
+
+CREATE TABLE IF NOT EXISTS indicadores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    indicador TEXT NOT NULL,
+    ano INTEGER,
+    localidade TEXT,
+    uf TEXT,
+    rede TEXT,
+    valor REAL,
+    unidade TEXT,
+    fonte TEXT,
+    url TEXT,
+    UNIQUE(indicador, ano, localidade, rede)
+);
+CREATE INDEX IF NOT EXISTS idx_ind_indicador ON indicadores(indicador);
+CREATE INDEX IF NOT EXISTS idx_ind_ano ON indicadores(ano);
+CREATE INDEX IF NOT EXISTS idx_ind_uf ON indicadores(uf);
 """
 
 
@@ -710,6 +727,124 @@ class Database:
             "por_area": por_area,
             "por_decada": por_decada,
         }
+
+    def upsert_indicadores(self, itens: List[dict]) -> int:
+        if not itens:
+            return 0
+        with self.connect() as conn:
+            conn.executemany(
+                """
+                INSERT INTO indicadores
+                    (indicador, ano, localidade, uf, rede, valor, unidade, fonte, url)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(indicador, ano, localidade, rede) DO UPDATE SET
+                    valor=excluded.valor,
+                    unidade=excluded.unidade,
+                    fonte=excluded.fonte,
+                    url=excluded.url
+                """,
+                [
+                    (
+                        item.get("indicador"),
+                        item.get("ano"),
+                        item.get("localidade"),
+                        item.get("uf"),
+                        item.get("rede") or "",
+                        item.get("valor"),
+                        item.get("unidade"),
+                        item.get("fonte"),
+                        item.get("url"),
+                    )
+                    for item in itens
+                ],
+            )
+        return len(itens)
+
+    def _row_to_indicador(self, row: sqlite3.Row) -> dict:
+        return {
+            "id": row["id"],
+            "indicador": row["indicador"],
+            "ano": row["ano"],
+            "localidade": row["localidade"],
+            "uf": row["uf"],
+            "rede": row["rede"],
+            "valor": row["valor"],
+            "unidade": row["unidade"],
+            "fonte": row["fonte"],
+            "url": row["url"],
+        }
+
+    def list_indicadores(
+        self,
+        indicador: Optional[str] = None,
+        uf: Optional[str] = None,
+        localidade: Optional[str] = None,
+        ano_de: Optional[int] = None,
+        ano_ate: Optional[int] = None,
+        limit: int = 300,
+        offset: int = 0,
+    ) -> List[dict]:
+        clauses: List[str] = []
+        params: List = []
+        if indicador:
+            clauses.append("indicador = ?")
+            params.append(indicador)
+        if uf:
+            clauses.append("uf = ?")
+            params.append(uf)
+        if localidade:
+            clauses.append("localidade = ?")
+            params.append(localidade)
+        if ano_de is not None:
+            clauses.append("ano >= ?")
+            params.append(ano_de)
+        if ano_ate is not None:
+            clauses.append("ano <= ?")
+            params.append(ano_ate)
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        params.extend([limit, offset])
+        with self.connect() as conn:
+            rows = conn.execute(
+                f"SELECT * FROM indicadores {where} "
+                "ORDER BY indicador, localidade, ano LIMIT ? OFFSET ?",
+                params,
+            ).fetchall()
+        return [self._row_to_indicador(r) for r in rows]
+
+    def indicadores_catalogo(self) -> List[dict]:
+        with self.connect() as conn:
+            rows = conn.execute(
+                "SELECT indicador, COUNT(*) AS total, MIN(ano) AS ano_de, MAX(ano) AS ano_ate, "
+                "COUNT(DISTINCT localidade) AS locais FROM indicadores GROUP BY indicador ORDER BY indicador"
+            ).fetchall()
+        return [
+            {
+                "indicador": r["indicador"],
+                "total": r["total"],
+                "ano_de": r["ano_de"],
+                "ano_ate": r["ano_ate"],
+                "locais": r["locais"],
+            }
+            for r in rows
+        ]
+
+    def ufs_indicadores(self) -> List[str]:
+        with self.connect() as conn:
+            rows = conn.execute(
+                "SELECT DISTINCT uf FROM indicadores WHERE uf IS NOT NULL AND uf <> '' ORDER BY uf"
+            ).fetchall()
+        return [r["uf"] for r in rows]
+
+    def indicadores_stats(self) -> dict:
+        with self.connect() as conn:
+            total = conn.execute("SELECT COUNT(*) AS c FROM indicadores").fetchone()["c"]
+            indicadores = conn.execute(
+                "SELECT COUNT(DISTINCT indicador) AS c FROM indicadores"
+            ).fetchone()["c"]
+            ufs = conn.execute(
+                "SELECT COUNT(DISTINCT uf) AS c FROM indicadores WHERE uf IS NOT NULL AND uf <> ''"
+            ).fetchone()["c"]
+        return {"total": total, "indicadores": indicadores, "ufs": ufs}
 
 
 def _tokenize(text: str) -> List[str]:

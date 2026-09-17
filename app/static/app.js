@@ -755,6 +755,7 @@ function mostrarAba(nome) {
     carregarTimeline();
   }
   if (nome === "trilhas") carregarTrilhas();
+  if (nome === "indicadores") carregarIndicadores();
   if (nome === "timeline") carregarTimeline();
 }
 
@@ -1152,6 +1153,116 @@ function aplicarHash() {
   }
 }
 
+function preencherSelect(seletor, valores) {
+  const el = $(seletor);
+  if (!el) return;
+  const atual = el.value;
+  el.innerHTML =
+    '<option value="">Todos</option>' +
+    (valores || []).map((v) => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+  if (atual) el.value = atual;
+}
+
+async function carregarIndicadores() {
+  try {
+    const catalogo = await api("/api/indicadores/catalogo");
+    preencherSelect("#ind-indicador", (catalogo.indicadores || []).map((i) => i.indicador));
+    preencherSelect("#ind-uf", catalogo.ufs || []);
+  } catch (erro) {
+    /* silencioso */
+  }
+  carregarSerieIndicadores();
+}
+
+function renderGraficoIndicadores(itens) {
+  const alvo = $("#ind-grafico");
+  if (!alvo) return;
+  const validos = itens.filter((i) => i.valor != null && i.ano);
+  const amostra = validos.slice(0, 24);
+  if (!amostra.length) {
+    alvo.innerHTML = "";
+    return;
+  }
+  const max = Math.max(1, ...amostra.map((i) => Math.abs(i.valor)));
+  alvo.innerHTML = amostra
+    .map(
+      (i) => `<div class="barra-linha">
+        <span class="barra-rotulo">${escapeHtml((i.localidade || "") + " " + (i.ano || ""))}</span>
+        <span class="barra-trilho"><span class="barra-preenche" style="width:${Math.round((Math.abs(i.valor) / max) * 100)}%"></span></span>
+        <span class="barra-valor">${i.valor}</span>
+      </div>`
+    )
+    .join("");
+}
+
+async function carregarSerieIndicadores() {
+  const tbody = $("#ind-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = `<tr><td colspan="6"><span class="spinner"></span>Carregando...</td></tr>`;
+  const params = new URLSearchParams();
+  if ($("#ind-indicador").value) params.set("indicador", $("#ind-indicador").value);
+  if ($("#ind-uf").value) params.set("uf", $("#ind-uf").value);
+  if ($("#ind-ano-de").value) params.set("ano_de", $("#ind-ano-de").value);
+  if ($("#ind-ano-ate").value) params.set("ano_ate", $("#ind-ano-ate").value);
+  params.set("limit", "2000");
+  try {
+    const data = await api(`/api/indicadores?${params.toString()}`);
+    const itens = data.itens || [];
+    if (!itens.length) {
+      tbody.innerHTML = `<tr><td colspan="6" class="hint">Sem dados. Importe um CSV de indicadores oficiais acima.</td></tr>`;
+      $("#ind-grafico").innerHTML = "";
+      return;
+    }
+    tbody.innerHTML = itens
+      .map(
+        (i) => `<tr>
+          <td>${escapeHtml(i.indicador)}</td>
+          <td>${i.ano == null ? "" : i.ano}</td>
+          <td>${escapeHtml(i.localidade || "")}</td>
+          <td>${escapeHtml(i.rede || "")}</td>
+          <td>${i.valor == null ? "" : i.valor}</td>
+          <td>${escapeHtml(i.fonte || "")}</td>
+        </tr>`
+      )
+      .join("");
+    renderGraficoIndicadores(itens);
+  } catch (erro) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="alert error">Erro: ${escapeHtml(erro.message)}</div></td></tr>`;
+  }
+}
+
+async function importarIndicadores() {
+  const status = $("#ind-status");
+  const csv = $("#ind-csv").value;
+  if (!csv.trim()) {
+    status.textContent = "Cole o CSV primeiro.";
+    return;
+  }
+  status.textContent = "Importando...";
+  try {
+    const data = await api("/api/indicadores/importar", {
+      method: "POST",
+      body: JSON.stringify({ csv }),
+    });
+    status.textContent = `${data.importados} valores importados.${
+      data.erros && data.erros.length ? " " + data.erros.join(" ") : ""
+    }`;
+    await carregarIndicadores();
+  } catch (erro) {
+    status.textContent = "Erro: " + erro.message;
+  }
+}
+
+async function baixarModeloIndicadores(evento) {
+  if (evento) evento.preventDefault();
+  try {
+    const data = await api("/api/indicadores/modelo");
+    baixarArquivo("modelo-indicadores.csv", data.csv, "text/csv;charset=utf-8");
+  } catch (erro) {
+    /* silencioso */
+  }
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
     botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
@@ -1169,6 +1280,12 @@ function ligarEventos() {
   if (trilhaVoltar) {
     trilhaVoltar.addEventListener("click", () => $("#trilha-detalhe").classList.add("hidden"));
   }
+  const indAtualizar = $("#ind-atualizar");
+  if (indAtualizar) indAtualizar.addEventListener("click", carregarSerieIndicadores);
+  const indImportar = $("#ind-importar");
+  if (indImportar) indImportar.addEventListener("click", importarIndicadores);
+  const indModelo = $("#baixar-modelo-ind");
+  if (indModelo) indModelo.addEventListener("click", baixarModeloIndicadores);
   const copiarAbnt = $("#copiar-abnt");
   if (copiarAbnt) {
     copiarAbnt.addEventListener("click", () => {

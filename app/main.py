@@ -35,6 +35,8 @@ from .models import (
 )
 from .rag import get_rag_index
 from .temas import lista_temas
+from .indicadores import TEMPLATE as TEMPLATE_INDICADORES
+from .indicadores import parse_csv
 from .trilhas import get as get_trilha
 from .trilhas import listar as listar_trilhas
 
@@ -167,6 +169,52 @@ def politica_detalhe(politica_id: int) -> dict:
     if item is None:
         raise HTTPException(status_code=404, detail="Política não encontrada.")
     return item
+
+
+@app.get("/api/indicadores/catalogo")
+def indicadores_catalogo() -> dict:
+    db = _db()
+    return {"indicadores": db.indicadores_catalogo(), "ufs": db.ufs_indicadores()}
+
+
+@app.get("/api/indicadores/stats")
+def indicadores_stats() -> dict:
+    return _db().indicadores_stats()
+
+
+@app.get("/api/indicadores/modelo")
+def indicadores_modelo() -> dict:
+    return {"csv": TEMPLATE_INDICADORES}
+
+
+@app.get("/api/indicadores")
+def listar_indicadores(
+    indicador: Optional[str] = None,
+    uf: Optional[str] = None,
+    localidade: Optional[str] = None,
+    ano_de: Optional[int] = None,
+    ano_ate: Optional[int] = None,
+    limit: int = Query(default=300, le=2000),
+    offset: int = Query(default=0, ge=0),
+) -> dict:
+    itens = _db().list_indicadores(
+        indicador=indicador,
+        uf=uf,
+        localidade=localidade,
+        ano_de=ano_de,
+        ano_ate=ano_ate,
+        limit=limit,
+        offset=offset,
+    )
+    return {"total": len(itens), "itens": itens}
+
+
+@app.post("/api/indicadores/importar")
+def importar_indicadores(payload: dict) -> dict:
+    texto = (payload or {}).get("csv") or ""
+    itens, erros = parse_csv(texto)
+    total = _db().upsert_indicadores(itens) if itens else 0
+    return {"importados": total, "erros": erros}
 
 
 @app.get("/api/temas")

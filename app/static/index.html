@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>IAgora, profe? — Acervo de Políticas Educacionais</title>
-  <link rel="stylesheet" href="/static/styles.css?v=11" />
+  <link rel="stylesheet" href="/static/styles.css?v=12" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
@@ -39,6 +39,7 @@
     <button data-tab="perguntar">Conversar</button>
     <button data-tab="buscar">Consulta</button>
     <button data-tab="documentos">Documentos</button>
+    <button data-tab="indicadores">Indicadores</button>
     <button data-tab="acompanhar">Acompanhar andamento</button>
     <button data-tab="config">Configurações</button>
   </nav>
@@ -105,8 +106,8 @@
       <div class="card">
         <h2 style="margin-top:0">Áreas temáticas</h2>
         <p class="hint">Políticas públicas federais catalogadas pelo IPEA, agrupadas por área. Clique em uma área para ver as políticas — e se continuam em vigor ou foram descontinuadas.</p>
-        <div id="areas-grafico" class="barras" aria-hidden="true"></div>
         <div id="areas-lista" class="areas-grid"></div>
+        <div id="areas-grafico" class="barras" aria-hidden="true"></div>
       </div>
       <div id="areas-detalhe" class="card hidden">
         <h2 id="areas-titulo" style="margin-top:0"></h2>
@@ -228,6 +229,51 @@
           </thead>
           <tbody id="a-tbody"></tbody>
         </table>
+      </div>
+    </section>
+
+    <section id="tab-indicadores" class="tab-panel">
+      <div class="card">
+        <h2 style="margin-top:0">Indicadores educacionais</h2>
+        <p class="hint">Dados oficiais (ex.: IDEB, Censo Escolar). Importe o arquivo oficial do INEP convertido para CSV. <a href="#" id="baixar-modelo-ind">Baixar modelo</a>.</p>
+        <div class="filters" style="margin-top:0">
+          <label>Indicador
+            <select id="ind-indicador"><option value="">Todos</option></select>
+          </label>
+          <label>UF
+            <select id="ind-uf"><option value="">Todas</option></select>
+          </label>
+          <label>Ano de
+            <input id="ind-ano-de" type="number" min="1900" max="2100" />
+          </label>
+          <label>Ano até
+            <input id="ind-ano-ate" type="number" min="1900" max="2100" />
+          </label>
+          <label>&nbsp;
+            <button class="btn secondary" id="ind-atualizar" type="button">Ver série</button>
+          </label>
+        </div>
+      </div>
+      <div class="card">
+        <h3 id="ind-titulo" style="margin-top:0">Série</h3>
+        <div id="ind-grafico" class="barras"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Indicador</th><th>Ano</th><th>Localidade</th><th>Rede</th><th>Valor</th><th>Fonte</th></tr>
+            </thead>
+            <tbody id="ind-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Importar indicadores (CSV)</h3>
+        <p class="hint">Colunas: indicador, ano, localidade, uf, rede, valor, unidade, fonte, url. Separador vírgula ou ponto e vírgula.</p>
+        <textarea id="ind-csv" rows="6" placeholder="indicador,ano,localidade,uf,rede,valor,unidade,fonte,url" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit"></textarea>
+        <div style="margin-top:10px">
+          <button class="btn" id="ind-importar" type="button">Importar CSV</button>
+          <span class="hint" id="ind-status"></span>
+        </div>
       </div>
     </section>
 
@@ -445,6 +491,6 @@
     </p>
   </footer>
 
-  <script src="/static/app.js?v=11"></script>
+  <script src="/static/app.js?v=12"></script>
 </body>
 </html>
