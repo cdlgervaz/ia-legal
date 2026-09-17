@@ -33,9 +33,16 @@ if [ ! -d .git ]; then
   git init -b main >/dev/null
 fi
 
+if [ -f "data/chroma/chroma.sqlite3" ]; then
+  echo "[info] Empacotando o indice em partes (abaixo de 100 MB)..."
+  ./scripts/empacotar_indice.sh
+elif [ ! -d "data/chroma_parts" ]; then
+  echo "[aviso] Indice e partes nao encontrados; seguindo sem empacotar."
+fi
+
 git add -A
 if ! git diff --cached --quiet; then
-  git commit -m "IA Legal: busca e acompanhamento de legislacao de tecnologia" >/dev/null
+  git commit -m "IAgora, profe?: acervo de politicas educacionais" >/dev/null
 fi
 
 if git remote get-url origin >/dev/null 2>&1; then
