@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>IAgora, profe? — Acervo de Políticas Educacionais</title>
-  <link rel="stylesheet" href="/static/styles.css?v=6" />
+  <link rel="stylesheet" href="/static/styles.css?v=10" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
   <header class="topbar">
     <div class="brand">
       <div class="logo">IA</div>
@@ -16,6 +17,9 @@
       </div>
     </div>
     <div class="topbar-right">
+      <form id="global-form" class="global-search" role="search">
+        <input id="global-input" type="search" placeholder="Buscar em todo o acervo..." aria-label="Buscar em todo o acervo" />
+      </form>
       <button class="btn ghost topbar-btn" id="abrir-ajuda" type="button">Como usar</button>
       <div class="status-badge" id="status-badge">
         <span class="dot off" id="status-dot"></span><span id="status-text">Carregando...</span>
@@ -31,6 +35,7 @@
 
   <nav class="tabs">
     <button data-tab="areas" class="active">Áreas temáticas</button>
+    <button data-tab="trilhas">Trilhas de estudo</button>
     <button data-tab="perguntar">Conversar</button>
     <button data-tab="buscar">Consulta</button>
     <button data-tab="documentos">Documentos</button>
@@ -38,7 +43,7 @@
     <button data-tab="config">Configurações</button>
   </nav>
 
-  <main>
+  <main id="main-content">
     <section id="tab-buscar" class="tab-panel">
       <div class="card">
         <h2 style="margin-top:0">Buscar no acervo</h2>
@@ -96,6 +101,7 @@
       <div class="card">
         <h2 style="margin-top:0">Áreas temáticas</h2>
         <p class="hint">Políticas públicas federais catalogadas pelo IPEA, agrupadas por área. Clique em uma área para ver as políticas — e se continuam em vigor ou foram descontinuadas.</p>
+        <div id="areas-grafico" class="barras" aria-hidden="true"></div>
         <div id="areas-lista" class="areas-grid"></div>
       </div>
       <div id="areas-detalhe" class="card hidden">
@@ -107,13 +113,57 @@
 
       <div class="card" style="margin-top:18px">
         <h2 style="margin-top:0">Linha do tempo</h2>
-        <p class="hint">As mesmas políticas, por década, com indicação de vigente ou descontinuada. Fonte: Catálogo de Políticas Públicas do IPEA.</p>
+        <p class="hint">Marcos legais do acervo e as políticas por década, com indicação de vigente ou descontinuada.</p>
+        <div id="timeline-marcos" class="marcos"></div>
         <div id="timeline-decadas" class="chip-row"></div>
       </div>
       <div id="timeline-detalhe" class="card hidden">
         <h2 id="timeline-titulo" style="margin-top:0"></h2>
         <button class="btn secondary" id="timeline-voltar" type="button">Voltar às décadas</button>
         <div id="timeline-politicas" class="politicas-lista"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2 style="margin-top:0">Substituições de normas</h2>
+        <p class="hint">Documentos que foram substituídos e por qual norma — para acompanhar a evolução.</p>
+        <div id="substituicoes" class="substituicoes"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2 style="margin-top:0">Organização da educação no Brasil</h2>
+        <p class="hint">Quem faz o quê na oferta educacional (CF/88, arts. 205-214; LDB).</p>
+        <div class="areas-grid">
+          <div class="area-card"><strong>União</strong><span>Normas gerais, sistema federal, ensino superior federal e financiamento (FNDE).</span></div>
+          <div class="area-card"><strong>Estados e DF</strong><span>Sistema estadual, ensino médio e apoio técnico aos municípios.</span></div>
+          <div class="area-card"><strong>Municípios</strong><span>Educação infantil e ensino fundamental, transporte escolar.</span></div>
+          <div class="area-card"><strong>CNE</strong><span>Pareceres e resoluções (diretrizes curriculares, BNCC).</span></div>
+          <div class="area-card"><strong>MEC</strong><span>Política nacional e programas federais de educação.</span></div>
+          <div class="area-card"><strong>CAPES</strong><span>Pós-graduação e formação de docentes.</span></div>
+          <div class="area-card"><strong>INEP</strong><span>Avaliação: Censo Escolar, IDEB, Enem.</span></div>
+          <div class="area-card"><strong>Escolas e docentes</strong><span>Currículo em ação e prática pedagógica.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-trilhas" class="tab-panel">
+      <div class="card">
+        <h2 style="margin-top:0">Trilhas de estudo</h2>
+        <p class="hint">Roteiros por unidade da disciplina, com perguntas orientadoras e os principais documentos. Clique em uma trilha para começar.</p>
+        <div id="trilhas-lista" class="trilhas-grid"></div>
+      </div>
+      <div id="trilha-detalhe" class="card hidden">
+        <h2 id="trilha-titulo" style="margin-top:0"></h2>
+        <p id="trilha-descricao" class="hint"></p>
+        <h3 style="margin-bottom:6px">Perguntas orientadoras</h3>
+        <ul id="trilha-perguntas" class="guia-passos"></ul>
+        <h3 style="margin-bottom:6px">Documentos-chave</h3>
+        <div id="trilha-documentos" class="trilhas-docs"></div>
+        <div style="margin-top:14px">
+          <button class="btn" id="trilha-buscar" type="button">Ver políticas e projetos relacionados</button>
+          <button class="btn secondary" id="trilha-conversar" type="button">Conversar sobre esta trilha</button>
+          <button class="btn secondary" id="trilha-voltar" type="button">Voltar às trilhas</button>
+        </div>
+        <div id="trilha-resultados" class="results"></div>
       </div>
     </section>
 
@@ -391,6 +441,6 @@
     </p>
   </footer>
 
-  <script src="/static/app.js?v=9"></script>
+  <script src="/static/app.js?v=10"></script>
 </body>
 </html>

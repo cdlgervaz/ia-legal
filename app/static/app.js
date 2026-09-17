@@ -176,6 +176,7 @@ async function executarBusca(evento) {
     const data = await api("/api/search", { method: "POST", body: JSON.stringify(body) });
     guardar(data.resultados);
     modo.textContent = `${data.total} resultado(s) - busca ${data.modo}${categoria ? " · " + categoria : ""}.`;
+    location.hash = `consulta=${encodeURIComponent(query)}`;
     if (!data.resultados.length) {
       resultados.innerHTML = `<div class="alert info">Nenhum resultado. Importe os documentos na aba Documentos, sincronize a base nas Configurações ou reformule a consulta.</div>`;
       return;
@@ -707,6 +708,7 @@ function mostrarAba(nome) {
     carregarAreas();
     carregarTimeline();
   }
+  if (nome === "trilhas") carregarTrilhas();
   if (nome === "timeline") carregarTimeline();
 }
 
@@ -829,26 +831,90 @@ async function carregarAreas() {
   if (!alvo) return;
   alvo.innerHTML = `<div class="loading"><span class="spinner"></span>Carregando áreas...</div>`;
   try {
-    const stats = await api("/api/politicas/stats");
-    const areas = stats.por_area || [];
+    const [stats, docs] = await Promise.all([
+      api("/api/politicas/stats"),
+      api("/api/documentos"),
+    ]);
+    const areas = (stats.por_area || []).slice(0, 12);
+    const grafico = $("#areas-grafico");
+    if (grafico) {
+      const max = Math.max(1, ...areas.map((a) => a.total));
+      grafico.innerHTML = areas
+        .map(
+          (a) => `<div class="barra-linha">
+            <span class="barra-rotulo">${escapeHtml(a.area)}</span>
+            <span class="barra-trilho"><span class="barra-preenche" style="width:${Math.round((a.total / max) * 100)}%"></span></span>
+            <span class="barra-valor">${a.total}</span>
+          </div>`
+        )
+        .join("");
+    }
     if (!areas.length) {
       alvo.innerHTML = `<div class="alert info">Sem dados ainda. Vá em Configurações e clique em "Sincronizar Catálogo IPEA".</div>`;
-      return;
+    } else {
+      alvo.innerHTML = areas
+        .map(
+          (a) => `<button type="button" class="area-card" data-area="${escapeHtml(a.area)}">
+            <strong>${escapeHtml(a.area)}</strong>
+            <span>${a.total} políticas · ${a.vigentes} vigentes</span>
+          </button>`
+        )
+        .join("");
+      alvo.querySelectorAll(".area-card").forEach((botao) => {
+        botao.addEventListener("click", () => carregarPoliticasArea(botao.dataset.area));
+      });
     }
-    alvo.innerHTML = areas
-      .map(
-        (a) => `<button type="button" class="area-card" data-area="${escapeHtml(a.area)}">
-          <strong>${escapeHtml(a.area)}</strong>
-          <span>${a.total} políticas · ${a.vigentes} vigentes</span>
-        </button>`
-      )
-      .join("");
-    alvo.querySelectorAll(".area-card").forEach((botao) => {
-      botao.addEventListener("click", () => carregarPoliticasArea(botao.dataset.area));
-    });
+    renderSubstituicoes(docs.itens || []);
+    renderMarcos(docs.itens || []);
   } catch (erro) {
     alvo.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
   }
+}
+
+function renderSubstituicoes(itens) {
+  const alvo = $("#substituicoes");
+  if (!alvo) return;
+  const subs = itens.filter((d) => d.substituido_por);
+  if (!subs.length) {
+    alvo.innerHTML = `<p class="hint">Nenhuma substituição registrada no acervo.</p>`;
+    return;
+  }
+  subs.sort((a, b) => (a.ano || 0) - (b.ano || 0));
+  alvo.innerHTML = subs
+    .map(
+      (d) => `<div class="sub-card">
+        <span class="badge nao-vigente">Substituído</span>
+        <strong>${escapeHtml(d.titulo)}</strong>
+        <span class="sub-seta">→</span>
+        <span class="sub-novo">${escapeHtml(d.substituido_por)}</span>
+      </div>`
+    )
+    .join("");
+}
+
+function renderMarcos(itens) {
+  const alvo = $("#timeline-marcos");
+  if (!alvo) return;
+  const docs = itens.filter((d) => d.ano && d.ano >= 1900).sort((a, b) => a.ano - b.ano);
+  if (!docs.length) {
+    alvo.innerHTML = "";
+    return;
+  }
+  alvo.innerHTML = docs
+    .map(
+      (d) => `<div class="marco">
+        <span class="marco-ano">${d.ano}</span>
+        <span class="marco-titulo">${escapeHtml(d.titulo)}</span>
+        ${
+          d.vigente === true
+            ? `<span class="badge vigente">Vigente</span>`
+            : d.vigente === false
+              ? `<span class="badge nao-vigente">Substituído</span>`
+              : ""
+        }
+      </div>`
+    )
+    .join("");
 }
 
 async function carregarPoliticasArea(area) {
@@ -927,6 +993,119 @@ async function acompanharIndexacaoPoliticas() {
   }
 }
 
+async function carregarTrilhas() {
+  const alvo = $("#trilhas-lista");
+  if (!alvo) return;
+  alvo.innerHTML = `<div class="loading"><span class="spinner"></span>Carregando trilhas...</div>`;
+  try {
+    const data = await api("/api/trilhas");
+    const trilhas = data.trilhas || [];
+    alvo.innerHTML = trilhas
+      .map(
+        (t) => `<button type="button" class="trilha-card" data-trilha="${escapeHtml(t.id)}">
+          <strong>${escapeHtml(t.titulo)}</strong>
+          <span>${escapeHtml(t.descricao)}</span>
+          <em>${t.documentos.length} documentos · ${t.perguntas.length} perguntas orientadoras</em>
+        </button>`
+      )
+      .join("");
+    alvo.querySelectorAll(".trilha-card").forEach((botao) => {
+      botao.addEventListener("click", () => abrirTrilha(botao.dataset.trilha));
+    });
+  } catch (erro) {
+    alvo.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+let trilhaAtual = null;
+
+async function abrirTrilha(id) {
+  const detalhe = $("#trilha-detalhe");
+  detalhe.classList.remove("hidden");
+  $("#trilha-resultados").innerHTML = "";
+  try {
+    const t = await api(`/api/trilhas/${encodeURIComponent(id)}`);
+    trilhaAtual = t;
+    $("#trilha-titulo").textContent = t.titulo;
+    $("#trilha-descricao").textContent = t.descricao;
+    $("#trilha-perguntas").innerHTML = t.perguntas
+      .map((p) => `<li>${escapeHtml(p)}</li>`)
+      .join("");
+    $("#trilha-documentos").innerHTML = t.documentos
+      .map(
+        (d) => `<div class="trilha-doc">
+          <span class="tag tag-cat">${escapeHtml(d.categoria || String(d.ano || ""))}</span>
+          <strong>${escapeHtml(d.titulo)}</strong>
+          ${
+            d.vigente === true
+              ? `<span class="badge vigente">Vigente</span>`
+              : d.vigente === false
+                ? `<span class="badge nao-vigente">Substituído</span>`
+                : ""
+          }
+          ${d.substituido_por ? `<span class="hint">Substituído por: ${escapeHtml(d.substituido_por)}</span>` : ""}
+        </div>`
+      )
+      .join("");
+    location.hash = `trilha=${t.id}`;
+  } catch (erro) {
+    $("#trilha-titulo").textContent = "Trilha";
+    $("#trilha-resultados").innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+async function buscarTrilha() {
+  if (!trilhaAtual) return;
+  const alvo = $("#trilha-resultados");
+  alvo.innerHTML = `<div class="loading"><span class="spinner"></span>Buscando...</div>`;
+  try {
+    const data = await api("/api/search", {
+      method: "POST",
+      body: JSON.stringify({ query: trilhaAtual.consulta, limit: 10 }),
+    });
+    guardar(data.resultados);
+    alvo.innerHTML = data.total
+      ? data.resultados.map(resultCard).join("")
+      : `<div class="alert info">Nenhum resultado.</div>`;
+    ligarAcoes(alvo);
+  } catch (erro) {
+    alvo.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+function conversarTrilha() {
+  if (!trilhaAtual) return;
+  mostrarAba("perguntar");
+  const campo = $("#chat-input");
+  campo.value = trilhaAtual.perguntas[0] || `Explique o tema: ${trilhaAtual.titulo}`;
+  campo.focus();
+}
+
+function buscaGlobal(evento) {
+  if (evento) evento.preventDefault();
+  const termo = $("#global-input").value.trim();
+  if (!termo) return;
+  mostrarAba("buscar");
+  $("#search-input").value = termo;
+  executarBusca();
+}
+
+function aplicarHash() {
+  const bruto = (location.hash || "").replace(/^#/, "");
+  if (!bruto) return;
+  const params = new URLSearchParams(bruto);
+  const trilha = params.get("trilha");
+  const consulta = params.get("consulta");
+  if (trilha) {
+    mostrarAba("trilhas");
+    abrirTrilha(trilha);
+  } else if (consulta) {
+    mostrarAba("buscar");
+    $("#search-input").value = consulta;
+    executarBusca();
+  }
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
     botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
@@ -934,6 +1113,16 @@ function ligarTabs() {
 }
 
 function ligarEventos() {
+  const globalForm = $("#global-form");
+  if (globalForm) globalForm.addEventListener("submit", buscaGlobal);
+  const trilhaBuscar = $("#trilha-buscar");
+  if (trilhaBuscar) trilhaBuscar.addEventListener("click", buscarTrilha);
+  const trilhaConversar = $("#trilha-conversar");
+  if (trilhaConversar) trilhaConversar.addEventListener("click", conversarTrilha);
+  const trilhaVoltar = $("#trilha-voltar");
+  if (trilhaVoltar) {
+    trilhaVoltar.addEventListener("click", () => $("#trilha-detalhe").classList.add("hidden"));
+  }
   $("#search-form").addEventListener("submit", executarBusca);
   $("#chat-form").addEventListener("submit", enviarPergunta);
   $("#chat-input").addEventListener("keydown", (evento) => {
@@ -1109,6 +1298,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   await carregarDocumentos();
   carregarAreas();
   carregarTimeline();
+  carregarTrilhas();
   atualizarStatus();
   carregarAcompanhamento();
+  aplicarHash();
 });

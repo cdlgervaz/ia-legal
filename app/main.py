@@ -35,6 +35,8 @@ from .models import (
 )
 from .rag import get_rag_index
 from .temas import lista_temas
+from .trilhas import get as get_trilha
+from .trilhas import listar as listar_trilhas
 
 settings = get_settings()
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -170,6 +172,19 @@ def politica_detalhe(politica_id: int) -> dict:
 @app.get("/api/temas")
 def temas() -> dict:
     return {"temas": lista_temas()}
+
+
+@app.get("/api/trilhas")
+def api_trilhas() -> dict:
+    return {"trilhas": listar_trilhas()}
+
+
+@app.get("/api/trilhas/{trilha_id}")
+def api_trilha(trilha_id: str) -> dict:
+    item = get_trilha(trilha_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Trilha não encontrada.")
+    return item
 
 
 @app.post("/api/search", response_model=SearchResponse)

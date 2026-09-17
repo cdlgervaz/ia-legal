@@ -325,3 +325,47 @@ footer p { margin: 4px 0; }
 .politica h4 { margin: 6px 0 4px; font-size: 15.5px; }
 .politica p { margin: 6px 0; font-size: 13.5px; }
 
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 200;
+  background: var(--primary); color: #fff; padding: 10px 16px; border-radius: 0 0 8px 0;
+}
+.skip-link:focus { left: 0; }
+:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+
+.global-search input {
+  width: 260px; max-width: 40vw; padding: 8px 12px; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.12);
+  color: #fff; font-size: 13px;
+}
+.global-search input::placeholder { color: #cbd5e1; }
+
+.barras { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 16px; }
+.barra-linha { display: grid; grid-template-columns: 190px 1fr 44px; align-items: center; gap: 10px; font-size: 12.5px; }
+.barra-rotulo { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barra-trilho { background: var(--surface-2); border-radius: 999px; height: 12px; overflow: hidden; }
+.barra-preenche { display: block; height: 100%; background: linear-gradient(90deg, #1e3a8a, #0d9488); }
+.barra-valor { text-align: right; color: var(--muted); }
+
+.marcos { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 16px; max-height: 320px; overflow-y: auto; }
+.marco { display: flex; align-items: center; gap: 10px; font-size: 13px; border-left: 3px solid var(--border); padding: 4px 0 4px 10px; }
+.marco-ano { font-weight: 700; color: var(--primary); min-width: 42px; }
+.marco-titulo { flex: 1; }
+
+.substituicoes { display: flex; flex-direction: column; gap: 10px; }
+.sub-card { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 13.5px; background: #fff; }
+.sub-seta { color: var(--primary); font-weight: 700; }
+.sub-novo { color: var(--accent); font-weight: 600; }
+
+.trilhas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.trilha-card {
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-start; text-align: left;
+  padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: #fff; cursor: pointer;
+}
+.trilha-card:hover { border-color: var(--primary); background: #eff6ff; }
+.trilha-card strong { font-size: 15.5px; }
+.trilha-card span { font-size: 13px; color: #475569; }
+.trilha-card em { font-size: 12px; color: var(--muted); font-style: normal; }
+.trilhas-docs { display: flex; flex-direction: column; gap: 8px; }
+.trilha-doc { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; background: #fff; }
+
