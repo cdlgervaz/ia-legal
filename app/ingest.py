@@ -18,6 +18,7 @@ from .sources import (
     TEMA_COMUNICACOES,
 )
 from .sources.dou import CONSULTAS_PADRAO, intervalo_padrao
+from .sources.ipea import IpeaClient
 
 _sync_lock = threading.Lock()
 _sync_state = {
@@ -276,6 +277,19 @@ def sync_dou(
                 f"Diário Oficial '{termo}': {inseridos} atos relevantes", "dou"
             )
     db.log_sync("dou", total)
+    return total
+
+
+def sync_ipea(db: Database, progress: Optional[_Progress] = None) -> int:
+    with IpeaClient() as client:
+        areas = client.mapa("area/")
+        grandes = client.mapa("grande_area/")
+        brutos = client.politicas()
+        itens = [client.normalize(item, areas, grandes) for item in brutos]
+    total = db.upsert_politicas(itens)
+    if progress is not None:
+        progress.fase(f"IPEA: {total} políticas públicas catalogadas", "ipea")
+    db.log_sync("ipea", total)
     return total
 
 

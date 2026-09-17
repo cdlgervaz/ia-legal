@@ -71,6 +71,30 @@ CREATE TABLE IF NOT EXISTS chunks (
     normalizado TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_chunks_doc ON chunks(documento_id);
+
+CREATE TABLE IF NOT EXISTS politicas (
+    id INTEGER PRIMARY KEY,
+    nome TEXT NOT NULL,
+    ano INTEGER,
+    area_id INTEGER,
+    area_nome TEXT,
+    grande_area_id INTEGER,
+    grande_area TEXT,
+    orgao TEXT,
+    instrumento_legal TEXT,
+    legislacao TEXT,
+    vigencia_inicio TEXT,
+    vigencia_fim TEXT,
+    vigente INTEGER,
+    objetivos TEXT,
+    publico_alvo TEXT,
+    link TEXT,
+    tipo_politica TEXT,
+    atualizado_em TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_pol_ano ON politicas(ano);
+CREATE INDEX IF NOT EXISTS idx_pol_area ON politicas(area_nome);
+CREATE INDEX IF NOT EXISTS idx_pol_vigente ON politicas(vigente);
 """
 
 
@@ -532,6 +556,160 @@ class Database:
         if "relevancia" in row.keys():
             dados["relevancia"] = row["relevancia"]
         return dados
+
+    def upsert_politicas(self, itens: List[dict]) -> int:
+        if not itens:
+            return 0
+        with self.connect() as conn:
+            conn.executemany(
+                """
+                INSERT INTO politicas
+                    (id, nome, ano, area_id, area_nome, grande_area_id, grande_area, orgao,
+                     instrumento_legal, legislacao, vigencia_inicio, vigencia_fim, vigente,
+                     objetivos, publico_alvo, link, tipo_politica, atualizado_em)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(id) DO UPDATE SET
+                    nome=excluded.nome,
+                    ano=excluded.ano,
+                    area_id=excluded.area_id,
+                    area_nome=excluded.area_nome,
+                    grande_area_id=excluded.grande_area_id,
+                    grande_area=excluded.grande_area,
+                    orgao=excluded.orgao,
+                    instrumento_legal=excluded.instrumento_legal,
+                    legislacao=excluded.legislacao,
+                    vigencia_inicio=excluded.vigencia_inicio,
+                    vigencia_fim=excluded.vigencia_fim,
+                    vigente=excluded.vigente,
+                    objetivos=excluded.objetivos,
+                    publico_alvo=excluded.publico_alvo,
+                    link=excluded.link,
+                    tipo_politica=excluded.tipo_politica,
+                    atualizado_em=excluded.atualizado_em
+                """,
+                [
+                    (
+                        item["id"],
+                        item.get("nome") or "",
+                        item.get("ano"),
+                        item.get("area_id"),
+                        item.get("area_nome"),
+                        item.get("grande_area_id"),
+                        item.get("grande_area"),
+                        item.get("orgao"),
+                        item.get("instrumento_legal"),
+                        item.get("legislacao"),
+                        item.get("vigencia_inicio"),
+                        item.get("vigencia_fim"),
+                        item.get("vigente"),
+                        item.get("objetivos"),
+                        item.get("publico_alvo"),
+                        item.get("link"),
+                        item.get("tipo_politica"),
+                        _now(),
+                    )
+                    for item in itens
+                ],
+            )
+        return len(itens)
+
+    def _row_to_politica(self, row: sqlite3.Row) -> dict:
+        return {
+            "id": row["id"],
+            "nome": row["nome"],
+            "ano": row["ano"],
+            "area_nome": row["area_nome"],
+            "grande_area": row["grande_area"],
+            "orgao": row["orgao"],
+            "instrumento_legal": row["instrumento_legal"],
+            "legislacao": row["legislacao"],
+            "vigencia_inicio": row["vigencia_inicio"],
+            "vigencia_fim": row["vigencia_fim"],
+            "vigente": bool(row["vigente"]) if row["vigente"] is not None else None,
+            "objetivos": row["objetivos"],
+            "publico_alvo": row["publico_alvo"],
+            "link": row["link"],
+            "tipo_politica": row["tipo_politica"],
+        }
+
+    def list_politicas(
+        self,
+        area: Optional[str] = None,
+        ano_de: Optional[int] = None,
+        ano_ate: Optional[int] = None,
+        vigente: Optional[bool] = None,
+        orgao: Optional[str] = None,
+        q: Optional[str] = None,
+        limit: int = 60,
+        offset: int = 0,
+    ) -> List[dict]:
+        clauses: List[str] = []
+        params: List = []
+        if area:
+            clauses.append("area_nome = ?")
+            params.append(area)
+        if orgao:
+            clauses.append("orgao LIKE ?")
+            params.append(f"%{orgao}%")
+        if ano_de is not None:
+            clauses.append("ano >= ?")
+            params.append(ano_de)
+        if ano_ate is not None:
+            clauses.append("ano <= ?")
+            params.append(ano_ate)
+        if vigente is not None:
+            clauses.append("vigente = ?")
+            params.append(1 if vigente else 0)
+        if q:
+            clauses.append("(nome LIKE ? OR objetivos LIKE ? OR orgao LIKE ?)")
+            params.extend([f"%{q}%", f"%{q}%", f"%{q}%"])
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        params.extend([limit, offset])
+        with self.connect() as conn:
+            rows = conn.execute(
+                f"SELECT * FROM politicas {where} ORDER BY ano DESC, nome LIMIT ? OFFSET ?",
+                params,
+            ).fetchall()
+        return [self._row_to_politica(r) for r in rows]
+
+    def get_politica(self, politica_id: int) -> Optional[dict]:
+        with self.connect() as conn:
+            row = conn.execute(
+                "SELECT * FROM politicas WHERE id = ?", (politica_id,)
+            ).fetchone()
+        return self._row_to_politica(row) if row else None
+
+    def politicas_stats(self) -> dict:
+        with self.connect() as conn:
+            total = conn.execute("SELECT COUNT(*) AS c FROM politicas").fetchone()["c"]
+            vigentes = conn.execute(
+                "SELECT COUNT(*) AS c FROM politicas WHERE vigente = 1"
+            ).fetchone()["c"]
+            por_area = [
+                {
+                    "area": r["area_nome"] or "Sem área",
+                    "total": r["c"],
+                    "vigentes": r["v"],
+                }
+                for r in conn.execute(
+                    "SELECT area_nome, COUNT(*) AS c, SUM(vigente) AS v FROM politicas "
+                    "GROUP BY area_nome ORDER BY c DESC"
+                ).fetchall()
+            ]
+            por_decada = [
+                {"decada": r["decada"] * 10, "total": r["c"]}
+                for r in conn.execute(
+                    "SELECT (ano/10) AS decada, COUNT(*) AS c FROM politicas "
+                    "WHERE ano IS NOT NULL GROUP BY decada ORDER BY decada"
+                ).fetchall()
+            ]
+        return {
+            "total": total,
+            "vigentes": vigentes,
+            "descontinuadas": total - vigentes,
+            "por_area": por_area,
+            "por_decada": por_decada,
+        }
 
 
 def _tokenize(text: str) -> List[str]:

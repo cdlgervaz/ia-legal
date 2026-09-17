@@ -106,6 +106,50 @@ def stats() -> dict:
     return _db().stats()
 
 
+@app.get("/api/politicas/stats")
+def politicas_stats() -> dict:
+    return _db().politicas_stats()
+
+
+@app.get("/api/politicas")
+def listar_politicas(
+    area: Optional[str] = None,
+    orgao: Optional[str] = None,
+    ano_de: Optional[int] = None,
+    ano_ate: Optional[int] = None,
+    vigente: Optional[bool] = None,
+    q: Optional[str] = None,
+    limit: int = Query(default=60, le=300),
+    offset: int = Query(default=0, ge=0),
+) -> dict:
+    itens = _db().list_politicas(
+        area=area,
+        orgao=orgao,
+        ano_de=ano_de,
+        ano_ate=ano_ate,
+        vigente=vigente,
+        q=q,
+        limit=limit,
+        offset=offset,
+    )
+    return {"total": len(itens), "itens": itens}
+
+
+@app.post("/api/politicas/sincronizar")
+def politicas_sincronizar() -> dict:
+    from .ingest import sync_ipea
+
+    return {"inseridos": sync_ipea(_db())}
+
+
+@app.get("/api/politicas/{politica_id}")
+def politica_detalhe(politica_id: int) -> dict:
+    item = _db().get_politica(politica_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Política não encontrada.")
+    return item
+
+
 @app.get("/api/temas")
 def temas() -> dict:
     return {"temas": lista_temas()}

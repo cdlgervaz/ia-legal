@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>IAgora, profe? — Acervo de Políticas Educacionais</title>
-  <link rel="stylesheet" href="/static/styles.css?v=5" />
+  <link rel="stylesheet" href="/static/styles.css?v=6" />
 </head>
 <body>
   <header class="topbar">
@@ -31,7 +31,9 @@
 
   <nav class="tabs">
     <button data-tab="perguntar" class="active">Conversar</button>
-    <button data-tab="buscar">Buscar no acervo</button>
+    <button data-tab="buscar">Consulta</button>
+    <button data-tab="areas">Áreas temáticas</button>
+    <button data-tab="timeline">Linha do tempo</button>
     <button data-tab="documentos">Documentos</button>
     <button data-tab="acompanhar">Acompanhar andamento</button>
     <button data-tab="config">Configurações</button>
@@ -88,6 +90,33 @@
           <button class="btn" type="submit" id="chat-send">Enviar</button>
         </form>
         <p class="hint" id="chat-hint"></p>
+      </div>
+    </section>
+
+    <section id="tab-areas" class="tab-panel">
+      <div class="card">
+        <h2 style="margin-top:0">Áreas temáticas</h2>
+        <p class="hint">Políticas públicas federais catalogadas pelo IPEA, agrupadas por área. Clique em uma área para ver as políticas — e se continuam em vigor ou foram descontinuadas.</p>
+        <div id="areas-lista" class="areas-grid"></div>
+      </div>
+      <div id="areas-detalhe" class="card hidden">
+        <h2 id="areas-titulo" style="margin-top:0"></h2>
+        <p class="hint" id="areas-modo"></p>
+        <button class="btn secondary" id="areas-voltar" type="button">Voltar às áreas</button>
+        <div id="areas-politicas" class="politicas-lista"></div>
+      </div>
+    </section>
+
+    <section id="tab-timeline" class="tab-panel">
+      <div class="card">
+        <h2 style="margin-top:0">Linha do tempo</h2>
+        <p class="hint">Políticas públicas federais por década, com indicação de vigente ou descontinuada. Fonte: Catálogo de Políticas Públicas do IPEA.</p>
+        <div id="timeline-decadas" class="chip-row"></div>
+      </div>
+      <div id="timeline-detalhe" class="card hidden">
+        <h2 id="timeline-titulo" style="margin-top:0"></h2>
+        <button class="btn secondary" id="timeline-voltar" type="button">Voltar às décadas</button>
+        <div id="timeline-politicas" class="politicas-lista"></div>
       </div>
     </section>
 
@@ -158,6 +187,13 @@
         <button class="btn" id="cfg-importar" type="button">Importar todo o catálogo</button>
         <button class="btn secondary" id="cfg-importar-status" type="button">Ver status</button>
         <div id="cfg-importar-progresso"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2 style="margin-top:0">Catálogo de Políticas Públicas (IPEA)</h2>
+        <p class="hint">Importa as políticas públicas federais do Catálogo do IPEA (área temática, órgão, instrumento legal, vigência e objetivos). Alimenta as abas "Áreas temáticas" e "Linha do tempo".</p>
+        <button class="btn" id="cfg-ipea" type="button">Sincronizar Catálogo IPEA</button>
+        <span class="hint" id="cfg-ipea-status" style="margin-left:10px"></span>
       </div>
 
       <div class="card" style="margin-top:18px">
@@ -278,7 +314,26 @@
         <p>Autoria, uso de inteligência artificial e direitos de uso.</p>
       </div>
 
-      <h3>Autoria</h3>
+      <h3>O que é</h3>
+      <p>O <strong>IAgora, profe?</strong> é um acervo virtual que reúne leis, pareceres do Conselho Nacional de Educação, bases curriculares e documentos norteadores da educação brasileira, além de políticas públicas federais (Catálogo do IPEA). Permite investigar <em>quais normas continuam em vigor ou foram substituídas</em>, a trajetória de cada política por área temática e por período, e serve de fonte para estudos e materiais didáticos.</p>
+
+      <h3>Organização</h3>
+      <ul class="guia-passos">
+        <li><strong>Áreas temáticas</strong> — políticas públicas agrupadas por área, com totais e vigentes.</li>
+        <li><strong>Linha do tempo</strong> — políticas por década, com situação (vigente ou descontinuada).</li>
+        <li><strong>Consulta</strong> — busca semântica nos documentos e proposições.</li>
+        <li><strong>Documentos</strong> — catálogo completo, com indicação de vigência.</li>
+        <li><strong>Acompanhar andamento</strong> — tramitação de projetos de lei.</li>
+      </ul>
+
+      <h3>Metodologia</h3>
+      <ul class="guia-passos">
+        <li><strong>Fontes:</strong> APIs oficiais da Câmara e do Senado; Planalto; MEC/CNE; Secom; Diário Oficial da União; Catálogo de Políticas Públicas do IPEA; Internet Archive.</li>
+        <li><strong>Vigência:</strong> indicada pela norma que revoga/substitui e, nas políticas, pelo campo de vigência (sem data de fim = vigente).</li>
+        <li><strong>Respostas por IA:</strong> produzidas por modelos de código aberto com base nos documentos indexados, sempre citando as fontes [1], [2]...</li>
+      </ul>
+
+      <h3>Equipe e autoria</h3>
       <p><strong>IAgora, profe? — Acervo inteligente de Políticas Educacionais</strong>. Autoria: <strong>Camila Gervaz</strong>. Contato: cgervaz@proton.me.</p>
 
       <h3>Inteligência artificial e modelos utilizados</h3>
@@ -342,6 +397,6 @@
     </p>
   </footer>
 
-  <script src="/static/app.js?v=4"></script>
+  <script src="/static/app.js?v=6"></script>
 </body>
 </html>

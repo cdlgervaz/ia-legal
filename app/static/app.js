@@ -698,6 +698,8 @@ function mostrarAba(nome) {
   if (nome === "acompanhar") carregarAcompanhamento();
   if (nome === "config") atualizarConfigInfo();
   if (nome === "documentos") carregarDocumentos();
+  if (nome === "areas") carregarAreas();
+  if (nome === "timeline") carregarTimeline();
 }
 
 function abrirOnboarding() {
@@ -792,6 +794,109 @@ function fecharPrivacidade() {
   if (el) el.classList.add("hidden");
 }
 
+function politicaCard(p) {
+  const badge = p.vigente === true
+    ? `<span class="badge vigente">Vigente</span>`
+    : p.vigente === false
+      ? `<span class="badge nao-vigente">Descontinuada</span>`
+      : "";
+  const meta = [
+    p.ano,
+    p.orgao,
+    p.instrumento_legal ? `${p.instrumento_legal} ${p.legislacao || ""}`.trim() : p.legislacao,
+  ].filter(Boolean).map((x) => escapeHtml(String(x))).join(" · ");
+  const obj = p.objetivos || "";
+  const texto = obj.length > 240 ? obj.slice(0, 240) + "..." : obj;
+  return `<article class="politica">
+    <header><span class="tag tag-cat">${escapeHtml(p.area_nome || "Sem área")}</span>${badge}</header>
+    <h4>${escapeHtml(p.nome)}</h4>
+    <p class="hint">${meta}</p>
+    ${texto ? `<p>${escapeHtml(texto)}</p>` : ""}
+    ${p.link ? `<a class="btn ghost" href="${escapeHtml(p.link)}" target="_blank" rel="noopener">Legislação oficial</a>` : ""}
+  </article>`;
+}
+
+async function carregarAreas() {
+  const alvo = $("#areas-lista");
+  if (!alvo) return;
+  alvo.innerHTML = `<div class="loading"><span class="spinner"></span>Carregando áreas...</div>`;
+  try {
+    const stats = await api("/api/politicas/stats");
+    const areas = stats.por_area || [];
+    if (!areas.length) {
+      alvo.innerHTML = `<div class="alert info">Sem dados ainda. Vá em Configurações e clique em "Sincronizar Catálogo IPEA".</div>`;
+      return;
+    }
+    alvo.innerHTML = areas
+      .map(
+        (a) => `<button type="button" class="area-card" data-area="${escapeHtml(a.area)}">
+          <strong>${escapeHtml(a.area)}</strong>
+          <span>${a.total} políticas · ${a.vigentes} vigentes</span>
+        </button>`
+      )
+      .join("");
+    alvo.querySelectorAll(".area-card").forEach((botao) => {
+      botao.addEventListener("click", () => carregarPoliticasArea(botao.dataset.area));
+    });
+  } catch (erro) {
+    alvo.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+async function carregarPoliticasArea(area) {
+  $("#areas-titulo").textContent = area;
+  $("#areas-modo").textContent = "Carregando...";
+  $("#areas-detalhe").classList.remove("hidden");
+  const lista = $("#areas-politicas");
+  lista.innerHTML = `<div class="loading"><span class="spinner"></span>Carregando políticas...</div>`;
+  try {
+    const data = await api(`/api/politicas?area=${encodeURIComponent(area)}&limit=300`);
+    $("#areas-modo").textContent = `${data.total} políticas nesta área.`;
+    lista.innerHTML = data.itens.length
+      ? data.itens.map(politicaCard).join("")
+      : `<div class="alert info">Nenhuma política nesta área.</div>`;
+  } catch (erro) {
+    lista.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+async function carregarTimeline() {
+  const alvo = $("#timeline-decadas");
+  if (!alvo) return;
+  alvo.innerHTML = `<span class="loading"><span class="spinner"></span>Carregando...</span>`;
+  try {
+    const stats = await api("/api/politicas/stats");
+    const decadas = stats.por_decada || [];
+    if (!decadas.length) {
+      alvo.innerHTML = `<div class="alert info">Sem dados ainda. Vá em Configurações e clique em "Sincronizar Catálogo IPEA".</div>`;
+      return;
+    }
+    alvo.innerHTML = decadas
+      .map((d) => `<button type="button" class="chip" data-decada="${d.decada}">${d.decada} (${d.total})</button>`)
+      .join("");
+    alvo.querySelectorAll(".chip").forEach((botao) => {
+      botao.addEventListener("click", () => carregarPoliticasDecada(parseInt(botao.dataset.decada, 10)));
+    });
+  } catch (erro) {
+    alvo.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
+async function carregarPoliticasDecada(decada) {
+  $("#timeline-titulo").textContent = `Década de ${decada}`;
+  $("#timeline-detalhe").classList.remove("hidden");
+  const lista = $("#timeline-politicas");
+  lista.innerHTML = `<div class="loading"><span class="spinner"></span>Carregando políticas...</div>`;
+  try {
+    const data = await api(`/api/politicas?ano_de=${decada}&ano_ate=${decada + 9}&limit=300`);
+    lista.innerHTML = data.itens.length
+      ? data.itens.map(politicaCard).join("")
+      : `<div class="alert info">Nenhuma política nesta década.</div>`;
+  } catch (erro) {
+    lista.innerHTML = `<div class="alert error">Erro: ${escapeHtml(erro.message)}</div>`;
+  }
+}
+
 function ligarTabs() {
   document.querySelectorAll("nav.tabs button").forEach((botao) => {
     botao.addEventListener("click", () => mostrarAba(botao.dataset.tab));
@@ -807,6 +912,8 @@ function ligarEventos() {
       enviarPergunta(evento);
     }
   });
+  $("#areas-voltar").addEventListener("click", () => $("#areas-detalhe").classList.add("hidden"));
+  $("#timeline-voltar").addEventListener("click", () => $("#timeline-detalhe").classList.add("hidden"));
   $("#a-atualizar").addEventListener("click", carregarAcompanhamento);
   $("#s-iniciar").addEventListener("click", sincronizar);
   $("#s-status").addEventListener("click", acompanharSync);
@@ -823,6 +930,22 @@ function ligarEventos() {
     importarCatalogo();
   });
   $("#cfg-importar-status").addEventListener("click", acompanharImportacao);
+  const cfgIpea = $("#cfg-ipea");
+  if (cfgIpea) {
+    cfgIpea.addEventListener("click", async () => {
+      const status = $("#cfg-ipea-status");
+      cfgIpea.disabled = true;
+      if (status) status.textContent = "Sincronizando o Catálogo do IPEA...";
+      try {
+        const data = await api("/api/politicas/sincronizar", { method: "POST" });
+        if (status) status.textContent = `${data.inseridos} políticas importadas. Veja em "Áreas temáticas" e "Linha do tempo".`;
+      } catch (erro) {
+        if (status) status.textContent = "Erro: " + erro.message;
+      } finally {
+        cfgIpea.disabled = false;
+      }
+    });
+  }
   $("#modal-close").addEventListener("click", () => $("#modal").classList.add("hidden"));
   $("#modal").addEventListener("click", (evento) => {
     if (evento.target.id === "modal") $("#modal").classList.add("hidden");

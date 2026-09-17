@@ -306,3 +306,22 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px
 }
 footer p { margin: 4px 0; }
 
+.areas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.area-card {
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start; text-align: left;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: #fff; cursor: pointer;
+}
+.area-card:hover { border-color: var(--primary); background: #eff6ff; }
+.area-card strong { font-size: 15px; }
+.area-card span { font-size: 12.5px; color: var(--muted); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.politicas-lista { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.politica {
+  border: 1px solid var(--border); border-left: 4px solid var(--accent);
+  border-radius: var(--radius); padding: 14px 16px; background: #fff;
+}
+.politica header { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.politica h4 { margin: 6px 0 4px; font-size: 15.5px; }
+.politica p { margin: 6px 0; font-size: 13.5px; }
+
