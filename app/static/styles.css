@@ -346,10 +346,32 @@ footer p { margin: 4px 0; }
 .barra-preenche { display: block; height: 100%; background: linear-gradient(90deg, #1e3a8a, #0d9488); }
 .barra-valor { text-align: right; color: var(--muted); }
 
-.marcos { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 16px; max-height: 320px; overflow-y: auto; }
-.marco { display: flex; align-items: center; gap: 10px; font-size: 13px; border-left: 3px solid var(--border); padding: 4px 0 4px 10px; }
-.marco-ano { font-weight: 700; color: var(--primary); min-width: 42px; }
-.marco-titulo { flex: 1; }
+.marcos { margin: 10px 0 18px; max-height: 420px; overflow-y: auto; padding-right: 6px; }
+
+.linha-do-tempo { position: relative; padding-left: 8px; }
+.linha-do-tempo::before {
+  content: "";
+  position: absolute; left: 34px; top: 6px; bottom: 6px; width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+}
+.ldt-item { display: grid; grid-template-columns: 60px 1fr; gap: 14px; margin-bottom: 12px; position: relative; }
+.ldt-marcador { display: flex; justify-content: center; }
+.ldt-ano {
+  z-index: 1; background: #fff; border: 2px solid var(--primary); color: var(--primary);
+  font-weight: 700; font-size: 12.5px; border-radius: 999px; padding: 3px 8px; min-width: 52px; text-align: center;
+}
+.ldt-conteudo {
+  background: #fff; border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; box-shadow: var(--shadow);
+  border-left: 3px solid var(--accent);
+}
+.ldt-titulo { display: block; font-size: 14px; margin-bottom: 6px; }
+.ldt-tags { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.decada-chip { display: flex; flex-direction: column; align-items: center; line-height: 1.1; padding: 8px 14px; }
+.decada-chip strong { font-size: 14px; }
+.decada-chip span { font-size: 11px; color: var(--muted); }
 
 .substituicoes { display: flex; flex-direction: column; gap: 10px; }
 .sub-card { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 13.5px; background: #fff; }

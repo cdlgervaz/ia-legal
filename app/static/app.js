@@ -942,26 +942,37 @@ function renderSubstituicoes(itens) {
 function renderMarcos(itens) {
   const alvo = $("#timeline-marcos");
   if (!alvo) return;
-  const docs = itens.filter((d) => d.ano && d.ano >= 1900).sort((a, b) => a.ano - b.ano);
+  const docs = itens
+    .filter((d) => d.ano && d.ano >= 1900)
+    .sort((a, b) => (b.ano || 0) - (a.ano || 0));
   if (!docs.length) {
     alvo.innerHTML = "";
     return;
   }
-  alvo.innerHTML = docs
-    .map(
-      (d) => `<div class="marco">
-        <span class="marco-ano">${d.ano}</span>
-        <span class="marco-titulo">${escapeHtml(d.titulo)}</span>
-        ${
-          d.vigente === true
-            ? `<span class="badge vigente">Vigente</span>`
-            : d.vigente === false
-              ? `<span class="badge nao-vigente">Substituído</span>`
-              : ""
-        }
-      </div>`
-    )
-    .join("");
+  alvo.innerHTML =
+    `<div class="linha-do-tempo">` +
+    docs
+      .map(
+        (d) => `<div class="ldt-item">
+          <div class="ldt-marcador"><span class="ldt-ano">${d.ano}</span></div>
+          <div class="ldt-conteudo">
+            <strong class="ldt-titulo">${escapeHtml(d.titulo)}</strong>
+            <div class="ldt-tags">
+              ${d.categoria ? `<span class="tag tag-cat">${escapeHtml(d.categoria)}</span>` : ""}
+              ${
+                d.vigente === true
+                  ? `<span class="badge vigente">Vigente</span>`
+                  : d.vigente === false
+                    ? `<span class="badge nao-vigente">Substituído</span>`
+                    : ""
+              }
+              ${d.substituido_por ? `<span class="hint">→ ${escapeHtml(d.substituido_por)}</span>` : ""}
+            </div>
+          </div>
+        </div>`
+      )
+      .join("") +
+    `</div>`;
 }
 
 async function carregarPoliticasArea(area) {
@@ -993,7 +1004,13 @@ async function carregarTimeline() {
       return;
     }
     alvo.innerHTML = decadas
-      .map((d) => `<button type="button" class="chip" data-decada="${d.decada}">${d.decada} (${d.total})</button>`)
+      .slice()
+      .reverse()
+      .map(
+        (d) => `<button type="button" class="chip decada-chip" data-decada="${d.decada}">
+          <strong>${d.decada}</strong><span>${d.total} políticas</span>
+        </button>`
+      )
       .join("");
     alvo.querySelectorAll(".chip").forEach((botao) => {
       botao.addEventListener("click", () => carregarPoliticasDecada(parseInt(botao.dataset.decada, 10)));
