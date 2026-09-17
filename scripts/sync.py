@@ -13,7 +13,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Sincroniza legislação de tecnologia.")
     parser.add_argument("--anos", nargs="*", type=int, default=[], help="Anos a importar")
     parser.add_argument("--tipos", nargs="*", default=["PL", "PEC", "PLP", "MPV"])
-    parser.add_argument("--max", type=int, default=60, help="Máximo de itens por ano")
+    parser.add_argument("--max", type=int, default=0, help="Máximo de itens por ano (0 = sem limite)")
     parser.add_argument("--sem-camara", action="store_true")
     parser.add_argument("--sem-senado", action="store_true")
     parser.add_argument("--sem-tramitacoes", action="store_true")

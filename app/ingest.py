@@ -83,6 +83,7 @@ def sync_camara(
     incluir_comunicacoes: bool,
     buscar_tramitacoes: bool,
 ) -> int:
+    max_itens_por_ano = max_itens_por_ano if max_itens_por_ano and max_itens_por_ano > 0 else 100000
     temas = [TEMA_CIENCIA_TECNOLOGIA]
     if incluir_comunicacoes:
         temas.append(TEMA_COMUNICACOES)
@@ -150,6 +151,7 @@ def sync_senado(
     max_itens_por_ano: int,
     buscar_tramitacoes: bool,
 ) -> int:
+    max_itens_por_ano = max_itens_por_ano if max_itens_por_ano and max_itens_por_ano > 0 else 100000
     total = 0
     with SenadoClient(
         timeout=get_settings().http_timeout,
@@ -352,7 +354,8 @@ def run_sync(req: SyncRequest, progress_cb: Optional[Callable] = None) -> SyncRe
     db = Database(settings.db_path)
     rag = get_rag_index()
 
-    anos = req.anos or [datetime.now().year, datetime.now().year - 1, datetime.now().year - 2]
+    ano_atual = datetime.now().year
+    anos = req.anos or list(range(req.ano_inicial, ano_atual + 1))
     mensagens: List[str] = []
     progress = _Progress(mensagens)
     inicio = time.time()
@@ -398,9 +401,7 @@ def run_sync(req: SyncRequest, progress_cb: Optional[Callable] = None) -> SyncRe
                 req.cne_extrair_texto,
             )
         if req.diario_oficial:
-            data_inicio, data_fim = intervalo_padrao(
-                max(len(anos), 3) if anos else 7
-            )
+            data_inicio, data_fim = intervalo_padrao(ano_atual - req.ano_inicial + 1)
             resposta.diario_oficial = sync_dou(
                 db,
                 rag,

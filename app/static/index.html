@@ -199,14 +199,14 @@
         <h2 style="margin-top:0">Sincronizar base legislativa (proposições)</h2>
         <p class="hint">Busca proposições nas APIs oficiais da Câmara e do Senado, filtra por tema e indexa para busca semântica e acompanhamento.</p>
         <div class="field-grid">
-          <label>Anos (separados por vírgula)
-            <input id="s-anos" type="text" placeholder="2024, 2023, 2022" />
+          <label>Anos (separados por vírgula; vazio = todos, 1988–hoje)
+            <input id="s-anos" type="text" placeholder="vazio = todos os anos" />
           </label>
           <label>Tipos (separados por vírgula)
             <input id="s-tipos" type="text" value="PL, PEC, PLP, MPV" />
           </label>
-          <label>Máx. por ano
-            <input id="s-max" type="number" value="60" min="1" max="2000" />
+          <label>Máx. por ano (0 = sem limite)
+            <input id="s-max" type="number" value="0" min="0" max="100000" />
           </label>
         </div>
         <div class="checkbox-row">

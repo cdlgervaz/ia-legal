@@ -132,7 +132,8 @@ class SyncRequest(BaseModel):
     diario_oficial: bool = True
     anos: List[int] = Field(default_factory=list)
     tipos: List[str] = Field(default_factory=lambda: ["PL", "PEC", "PLP", "MPV"])
-    max_itens_por_ano: int = 60
+    max_itens_por_ano: int = 0
+    ano_inicial: int = 1988
     buscar_tramitacoes: bool = True
     incluir_comunicacoes: bool = True
     cne_max: int = 200

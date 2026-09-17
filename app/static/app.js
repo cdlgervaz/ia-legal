@@ -653,7 +653,7 @@ async function sincronizar() {
     senado: $("#s-senado").checked,
     anos,
     tipos,
-    max_itens_por_ano: parseInt($("#s-max").value, 10) || 60,
+    max_itens_por_ano: parseInt($("#s-max").value, 10) || 0,
     buscar_tramitacoes: $("#s-tram").checked,
     incluir_comunicacoes: $("#s-com").checked,
   };
